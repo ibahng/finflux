@@ -13,4 +13,3 @@ fmp_baseurl  = 'https://financialmodelingprep.com/api/'
 imf_baseurl  = 'http://dataservices.imf.org/REST/SDMX_JSON.svc/'
 fred_baseurl = 'https://api.stlouisfed.org/fred/'
 sec_baseurl  = 'https://www.sec.gov/'
-

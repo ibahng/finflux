@@ -76,7 +76,7 @@ class equity:
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
             
-        url_1 = td_baseurl + f'price?apikey={td_apikey}&symbol={self.mticker}&dp=2'
+        url_1 = td_baseurl + f'price?apikey={td_apikey}&symbol={self.mticker}'
         response_1 = requests.get(url_1).json()
 
         url_2 = td_baseurl + f'quote?apikey={td_apikey}&symbol={self.mticker}'
@@ -84,12 +84,12 @@ class equity:
         
         if display == 'json':
             output = {'symbol': self.ticker,
-                      'price': response_1['price'],
+                      'price': float(response_1['price']),
                       'currency': response_2['currency']}
         elif display == 'pretty':
             output = f'''
   Symbol: {self.ticker}
-   Price: {response_1['price']}
+   Price: {round(response_1['price'],2)}
 Currency: {response_2['currency']}
 '''
 
@@ -362,7 +362,7 @@ Currency: {response_2['currency']}
             None
         elif currency != None:
             forex_pair = f'{current_currency}/{currency}'
-            url = td_baseurl + f'price?apikey={td_apikey}&symbol={forex_pair}&dp=2'
+            url = td_baseurl + f'price?apikey={td_apikey}&symbol={forex_pair}'
             exchange_rate = requests.get(url).json()['price']
             
             data *= float(exchange_rate)
@@ -848,7 +848,7 @@ PRICE ESTIMATE----------------------------------------------------------
         elif display == 'table':
             return dividends_df
 
-    def split(self, display: str = 'json'): 
+    def split(self, display: str = 'json'):
         valid_params = {'valid_display': ['json', 'table'],}
         
         params = {'display': display}
@@ -876,7 +876,7 @@ PRICE ESTIMATE----------------------------------------------------------
         elif display == 'table':
             return splits_df
 
-    def stats(self, display: str = 'json'): #IN PROGRESS
+    def stats(self, display: str = 'json'):
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -1312,3 +1312,14 @@ CASH FLOW-----------------------------------------------------------------------
     FCFE.DA.WC.NonCash  ttm  {icrj(cf['fcfe_DA.WC.otherNonCash']['ttm'])} |{icrj(cf['fcfe_DA.WC.otherNonCash'][fy[0]])} |{icrj(cf['fcfe_DA.WC.otherNonCash'][fy[1]])} |{icrj(cf['fcfe_DA.WC.otherNonCash'][fy[2]])} |{icrj(cf['fcfe_DA.WC.otherNonCash'][fy[3]])} |
 ''')
 
+    def topgl(self, display: str = 'json'): # IN PROGRESS
+        valid_params = {'valid_display': ['json', 'pretty'],}
+        
+        params = {'display': display}
+
+        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
+            if param_value not in valid_param:
+                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
+                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
+            
+print(equity('JNJ').timeseries())
