@@ -1,4 +1,7 @@
-from .base_var import email_address,td_apikey,td_baseurl,av_apikey,av_baseurl,set_apikeys
+from .base_var import set_config
 from .equity import equity
 from .fund import fund
 from .forex import forex
+from .crypto import crypto
+
+__all__ = ['equity', 'fund', 'forex', 'crypto', 'set_config']

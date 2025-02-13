@@ -1,4 +1,4 @@
-from datafetch.base_var import *
+from datafetch.base_var import Config
 
 import yfinance as yf # type: ignore
 import numpy as np # type: ignore
@@ -155,7 +155,7 @@ Currency: {eod_data['currency']}
         yf_asset_classes = yf.Ticker(self.ticker).get_funds_data().asset_classes
 
         #cik id
-        sec_headers = {'User-Agent': f"{email_address}"}
+        sec_headers = {'User-Agent': f"{Config.email_address}"}
         sec_list = requests.get("https://www.sec.gov/files/company_tickers.json", headers=sec_headers).json()
 
         companyData = pd.DataFrame.from_dict(sec_list, orient='index')

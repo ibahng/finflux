@@ -1,4 +1,4 @@
-from datafetch.base_var import *
+from datafetch.base_var import Config
 
 import yfinance as yf # type: ignore
 import numpy as np # type: ignore
@@ -12,6 +12,10 @@ class InvalidParameterError(Exception):
         self.msg = msg
 
 class InvalidSecurityError(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg
+
+class MissingConfigObject(Exception):
     def __init__(self, msg: str):
         self.msg = msg
 
@@ -77,11 +81,14 @@ class equity:
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
 
+        if Config.td_apikey is None:
+            raise MissingConfigObject('Missing td_apikey. Please set you Twelve Data api key using the set_config() function.')
+
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
-        url_1 = td_baseurl + f'price?apikey={td_apikey}&symbol={self.mticker}'
+        url_1 = Config.td_baseurl + f'price?apikey={Config.td_apikey}&symbol={self.mticker}'
         td_realtime = requests.get(url_1).json()
 
-        url_2 = td_baseurl + f'quote?apikey={td_apikey}&symbol={self.mticker}'
+        url_2 = Config.td_baseurl + f'quote?apikey={Config.td_apikey}&symbol={self.mticker}'
         td_quote = requests.get(url_2).json()
         #----------------------------------------------------------------------------------
         
@@ -364,8 +371,11 @@ Currency: {td_quote['currency']}
         if currency == current_currency:
             None
         elif currency != None:
+            if Config.td_apikey is None:
+                raise MissingConfigObject('Missing td_apikey. Please set you Twelve Data api key using the set_config() function.')
+            
             forex_pair = f'{current_currency}/{currency}'
-            url = td_baseurl + f'price?apikey={td_apikey}&symbol={forex_pair}'
+            url = Config.td_baseurl + f'price?apikey={Config.td_apikey}&symbol={forex_pair}'
             exchange_rate = requests.get(url).json()['price']
             
             data *= float(exchange_rate)
@@ -501,7 +511,10 @@ MOVING AVERAGES-------------------------
         yf_calendar = yf.Ticker(self.ticker).get_calendar()
 
         #cik id
-        sec_header = {'User-Agent': f"{email_address}"}
+        if Config.email_address is None:
+                raise MissingConfigObject('Missing email_address. Please set you email address using the set_config() function.')
+
+        sec_header = {'User-Agent': f"{Config.email_address}"}
         sec_list = requests.get("https://www.sec.gov/files/company_tickers.json", headers=sec_header).json()
 
         companyData = pd.DataFrame.from_dict(sec_list, orient='index')
@@ -629,7 +642,7 @@ URL: {i['url']}
     def filings(self, form: str = None):
         
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
-        headers = {'User-Agent': f"{email_address}"}
+        headers = {'User-Agent': f"{Config.email_address}"}
         companyTickers = requests.get("https://www.sec.gov/files/company_tickers.json", headers=headers) #ticker-cik json data request
         
         companyData = pd.DataFrame.from_dict(companyTickers.json(), orient='index')
@@ -668,7 +681,10 @@ URL: {i['url']}
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
             
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
-        url = f'{av_baseurl}EARNINGS&apikey={av_apikey}&symbol={self.mticker}'
+        if Config.av_apikey is None:
+                raise MissingConfigObject('Missing av_apikey. Please set you Alpha Vantage api key using the set_config() function.')
+        
+        url = f'{Config.av_baseurl}EARNINGS&apikey={Config.av_apikey}&symbol={self.mticker}'
         av_eps = requests.get(url).json()
         #----------------------------------------------------------------------------------
 
@@ -931,7 +947,7 @@ PRICE ESTIMATE----------------------------------------------------------
         yf_raw_IS = yf.Ticker(self.ticker).income_stmt
 
         #QUARTERLY DATA
-        q_stmt_df = self.statement(display='pretty', unit='million', interval='quarter')
+        q_stmt_df = self.statement(display='table', unit='million', interval='quarter')
         q_stmt_df = q_stmt_df.map(lambda x: pd.to_numeric(x.replace(',', ''), errors='coerce') if isinstance(x, str) else x)
 
         yf_raw_qIS = yf.Ticker(self.ticker).quarterly_income_stmt

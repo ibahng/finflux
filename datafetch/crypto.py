@@ -1,4 +1,4 @@
-from datafetch.base_var import *
+from datafetch.base_var import Config
 
 import yfinance as yf # type: ignore
 import numpy as np # type: ignore
@@ -131,15 +131,15 @@ class crypto:
 
         #retriving coin exchange rate if directly avaliable
         if f'{self.from_coin}/{self.to_cc}' in td_crypto_list:
-            url_2 = td_baseurl + f'price?apikey={td_apikey}&symbol={self.from_coin}/{self.to_cc}'
+            url_2 = Config.td_baseurl + f'price?apikey={Config.td_apikey}&symbol={self.from_coin}/{self.to_cc}'
             td_realtime = float(requests.get(url_2).json()['price'])
 
         #calculating coin exchange rate by passing through USD rates
         elif f'{self.from_coin}/{self.to_cc}' not in td_crypto_list:
-            url_2 = td_baseurl + f'price?apikey={td_apikey}&symbol={self.from_coin}/USD'
+            url_2 = Config.td_baseurl + f'price?apikey={Config.td_apikey}&symbol={self.from_coin}/USD'
             td_realtime_coinusd = float(requests.get(url_2).json()['price'])
 
-            url_3 = td_baseurl + f'price?apikey={td_apikey}&symbol=USD/{self.to_cc}'
+            url_3 = Config.td_baseurl + f'price?apikey={Config.td_apikey}&symbol=USD/{self.to_cc}'
             td_realtime_usdcc = float(requests.get(url_3).json()['price'])
 
             td_realtime = td_realtime_coinusd * td_realtime_usdcc

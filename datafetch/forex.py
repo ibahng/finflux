@@ -1,4 +1,4 @@
-from datafetch.base_var import *
+from datafetch.base_var import Config
 
 import yfinance as yf # type: ignore
 import numpy as np # type: ignore
@@ -87,7 +87,7 @@ class forex:
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
             
         #RAW DATA/OBSERVATION--------------------------------------------------------------
-        url = td_baseurl + f'price?apikey={td_apikey}&symbol={self.tdticker}'
+        url = Config.td_baseurl + f'price?apikey={Config.td_apikey}&symbol={self.tdticker}'
         td_realtime = requests.get(url).json()
         #----------------------------------------------------------------------------------
         
@@ -164,7 +164,7 @@ Post-conversion: {round(data['post-conversion'],2)}
 
         yf_history_metadata = yf.Ticker(self.yfticker).get_history_metadata()
         
-        url_1 = f'{td_baseurl}quote?symbol={self.tdticker}&apikey={td_apikey}'
+        url_1 = f'{Config.td_baseurl}quote?symbol={self.tdticker}&apikey={Config.td_apikey}'
         td_quote = requests.get(url_1).json()
 
         yf_eod = yf.download(self.yfticker, progress=False)['Close'].iloc[-1].iloc[0]
