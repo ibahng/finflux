@@ -26,8 +26,7 @@ class forex:
     def __init__(self,ticker):
         self.ticker = ticker
 
-        self.from_currency = ticker[0:3]
-        self.to_currency = ticker[3:6]
+        self.from_currency, self.to_currency = ticker.split('-')
 
         if self.from_currency == 'USD':
             self.yfticker = f'{self.to_currency}=X'
@@ -41,16 +40,18 @@ class forex:
             raise InvalidSecurityError(f"Invalid security type. "
                                        f"Please select a valid '{forex.security_type}' symbol")
 #------------------------------------------------------------------------------------------
-    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price'):
+    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
                         'valid_data' : ['open', 'high', 'low', 'close', 'all'],
-                        'valid_calculation' : ['price', 'simple return', 'log return']}
+                        'valid_calculation' : ['price', 'simple return', 'log return'],
+                        'valid_round' : [True, False]}
         
         params = {'period': period,
                   'interval': interval,
                   'data': data,
-                  'calculation': calculation}
+                  'calculation': calculation,
+                  'round': round}
         
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
             if param_value not in valid_param:
@@ -58,7 +59,7 @@ class forex:
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
 
         #RAW DATA/OBSERVATION--------------------------------------------------------------
-        timeseries_data = yf.download(self.yfticker, period=period, start=start, end=end, interval=interval, ignore_tz=True, rounding=True, group_by='column', progress=False)
+        timeseries_data = yf.download(self.yfticker, period=period, start=start, end=end, interval=interval, ignore_tz=True, rounding=round, group_by='column', progress=False)
         #----------------------------------------------------------------------------------
 
         #PARAMETER - DATA =================================================================
@@ -74,9 +75,6 @@ class forex:
             output = (timeseries_data / timeseries_data.shift(1))-1
         elif calculation == 'log return':
             output = np.log(timeseries_data / timeseries_data.shift(1))
-
-        #rounding to 2 decimals
-        output = timeseries_data.round(2)
 
         return output
 #------------------------------------------------------------------------------------------
@@ -99,7 +97,7 @@ class forex:
         #----------------------------------------------------------------------------------
         
         realtime_data = {
-            'symbol': self.ticker,
+            'symbol': f'{self.from_currency} {self.to_currency}',
             'price': float(td_realtime['price'])
         }
 
@@ -137,7 +135,7 @@ Exchange Rate: {realtime_data['price']}
 
         #JSON FORMAT DATA
         data = {
-            'conversion': f'{self.ticker[0:3]} to {self.ticker[3:6]}',
+            'conversion': f'{self.from_currency} to {self.to_currency}',
             'exchange rate': conversion_rate,
             'pre-conversion': amount,
             'post-conversion': post_conversion

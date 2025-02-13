@@ -35,16 +35,18 @@ class crypto:
             raise InvalidSecurityError(f"Invalid security type. "
                                        f"Please select a valid '{crypto.security_type}' symbol")
 #------------------------------------------------------------------------------------------
-    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price'):
+    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
                         'valid_data' : ['open', 'high', 'low', 'close', 'all'],
-                        'valid_calculation' : ['price', 'simple return', 'log return']}
+                        'valid_calculation' : ['price', 'simple return', 'log return'],
+                        'valid_round' : [True, False]}
         
         params = {'period': period,
                   'interval': interval,
                   'data': data,
-                  'calculation': calculation}
+                  'calculation': calculation,
+                  'round': round}
         
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
             if param_value not in valid_param:
@@ -52,7 +54,7 @@ class crypto:
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
 
         #RAW DATA/OBSERVATION--------------------------------------------------------------
-        timeseries_data = yf.download(f'{self.from_coin}-USD', period=period, start=start, end=end, interval=interval, ignore_tz=True, rounding=True, group_by='column', progress=False)
+        timeseries_data = yf.download(f'{self.from_coin}-USD', period=period, start=start, end=end, interval=interval, ignore_tz=True, rounding=round, group_by='column', progress=False)
         #----------------------------------------------------------------------------------
         
         forex_start = str(timeseries_data.index[0] + timedelta(days=-5))[0:10]
