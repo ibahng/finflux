@@ -15,6 +15,10 @@ class InvalidSecurityError(Exception):
     def __init__(self, msg: str):
         self.msg = msg
 
+class MissingConfigObject(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg
+
 #------------------------------------------------------------------------------------------
 class forex:
     security_type = 'CURRENCY'
@@ -85,7 +89,10 @@ class forex:
             if param_value not in valid_param:
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
-            
+
+        if Config.td_apikey is None:
+            raise MissingConfigObject('Missing td_apikey. Please set your Twelve Data api key using the set_config() function.')
+
         #RAW DATA/OBSERVATION--------------------------------------------------------------
         url = Config.td_baseurl + f'price?apikey={Config.td_apikey}&symbol={self.tdticker}'
         td_realtime = requests.get(url).json()
@@ -159,6 +166,9 @@ Post-conversion: {round(data['post-conversion'],2)}
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
 
+        if Config.td_apikey is None:
+            raise MissingConfigObject('Missing td_apikey. Please set your Twelve Data api key using the set_config() function.')
+        
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
         price_data = yf.download(self.yfticker, progress=False)
 

@@ -16,6 +16,10 @@ class InvalidSecurityError(Exception):
     def __init__(self, msg: str):
         self.msg = msg
 
+class MissingConfigObject(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg
+
 #------------------------------------------------------------------------------------------
 class crypto:
     security_type = 'CRYPTOCURRENCY'
@@ -119,7 +123,10 @@ class crypto:
             if param_value not in valid_param:
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
-            
+
+        if Config.td_apikey is None:
+            raise MissingConfigObject('Missing td_apikey. Please set your Twelve Data api key using the set_config() function.')    
+       
         #RAW DATA/OBSERVATION--------------------------------------------------------------
         url_1 = 'https://api.twelvedata.com/cryptocurrencies'
         td_crypto_json = requests.get(url_1).json()['data']

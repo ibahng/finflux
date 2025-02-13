@@ -14,6 +14,10 @@ class InvalidSecurityError(Exception):
     def __init__(self, msg: str):
         self.msg = msg
 
+class MissingConfigObject(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg
+
 #------------------------------------------------------------------------------------------
 class fund:
     security_type_1 = 'ETF'
@@ -145,6 +149,9 @@ Currency: {eod_data['currency']}
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
 
+        if Config.email_address is None:
+            raise MissingConfigObject('Missing email_address. Please set your email address using the set_config() function.')
+        
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
         yf_info = yf.Ticker(self.ticker).get_info()
 

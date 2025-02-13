@@ -82,7 +82,7 @@ class equity:
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
 
         if Config.td_apikey is None:
-            raise MissingConfigObject('Missing td_apikey. Please set you Twelve Data api key using the set_config() function.')
+            raise MissingConfigObject('Missing td_apikey. Please set your Twelve Data api key using the set_config() function.')
 
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
         url_1 = Config.td_baseurl + f'price?apikey={Config.td_apikey}&symbol={self.mticker}'
@@ -512,7 +512,7 @@ MOVING AVERAGES-------------------------
 
         #cik id
         if Config.email_address is None:
-                raise MissingConfigObject('Missing email_address. Please set you email address using the set_config() function.')
+                raise MissingConfigObject('Missing email_address. Please set your email address using the set_config() function.')
 
         sec_header = {'User-Agent': f"{Config.email_address}"}
         sec_list = requests.get("https://www.sec.gov/files/company_tickers.json", headers=sec_header).json()
@@ -682,7 +682,7 @@ URL: {i['url']}
             
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
         if Config.av_apikey is None:
-                raise MissingConfigObject('Missing av_apikey. Please set you Alpha Vantage api key using the set_config() function.')
+                raise MissingConfigObject('Missing av_apikey. Please set your Alpha Vantage api key using the set_config() function.')
         
         url = f'{Config.av_baseurl}EARNINGS&apikey={Config.av_apikey}&symbol={self.mticker}'
         av_eps = requests.get(url).json()
