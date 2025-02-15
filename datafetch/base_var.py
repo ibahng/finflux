@@ -14,10 +14,10 @@ class Config:
     sec_baseurl   = 'https://www.sec.gov/'
 
 def set_config(td=None, av=None, cg=None, fmp=None, fred=None, email=None):
-    Config.td_apikey     = f'{td}'
-    Config.av_apikey     = f'{av}'
-    Config.cg_apikey     = f'{cg}'
-    Config.fmp_apikey    = f'{fmp}'
-    Config.fred_apikey   = f'{fred}'
-    Config.email_address = f'{email}'
+    Config.td_apikey     = td
+    Config.av_apikey     = av
+    Config.cg_apikey     = cg
+    Config.fmp_apikey    = fmp
+    Config.fred_apikey   = fred
+    Config.email_address = email
 

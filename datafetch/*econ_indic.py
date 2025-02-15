@@ -1,8 +1,8 @@
 from base_var import *
-import yfinance as yf
-import numpy as np
-import requests
-import pandas as pd
+import yfinance as yf # type: ignore
+import numpy as np # type: ignore
+import requests # type: ignore
+import pandas as pd # type: ignore
 from datetime import timedelta
 import math
 import warnings

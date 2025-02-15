@@ -109,7 +109,7 @@ Currency: {td_quote['currency']}
 '''
             print(output)
 #------------------------------------------------------------------------------------------
-    def statement(self, statement: str = 'all', currency: str = None, unit: str = 'raw', display: str = 'json', decimal: bool = False, interval:str = 'annual'):
+    def statement(self, statement: str = 'all', currency: str = None, unit: str = 'raw', display: str = 'json', decimal: bool = False, interval: str = 'annual'):
         valid_params = {'valid_statement' : ['income', 'balance', 'cash', 'all'],
                         'valid_unit' : ['thousand', 'million', 'billion', 'raw'],
                         'valid_display' : ['json', 'table'],
