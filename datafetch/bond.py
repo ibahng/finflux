@@ -22,13 +22,11 @@ class MissingConfigObject(Exception):
 #------------------------------------------------------------------------------------------
 class bond:
 #------------------------------------------------------------------------------------------
-    def nonUS_10Y(self, display: str = 'json', country: str = 'US', period: str = '5y'):
-        valid_params = {'valid_display': ['json', 'pretty'],
-                        'valid_country': ['KR', 'AT', 'US', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS', 'RU'],
+    def nonUS_10Y(self, country: str = 'KR', period: str = '5y'):
+        valid_params = {'valid_country': ['KR', 'AT', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS', 'RU'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max']}
         
-        params = {'display': display,
-                  'country': country,
+        params = {'country': country,
                   'period': period}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
@@ -109,20 +107,8 @@ class bond:
             for data_point in FRED_bond['observations'][period_points[period]:]:
                 data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
 
-        #JSON FORMAT DATA
-        nonUS_10Y_data = {
-            'country': ISO_3166[country],
-            'start date': FRED_bond['observations'][0]['date'],
-            'end date': FRED_bond['observations'][-1]['date'],
-            'data count': len(data),
-            'data': data
-        }
-
-        #PARAMETER - DISPLAY ===============================================================
-        if display == 'json':
-            output = nonUS_10Y_data
-        if display == 'pretty':
-            output = pd.DataFrame.from_dict(data, orient='index', columns=[f'{ISO_3166[country]} 10Y'])
+        output = pd.DataFrame.from_dict(data, orient='index', columns=[f'{ISO_3166[country]} 10Y'])
+        output.index = pd.to_datetime(output.index)
 
         return output
 #------------------------------------------------------------------------------------------
@@ -188,39 +174,17 @@ class bond:
             for data_point in FRED_yield['observations']:
                 data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
 
-            start_date = FRED_yield['observations'][0]['date']
-            end_date = FRED_yield['observations'][-1]['date']
-
         elif period == 'ytd':
             for data_point in FRED_yield['observations'][-260:]:
                 if data_point['date'][0:4] == str(current_year):
                     data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
 
-            start_date = min(data.keys(), key=lambda d: datetime.strptime(d, "%Y-%m-%d"))
-            end_date = max(data.keys(), key=lambda d: datetime.strptime(d, "%Y-%m-%d"))
-
         else:
             for data_point in FRED_yield['observations'][period_points[period]:]:
                 data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
 
-            start_date = FRED_yield['observations'][period_points[period]:][0]['date']
-            end_date = FRED_yield['observations'][period_points[period]:][-1]['date']
-
-        #JSON FORMAT DATA
-        US_yield_data = {
-            'country': 'United States',
-            'maturity': maturity.upper(),
-            'start date': start_date,
-            'end date': end_date,
-            'data count': len(data),
-            'data': data
-        }
-
-        #PARAMETER - DISPLAY ===============================================================
-        if display == 'json':
-            output = US_yield_data
-        if display == 'pretty':
-            output = pd.DataFrame.from_dict(data, orient='index', columns=[f'US {maturity.upper()}'])
+        output = pd.DataFrame.from_dict(data, orient='index', columns=[f'US {maturity.upper()}'])
+        output.index = pd.to_datetime(output.index)
 
         return output
 #------------------------------------------------------------------------------------------
@@ -284,6 +248,72 @@ class bond:
 MATURITY - {eod_data['maturity']}
     DATE - {eod_data['date']}
    YIELD - {eod_data['yield']}'''
+            print(output)
+#------------------------------------------------------------------------------------------
+    def US_quote(self, display: str = 'json', maturity: str = '10y'):
+        valid_params = {'valid_display': ['json', 'pretty'],
+                        'valid_maturity': ['1mo', '3mo', '6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y']}
+        
+        params = {'display': display,
+                  'maturity': maturity,}
+
+        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
+            if param_value not in valid_param:
+                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
+                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
+
+        if Config.fred_apikey is None:
+            raise MissingConfigObject('Missing fred_apikey. Please set your FRED api key using the set_config() function.')
+        
+        #RAW DATA/OBSERVATIONS--------------------------------------------------------------
+        US_timeseries = bond().US(display='pretty', maturity=maturity, period='10y')
+        
+        US_eod = bond().US_eod(display='json', maturity=maturity)['yield']
+        
+        current_year = pd.Timestamp.now().year
+        #-----------------------------------------------------------------------------------
+        
+        #JSON FORMAT DATA
+        quote_data = {
+            'identifier': f'US {maturity.upper()} Treasury Bond Yield',
+            'ttm': {
+                'high': round(float((US_timeseries.iloc[-252:].max()).iloc[0]),2),
+                'low': round(float((US_timeseries.iloc[-252:].min()).iloc[0]),2)
+            },
+            'percent change': {
+                '5y': float(((US_eod/US_timeseries.iloc[-1260]) - 1).iloc[0] if pd.notna(US_timeseries.iloc[-1260].iloc[0]) else ((US_eod/US_timeseries.iloc[-1260]) - 1).iloc[1]),
+                '1y': float(((US_eod/US_timeseries.iloc[-252]) - 1).iloc[0] if pd.notna(US_timeseries.iloc[-252].iloc[0]) else ((US_eod/US_timeseries.iloc[-252]) - 1).iloc[1]),
+                'ytd': float(((US_eod/US_timeseries[US_timeseries.index.year == current_year].iloc[0]) - 1).iloc[0] if pd.notna(US_timeseries[US_timeseries.index.year == current_year].iloc[0].iloc[0]) else ((US_eod/US_timeseries[US_timeseries.index.year == current_year].iloc[1]) - 1).iloc[0]),
+                '6m': float(((US_eod/US_timeseries.iloc[-126]) - 1).iloc[0] if pd.notna(US_timeseries.iloc[-126].iloc[0]) else ((US_eod/US_timeseries.iloc[-126]) - 1).iloc[1]),
+                '1m': float(((US_eod/US_timeseries.iloc[-21]) - 1).iloc[0] if pd.notna(US_timeseries.iloc[-21].iloc[0]) else ((US_eod/US_timeseries.iloc[-21]) - 1).iloc[1]),
+                '5d': float(((US_eod/US_timeseries.iloc[-5]) - 1).iloc[0] if pd.notna(US_timeseries.iloc[-5].iloc[0]) else ((US_eod/US_timeseries.iloc[-5]) - 1).iloc[1])
+            },
+            '50d average price': float((US_timeseries.iloc[-50:].mean()).iloc[0]),
+            '200d average price': float((US_timeseries.iloc[-200:].mean()).iloc[0])
+        }
+
+        #PARAMETER - DISPLAY ===============================================================
+        if display == 'json':
+            output = quote_data
+            return output
+        elif display == 'pretty':
+            output = f'''
+{quote_data['identifier']} Quote
+
+TTM HIGH/LOW----------------------------
+         HIGH --  {round(quote_data['ttm']['high'],2):,}
+          LOW --  {round(quote_data['ttm']['low'],2):,}
+PERCENT CHANGE--------------------------
+       5 YEAR -- {' ' if pd.isna(quote_data['percent change']['5y']) or quote_data['percent change']['5y']>0 else ''}{round(quote_data['percent change']['5y'] * 100,2)}%
+       1 YEAR -- {' ' if pd.isna(quote_data['percent change']['1y']) or quote_data['percent change']['1y']>0 else ''}{round(quote_data['percent change']['1y'] * 100,2)}%
+          YTD -- {' ' if pd.isna(quote_data['percent change']['ytd']) or quote_data['percent change']['ytd']>0 else ''}{round(quote_data['percent change']['ytd'] * 100,2)}%
+      6 MONTH -- {' ' if pd.isna(quote_data['percent change']['6m']) or quote_data['percent change']['6m']>0 else ''}{round(quote_data['percent change']['6m'] * 100,2)}%
+      1 MONTH -- {' ' if pd.isna(quote_data['percent change']['1m']) or quote_data['percent change']['1m']>0 else ''}{round(quote_data['percent change']['1m'] * 100,2)}%
+        5 DAY -- {' ' if pd.isna(quote_data['percent change']['5d']) or quote_data['percent change']['5d']>0 else ''}{round(quote_data['percent change']['5d'] * 100,2)}%
+MOVING AVERAGES-------------------------
+ 50 DAY YIELD --  {round(quote_data['50d average price'],2)}
+200 DAY YIELD --  {round(quote_data['200d average price'],2)}
+'''
             print(output)
 #------------------------------------------------------------------------------------------
     def filler():

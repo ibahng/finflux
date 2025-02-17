@@ -68,6 +68,8 @@ class forex:
         else:
             timeseries_data = timeseries_data[data.capitalize()]
 
+        timeseries_data.columns = pd.MultiIndex.from_tuples([(col[0], f'{self.ticker}') for col in timeseries_data.columns])
+
         #PARAMETER - CALCULATION ==========================================================
         if calculation == 'price':
             output = timeseries_data
