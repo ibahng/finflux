@@ -26,6 +26,8 @@ class bond:
         valid_params = {'valid_country': ['KR', 'AT', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS', 'RU'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max']}
         
+        #South Korea, Austria, Chile, Czechia, Greece, Finland, South Africa, Netherlands, Slovakia, New Zealand, Luxembourg, Poland, Slovenia, Switzerland, Germany, Canada, Japan, Denmark, Belgium, France, Norway, Portugal, Italy, United Kingdom, Spain, Ireland, Australia, Sweden, Mexico, Hungary, Iceland, Russia
+
         params = {'country': country,
                   'period': period}
 
