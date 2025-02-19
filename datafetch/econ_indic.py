@@ -63,7 +63,7 @@ class econ_indic:
             except ValueError:
                 return False
 
-        #PARAMETER - TYPE ==================================================================
+        #PARAMETER - TYPE/FIGURE ===========================================================
         quarter_to_month = {
                     'Q1': '03-01',
                     'Q2': '06-01',
@@ -90,6 +90,7 @@ class econ_indic:
             gdp_df.columns = ['Q Nominal GDP', 'Q Raw Real GDP']
             base_date = f'{base.split('-')[0]}-{quarter_to_month[base.split('-')[1]]}'
             
+        #PARAMETER - BASE ===================================================================
             base_factor = (gdp_df['Q Nominal GDP'].loc[base_date]/gdp_df['Q Raw Real GDP'].loc[base_date])
             
             gdp_df[f'Q {base} Base Real GDP'] = (gdp_df['Q Raw Real GDP'] * base_factor).astype(int)
@@ -151,17 +152,21 @@ class econ_indic:
         else:
             output = output.iloc[period_to_points[period]:]
 
-        return output
+        output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
 
+        return output
 #------------------------------------------------------------------------------------------
-    def price_index(self, display: str = 'json', country: str = 'US', type: str = 'consumer', period: str = '5y'):
-        valid_params = {'valid_display': ['json', 'pretty'],
-                        'valid_country': ['filler', 'filler'],
-                        'valid_type': ['consumer', 'export', 'import', 'producer', 'wholesale'],
-                        'valid_period': ['filler']}
+    def price_index(self, country: str = 'US', type: str = 'consumer', figure: str = 'index', period: str = '5y', base: str = '2020-01'):
+        valid_params = {'valid_country': ["US", "CN", "JP", "DE", "GB", "FR", "IN", "IT", "CA", "KR", "RU", "BR", "AU", "NL", "ES", "CH", "SE", "BE", "AT", "PL", "SG", "HK", "TW", 
+                                          "MX", "SA", "AE", "NG", "ZA", "ID", "NO", "QA", "IR", "KZ", "CL", "TR", "VN", "TH", "MY", "PH", "EG", "PK", "BD", "IL", "DK", "FI", "UA", 
+                                          "RO", "AR", "CO", "PE", "GR", "SK", "NZ", "LU", "SI", "HU", "IS"],
+                        'valid_type': ['consumer', 'producer'],
+                        'valid_period': ['1y', '2y', '5y', '10y', 'max'],
+                        'valid_figure': ['index', 'yoy', 'mom']}
         
-        params = {'display': display,
-                  'country': country,
+        # United States, China, Japan, Germany, United Kingdom, France, India, Italy, Canada, South Korea, Russia, Brazil, Australia, Netherlands, Spain, Switzerland, Sweden, Belgium, Austria, Poland, Singapore, Hong Kong, Taiwan, Mexico, Saudi Arabia, United Arab Emirates, Nigeria, South Africa, Indonesia, Norway, Qatar, Iran, Kazakhstan, Chile, Türkiye, Vietnam, Thailand, Malaysia, Philippines, Egypt, Pakistan, Bangladesh, Israel, Denmark, Finland, Ukraine, Romania, Argentina, Colombia, Peru, Greece, Slovakia, New Zealand, Luxembourg, Slovenia, Hungary, Iceland
+        
+        params = {'country': country,
                   'type': type,
                   'period': period}
 
@@ -169,15 +174,133 @@ class econ_indic:
             if param_value not in valid_param:
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
+        
+        indicators = {
+            'consumer': 'PCPI_IX',
+            'producer': 'PPPI_IX'
+        }
+
+        #RAW DATA/OBSERVATION--------------------------------------------------------------
+        IMF_url = f'http://dataservices.imf.org/REST/SDMX_JSON.svc/CompactData/IFS/M.{country}.{indicators[type]}'
+        IMF_PI = requests.get(IMF_url).json()['CompactData']['DataSet']['Series']['Obs']
+        #----------------------------------------------------------------------------------
+
+        def is_numeric(str):
+            try:
+                float(str)
+                return True
+            except ValueError:
+                return False
+        
+        data = {}
+        for i in IMF_PI:
+            date = i['@TIME_PERIOD']
+            value = i['@OBS_VALUE']
+            data[date] = (int(float(value)) if is_numeric(value) else np.nan)
+        
+        pi_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'{country} {type[0].upper()}PI']) # creating the raw cpi/ppi date column
+
+        #PARAMETER - FIGURE ===============================================================
+        if figure == 'index':
+            base_factor = 100 / pi_df.loc[base].iloc[0]
+            pi_df[f'{country} {base} Base {type[0].upper()}PI'] = pi_df[f'{country} {type[0].upper()}PI'] * base_factor
+        elif figure == 'yoy':
+            pi_df[f'{country} {type[0].upper()}PI YoY'] = (pi_df[f'{country} {type[0].upper()}PI']/pi_df[f'{country} {type[0].upper()}PI'].shift(12)) - 1
+        elif figure == 'mom':
+            pi_df[f'{country} {type[0].upper()}PI MoM'] = (pi_df[f'{country} {type[0].upper()}PI']/pi_df[f'{country} {type[0].upper()}PI'].shift(1)) - 1
+
+        del pi_df[f'{country} {type[0].upper()}PI'] # deleting the raw cpi/ppi date column
+
+        #PARAMETER - PERIOD ===============================================================
+        if period != 'max':
+            period_to_point = {
+                '1y': -13, 
+                '2y': -25, 
+                '5y': -61, 
+                '10y': -121
+                }
+
+            output = pi_df.iloc[period_to_point[period]:]
+        else:
+            output = pi_df
+
+        output.index = pd.to_datetime(output.index + '-01') # converting all row indices to datetime objects
+
+        return output
+#------------------------------------------------------------------------------------------
+    def pce(self, type: str = 'raw', base: str = '2020-01', period: str = '5y'):
+        valid_params = {'valid_type': ['raw', 'core'],
+                        'valid_period': ['1y', '2y', '5y', '10y', 'max']}
+        
+        params = {'type': type,
+                  'period': period}
+
+        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
+            if param_value not in valid_param:
+                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
+                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
+        
+        FRED_IDs = {
+            'raw': 'PCEPI',
+            'core': 'PCEPILFE'
+        }
+
+        #RAW DATA/OBSERVATION--------------------------------------------------------------
+        id = FRED_IDs[type]
+
+        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+        FRED_pce = requests.get(FRED_url).json()
+        #----------------------------------------------------------------------------------
+
+        def is_numeric(str):
+            try:
+                float(str)
+                return True
+            except ValueError:
+                return False
+
+        data = {}
+        for data_point in FRED_pce['observations']:
+            data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+
+        pce_df = pd.DataFrame.from_dict(data, orient='index', columns=['US Raw PCE'])
+
+        base_factor = 100 / pce_df.loc[f'{base}-01'].iloc[0]
+
+        pce_df[f'US {base} Base PCE'] = pce_df['US Raw PCE'] * base_factor
+
+        del pce_df['US Raw PCE']
+
+        #PARAMETER - PERIOD ===============================================================
+        if period != 'max':
+            period_to_point = {
+                '1y': -13, 
+                '2y': -25, 
+                '5y': -61, 
+                '10y': -121
+                }
             
-        #IMF IFS dataset
+            output = pce_df.iloc[period_to_point[period]:]
+        else:
+            output = pce_df
+
+        output.index = pd.to_datetime(output.index)
+
+        return output
 #------------------------------------------------------------------------------------------
-    def pce(self):
-        #FRED US data
-        pass
-#------------------------------------------------------------------------------------------
-    def hicp(self):
-        #FRED eurozone data
+    def hicp(self, type: str = 'raw', base: str = 'filler'):
+        valid_params = {'valid_type': ['raw', 'core']}
+        
+        params = {'type': type}
+
+        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
+            if param_value not in valid_param:
+                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
+                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
+            
+        # FRED Eurostat hicp figures across different products
+        
+
         pass
 #------------------------------------------------------------------------------------------
     def unemployment():
