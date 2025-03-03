@@ -32,7 +32,10 @@ class equity:
             raise InvalidSecurityError(f"Invalid security type. "
                                     f"Please select a valid '{equity.security_type}' symbol")
 #------------------------------------------------------------------------------------------
-    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
+    def help(self):
+        pass
+#------------------------------------------------------------------------------------------
+    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True): # FINISHED
         #Checking if the parameter inputs are invalid
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
@@ -73,7 +76,7 @@ class equity:
 
         return output
 #------------------------------------------------------------------------------------------
-    def realtime(self, display: str = 'json'):
+    def realtime(self, display: str = 'json'): # FINISHED
         valid_params = {'display': ['json', 'pretty']}
         
         params = {'display': display}
@@ -109,7 +112,7 @@ Currency: {td_quote['currency']}
 '''
             print(output)
 #------------------------------------------------------------------------------------------
-    def statement(self, statement: str = 'all', currency: str = None, unit: str = 'raw', display: str = 'json', decimal: bool = False, interval: str = 'annual'):
+    def statement(self, statement: str = 'all', currency: str = None, unit: str = 'raw', display: str = 'json', decimal: bool = False, interval: str = 'annual'): # FINISHED
         valid_params = {'valid_statement' : ['income', 'balance', 'cash', 'all'],
                         'valid_unit' : ['thousand', 'million', 'billion', 'raw'],
                         'valid_display' : ['json', 'table'],
@@ -402,7 +405,7 @@ Currency: {td_quote['currency']}
             output = data.map(lambda x: f'{x:,}' if isinstance(x, (int, float)) and pd.notna(x) else x)
             return output    
 #------------------------------------------------------------------------------------------
-    def quote(self, display: str = 'json'):
+    def quote(self, display: str = 'json'): # FINISHED
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -495,7 +498,7 @@ MOVING AVERAGES-------------------------
 '''
             print(output)
 #------------------------------------------------------------------------------------------
-    def info(self, display: str = 'json'):
+    def info(self, display: str = 'json'): # FINISHED
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -593,7 +596,7 @@ COMPANY OFFICERS--------------------------------------------------
             
             print(output)
 #------------------------------------------------------------------------------------------
-    def news(self, display: str = 'json'):
+    def news(self, display: str = 'json'): # FINISHED
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -641,7 +644,7 @@ URL: {i['url']}
 
             print(output)
 #------------------------------------------------------------------------------------------
-    def filings(self, form: str = None):
+    def filings(self, form: str = None): # FINISHED
         
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
         headers = {'User-Agent': f"{Config.email_address}"}
@@ -670,7 +673,7 @@ URL: {i['url']}
 
         return allForms
 #------------------------------------------------------------------------------------------
-    def eps(self, interval: str = 'annual', display: str = 'json'):
+    def eps(self, interval: str = 'annual', display: str = 'json'): # FINISHED
         valid_params = {'valid_interval': ['quarter', 'annual'],
                         'valid_display': ['json', 'table']}
         
@@ -732,7 +735,7 @@ URL: {i['url']}
             output = table_eps_data
             return output
 #------------------------------------------------------------------------------------------
-    def analyst_estimates(self, display: str = 'json'):
+    def analyst_estimates(self, display: str = 'json'): # FINISHED
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -773,10 +776,6 @@ URL: {i['url']}
 
         #renaming a json format GROWTH estimate data
         growth_dict = yf_growth_estimate.T.to_dict()
-        for k in growth_dict.keys():
-            del growth_dict[k]['industry']
-            del growth_dict[k]['sector']
-
         growth_dict['current quarter'] = growth_dict.pop('0q')
         growth_dict['next quarter'] = growth_dict.pop('+1q')
         growth_dict['current year'] = growth_dict.pop('0y')
@@ -788,7 +787,7 @@ URL: {i['url']}
         #JSON FORMAT DATA
         estimate_data = {
             'symbol': yf_history_metadata.get('symbol','-'),
-            'name': yf_history_metadata('longName','-'),
+            'name': yf_history_metadata.get('longName','-'),
             'exchange': yf_history_metadata.get('fullExchangeName','-'),
             'stock currency': yf_history_metadata.get('currency','-'),
             'financial currency': yf_info.get('financialCurrency','-'),
@@ -849,8 +848,8 @@ REVENUE ESTIMATE-----------------------------------------in {yf_info['financialC
 GROWTH ESTIMATE---------------------------------------------------------
                  Current |    Next | Current |    Next |
                  Quarter | Quarter |    Year |    Year |
-% STOCK CHANGE  {str(two(g['current quarter']['stock']*100)).rjust(7)}% |{str(two(g['next quarter']['stock']*100)).rjust(7)}% |{str(two(g['current year']['stock']*100)).rjust(7)}% |{str(two(g['next year']['stock']*100)).rjust(7)}% |
-% INDEX CHANGE  {str(two(g['current quarter']['index']*100)).rjust(7)}% |{str(two(g['next quarter']['index']*100)).rjust(7)}% |{str(two(g['current year']['index']*100)).rjust(7)}% |{str(two(g['next year']['index']*100)).rjust(7)}% |
+% STOCK CHANGE  {str(two(g['current quarter']['stockTrend']*100)).rjust(7)}% |{str(two(g['next quarter']['stockTrend']*100)).rjust(7)}% |{str(two(g['current year']['stockTrend']*100)).rjust(7)}% |{str(two(g['next year']['stockTrend']*100)).rjust(7)}% |
+% INDEX CHANGE  {str(two(g['current quarter']['indexTrend']*100)).rjust(7)}% |{str(two(g['next quarter']['indexTrend']*100)).rjust(7)}% |{str(two(g['current year']['indexTrend']*100)).rjust(7)}% |{str(two(g['next year']['indexTrend']*100)).rjust(7)}% |
 
 PRICE ESTIMATE----------------------------------------------------------
        CURRENT -- {two(estimate_data['price_estimate']['current'])}
@@ -861,7 +860,7 @@ PRICE ESTIMATE----------------------------------------------------------
             
             print(output)
 #------------------------------------------------------------------------------------------
-    def dividend(self, display: str = 'json'):
+    def dividend(self, display: str = 'json'): # FINISHED
         valid_params = {'valid_display': ['json', 'table'],}
         
         params = {'display': display}
@@ -897,7 +896,7 @@ PRICE ESTIMATE----------------------------------------------------------
             output = dividends_df
             return output
 #------------------------------------------------------------------------------------------
-    def split(self, display: str = 'json'):
+    def split(self, display: str = 'json'): # FINISHED
         valid_params = {'valid_display': ['json', 'table'],}
         
         params = {'display': display}
@@ -930,7 +929,7 @@ PRICE ESTIMATE----------------------------------------------------------
             output = splits_df
             return output
 #------------------------------------------------------------------------------------------
-    def stats(self, display: str = 'json'):
+    def stats(self, display: str = 'json'): # FINISHED
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -1367,7 +1366,7 @@ CASH FLOW-----------------------------------------------------------------------
         
             print(output)
 #------------------------------------------------------------------------------------------
-    def top(self, display: str = 'json', type: str = 'gainer'):
+    def top(self, display: str = 'json', type: str = 'gainer'): # FINISHED
         valid_params = {'valid_display': ['json', 'pretty'],
                         'type': {'gainer', 'loser', 'active'}}
         
@@ -1382,11 +1381,11 @@ CASH FLOW-----------------------------------------------------------------------
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
         #PARAMETER - TYPE =================================================================
         if type == 'gainer':
-            quotes = yf.Screener().set_predefined_body('day_gainers').response['quotes']
+            quotes = yf.screen('day_gainers')['quotes']
         elif type == 'loser':
-            quotes = yf.Screener().set_predefined_body('day_losers').response['quotes']
+            quotes = yf.screen('day_losers')['quotes']
         elif type == 'active':
-            quotes = yf.Screener().set_predefined_body('most_actives').response['quotes']
+            quotes = yf.screen('most_actives')['quotes']
         #----------------------------------------------------------------------------------
 
         #JSON FORMAT DATA

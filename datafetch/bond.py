@@ -22,11 +22,14 @@ class MissingConfigObject(Exception):
 #------------------------------------------------------------------------------------------
 class bond:
 #------------------------------------------------------------------------------------------
-    def nonUS_10Y(self, country: str = 'KR', period: str = '5y'):
-        valid_params = {'valid_country': ['KR', 'AT', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS', 'RU'],
+    def help(self):
+        pass
+#------------------------------------------------------------------------------------------
+    def nonUS_10Y_sovereign(self, country: str = 'KR', period: str = '5y'): # -----------------------------FINISHED
+        valid_params = {'valid_country': ['KR', 'AT', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max']}
         
-        #South Korea, Austria, Chile, Czechia, Greece, Finland, South Africa, Netherlands, Slovakia, New Zealand, Luxembourg, Poland, Slovenia, Switzerland, Germany, Canada, Japan, Denmark, Belgium, France, Norway, Portugal, Italy, United Kingdom, Spain, Ireland, Australia, Sweden, Mexico, Hungary, Iceland, Russia
+        #South Korea, Austria, Chile, Czechia, Greece, Finland, South Africa, Netherlands, Slovakia, New Zealand, Luxembourg, Poland, Slovenia, Switzerland, Germany, Canada, Japan, Denmark, Belgium, France, Norway, Portugal, Italy, United Kingdom, Spain, Ireland, Australia, Sweden, Mexico, Hungary, Iceland
 
         params = {'country': country,
                   'period': period}
@@ -68,8 +71,7 @@ class bond:
             'SE': 'Sweden',
             'MX': 'Mexico',
             'HU': 'Hungary',
-            'IS': 'Iceland',
-            'RU': 'Russia'
+            'IS': 'Iceland'
         }
 
         FRED_IDs = {}
@@ -114,13 +116,11 @@ class bond:
 
         return output
 #------------------------------------------------------------------------------------------
-    def US(self, display: str = 'json', maturity: str = '10y', period: str = '5y'):
-        valid_params = {'valid_display': ['json', 'pretty'],
-                        'valid_maturity': ['1mo', '3mo', '6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y'],
+    def US_treasury(self, maturity: str = '10y', period: str = '5y'): # -----------------------------FINISHED
+        valid_params = {'valid_maturity': ['6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y'],
                         'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']}
         
-        params = {'display': display,
-                  'maturity': maturity,
+        params = {'maturity': maturity,
                   'valid_period': period}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
@@ -129,8 +129,6 @@ class bond:
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
 
         FRED_IDs = {
-            '1mo': 'DGS1MO',
-            '3mo': 'DGS3MO',
             '6mo': 'DGS6MO',
             '1y': 'DGS1',
             '2y': 'DGS2',
@@ -143,7 +141,6 @@ class bond:
         }    
 
         period_points = {
-            '1mo': -21,
             '6mo': -126,
             '1y': -252,
             '2y': -504,
@@ -190,7 +187,10 @@ class bond:
 
         return output
 #------------------------------------------------------------------------------------------
-    def US_eod(self, display: str = 'json', maturity: str = '10y'):
+    def US_curve(self):
+        pass
+#------------------------------------------------------------------------------------------
+    def US_eod(self, display: str = 'json', maturity: str = '10y'): # -----------------------------FINISHED
         valid_params = {'valid_display': ['json', 'pretty'],
                         'valid_maturity': ['1mo', '3mo', '6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y']}
         
@@ -252,7 +252,7 @@ MATURITY - {eod_data['maturity']}
    YIELD - {eod_data['yield']}'''
             print(output)
 #------------------------------------------------------------------------------------------
-    def US_quote(self, display: str = 'json', maturity: str = '10y'):
+    def US_quote(self, display: str = 'json', maturity: str = '10y'): # -----------------------------FINISHED
         valid_params = {'valid_display': ['json', 'pretty'],
                         'valid_maturity': ['1mo', '3mo', '6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y']}
         
@@ -318,5 +318,28 @@ MOVING AVERAGES-------------------------
 '''
             print(output)
 #------------------------------------------------------------------------------------------
-    def filler():
+    def US_HQM_corporate(display): #IN PROGRESS
+        valid_params = {'valid_maturity': ['6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y'],
+                        'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']}
+        
+        params = {'maturity': maturity,
+                  'valid_period': period}
+
+        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
+            if param_value not in valid_param:
+                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
+                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
+
+        FRED_IDs = {
+            '6mo': 'HQMCB6MT',
+            '1y': 'HQMCB1YR',
+            '2y': 'HQMCB2YR',
+            '3y': 'HQMCB3YR',
+            '5y': 'HQMCB5YR',
+            '7y': 'HQMCB7YR',
+            '10y': 'HQMCB10YR',
+            '20y': 'HQMCB20YR',
+            '30y': 'HQMCB30YR'
+        }    
         pass
+#------------------------------------------------------------------------------------------

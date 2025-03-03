@@ -35,7 +35,10 @@ class crypto:
             raise InvalidSecurityError(f"Invalid security type. "
                                        f"Please select a valid '{crypto.security_type}' symbol")
 #------------------------------------------------------------------------------------------
-    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
+    def help(self):
+        pass
+#------------------------------------------------------------------------------------------
+    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True): # -----------------------------FINISHED
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
                         'valid_data' : ['open', 'high', 'low', 'close', 'all'],
@@ -116,7 +119,7 @@ class crypto:
 
         return output
 #------------------------------------------------------------------------------------------
-    def realtime(self, display: str = 'json'):
+    def realtime(self, display: str = 'json'): # -----------------------------FINISHED
         valid_params = {'display': ['json', 'pretty']}
 
         params = {'display': display}
@@ -171,7 +174,7 @@ Exchange Rate: {realtime_data['price']:2f}
 '''
             print(output)
 #------------------------------------------------------------------------------------------    
-    def conversion(self, amount: int, rate: Union[int, float] = 'realtime', display: str = 'json'):
+    def conversion(self, amount: int, rate: Union[int, float] = 'realtime', display: str = 'json'): # -----------------------------FINISHED
         valid_params = {'display': ['json', 'pretty']}
 
         params = {'display': display}
@@ -213,7 +216,7 @@ Post-conversion: {round(data['post-conversion'],2)}
 '''
             print(output)
 #------------------------------------------------------------------------------------------
-    def quote(self, display: str = 'json'):
+    def quote(self, display: str = 'json'): # -----------------------------FINISHED
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -292,7 +295,7 @@ MOVING AVERAGES-------------------------
 '''
             print(output)
 #------------------------------------------------------------------------------------------
-    def news(self, display: str = 'json'):
+    def news(self, display: str = 'json'): # -----------------------------FINISHED
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}

@@ -30,7 +30,10 @@ class fund:
         if quoteType != fund.security_type_1 and quoteType != fund.security_type_2:
             raise InvalidSecurityError(f"Invalid security type. "
                                        f"Please select a valid '{fund.security_type_1}' or  '{fund.security_type_2}' symbol")
-#------------------------------------------------------------------------------------------        
+#------------------------------------------------------------------------------------------
+    def help(self):
+        pass
+#------------------------------------------------------------------------------------------
     def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo', '3mo'],

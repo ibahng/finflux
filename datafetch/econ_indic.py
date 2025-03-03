@@ -22,7 +22,7 @@ class MissingConfigObject(Exception):
 #------------------------------------------------------------------------------------------
 class econ_indic:
 #------------------------------------------------------------------------------------------
-    def gdp(self, country: str = 'US', type: str = 'nominal', period: str = '5y', figure: str = 'quarter', base: str = '2020-Q1'):
+    def gdp(self, country: str = 'US', type: str = 'nominal', period: str = '5y', figure: str = 'quarter', base: str = '2020-Q1'): # IN PROGRESS
         valid_params = {'valid_country': ["US", "CN", "JP", "DE", "GB", "FR", "IN", "IT", "CA", "KR", "RU", "BR", "AU", "NL", "ES", "CH", "SE", "BE", "AT", "PL", "SG", "HK", "TW", 
                                           "MX", "SA", "AE", "NG", "ZA", "ID", "NO", "QA", "IR", "KZ", "CL", "TR", "VN", "TH", "MY", "PH", "EG", "PK", "BD", "IL", "DK", "FI", "UA", 
                                           "RO", "AR", "CO", "PE", "GR", "SK", "NZ", "LU", "SI", "HU", "IS"],
@@ -156,7 +156,7 @@ class econ_indic:
 
         return output
 #------------------------------------------------------------------------------------------
-    def price_index(self, country: str = 'US', type: str = 'consumer', figure: str = 'index', period: str = '5y', base: str = '2020-01'):
+    def price_index(self, country: str = 'US', type: str = 'consumer', figure: str = 'index', period: str = '5y', base: str = '2020-01'): # IN PROGRESS
         valid_params = {'valid_country': ["US", "CN", "JP", "DE", "GB", "FR", "IN", "IT", "CA", "KR", "RU", "BR", "AU", "NL", "ES", "CH", "SE", "BE", "AT", "PL", "SG", "HK", "TW", 
                                           "MX", "SA", "AE", "NG", "ZA", "ID", "NO", "QA", "IR", "KZ", "CL", "TR", "VN", "TH", "MY", "PH", "EG", "PK", "BD", "IL", "DK", "FI", "UA", 
                                           "RO", "AR", "CO", "PE", "GR", "SK", "NZ", "LU", "SI", "HU", "IS"],
@@ -200,7 +200,7 @@ class econ_indic:
         
         pi_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'{country} {type[0].upper()}PI']) # creating the raw cpi/ppi date column
 
-        #PARAMETER - FIGURE ===============================================================
+        #PARAMETER - FIGURE/BASE ==========================================================
         if figure == 'index':
             base_factor = 100 / pi_df.loc[base].iloc[0]
             pi_df[f'{country} {base} Base {type[0].upper()}PI'] = pi_df[f'{country} {type[0].upper()}PI'] * base_factor
@@ -228,28 +228,64 @@ class econ_indic:
 
         return output
 #------------------------------------------------------------------------------------------
-    def pce(self, type: str = 'raw', base: str = '2020-01', period: str = '5y'):
-        valid_params = {'valid_type': ['raw', 'core'],
-                        'valid_period': ['1y', '2y', '5y', '10y', 'max']}
+    def unemployment(self, period: str = '5y', country: str = 'US'): # IN PROGRESS
+        valid_params = {'valid_period' : ['1y', '2y', '5y', '10y', 'ytd', 'max'],
+                        'valid_country' : ['KR', 'AT', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS']}
+                        
+        #South Korea, Austria, Chile, Czechia, Greece, Finland, South Africa, Netherlands, Slovakia, New Zealand, Luxembourg, Poland, Slovenia, Switzerland, Germany, Canada, Japan, Denmark, Belgium, France, Norway, Portugal, Italy, United Kingdom, Spain, Ireland, Australia, Sweden, Mexico, Hungary, Iceland
         
-        params = {'type': type,
-                  'period': period}
+        params = {'period': period,
+                  'country': country}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
             if param_value not in valid_param:
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
-        
-        FRED_IDs = {
-            'raw': 'PCEPI',
-            'core': 'PCEPILFE'
+
+        ISO_3166 = {
+            'KR': 'South Korea', 
+            'AT': 'Austria',
+            'US': 'United States',
+            'CL': 'Chile',
+            'CZ': 'Czech Republic',
+            'GR': 'Greece',
+            'FI': 'Finland',
+            'ZA': 'South Africa',
+            'NL': 'Netherlands',
+            'SK': 'Slovak Republic',
+            'NZ': 'New Zealand',
+            'LU': 'Luxembourg',
+            'PL': 'Poland',
+            'SI': 'Slovenia',
+            'CH': 'Switzerland',
+            'DE': 'Germany',
+            'CA': 'Canada',
+            'JP': 'Japan',
+            'DK': 'Denmark',
+            'BE': 'Belgium',
+            'FR': 'France',
+            'NO': 'Norway',
+            'PT': 'Portugal',
+            'IT': 'Italy',
+            'GB': 'United Kingdom', 
+            'ES': 'Spain',
+            'IE': 'Ireland',
+            'AU': 'Australia',
+            'SE': 'Sweden',
+            'MX': 'Mexico',
+            'HU': 'Hungary',
+            'IS': 'Iceland'
         }
 
+        FRED_IDs = {}
+        for ISO in ISO_3166.keys():
+            FRED_IDs[ISO] = f'LRUN64TT{ISO}Q156S'
+
         #RAW DATA/OBSERVATION--------------------------------------------------------------
-        id = FRED_IDs[type]
+        id = FRED_IDs[country]
 
         FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
-        FRED_pce = requests.get(FRED_url).json()
+        FRED_unemployment = requests.get(FRED_url).json()
         #----------------------------------------------------------------------------------
 
         def is_numeric(str):
@@ -260,56 +296,159 @@ class econ_indic:
                 return False
 
         data = {}
-        for data_point in FRED_pce['observations']:
+        for data_point in FRED_unemployment['observations']:
             data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
 
-        pce_df = pd.DataFrame.from_dict(data, orient='index', columns=['US Raw PCE'])
+        rate_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'{ISO_3166[country]} Unemployment Rate (Seasonally Adjusted)'])
 
-        base_factor = 100 / pce_df.loc[f'{base}-01'].iloc[0]
-
-        pce_df[f'US {base} Base PCE'] = pce_df['US Raw PCE'] * base_factor
-
-        del pce_df['US Raw PCE']
-
-        #PARAMETER - PERIOD ===============================================================
-        if period != 'max':
-            period_to_point = {
-                '1y': -13, 
-                '2y': -25, 
-                '5y': -61, 
-                '10y': -121
-                }
-            
-            output = pce_df.iloc[period_to_point[period]:]
-        else:
-            output = pce_df
-
-        output.index = pd.to_datetime(output.index)
-
-        return output
-#------------------------------------------------------------------------------------------
-    def hicp(self, type: str = 'raw', base: str = 'filler'):
-        valid_params = {'valid_type': ['raw', 'core']}
+        #PARAMETER - PERIOD ===============================================================need a new way to calculate number of datetime rows
         
-        params = {'type': type}
+        #need a new way to calculate number of datetime rows
+
+        #output.index = pd.to_datetime(output.index)
+
+        #return output
+#------------------------------------------------------------------------------------------
+    def labor_participation(self, period: str = '5y', country: str = 'US'): # IN PROGRESS
+        valid_params = {'valid_period' : ['1y', '2y', '5y', '10y', 'ytd', 'max'],
+                        'valid_country' : ['KR', 'AT', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS']}
+                        
+        #South Korea, Austria, Chile, Czechia, Greece, Finland, South Africa, Netherlands, Slovakia, New Zealand, Luxembourg, Poland, Slovenia, Switzerland, Germany, Canada, Japan, Denmark, Belgium, France, Norway, Portugal, Italy, United Kingdom, Spain, Ireland, Australia, Sweden, Mexico, Hungary, Iceland
+        
+        params = {'period': period,
+                  'country': country}
+
+        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
+            if param_value not in valid_param:
+                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
+                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
+
+        ISO_3166 = {
+            'KR': 'South Korea', 
+            'AT': 'Austria',
+            'US': 'United States',
+            'CL': 'Chile',
+            'CZ': 'Czech Republic',
+            'GR': 'Greece',
+            'FI': 'Finland',
+            'ZA': 'South Africa',
+            'NL': 'Netherlands',
+            'SK': 'Slovak Republic',
+            'NZ': 'New Zealand',
+            'LU': 'Luxembourg',
+            'PL': 'Poland',
+            'SI': 'Slovenia',
+            'CH': 'Switzerland',
+            'DE': 'Germany',
+            'CA': 'Canada',
+            'JP': 'Japan',
+            'DK': 'Denmark',
+            'BE': 'Belgium',
+            'FR': 'France',
+            'NO': 'Norway',
+            'PT': 'Portugal',
+            'IT': 'Italy',
+            'GB': 'United Kingdom', 
+            'ES': 'Spain',
+            'IE': 'Ireland',
+            'AU': 'Australia',
+            'SE': 'Sweden',
+            'MX': 'Mexico',
+            'HU': 'Hungary',
+            'IS': 'Iceland'
+        }
+
+        FRED_IDs = {}
+        for ISO in ISO_3166.keys():
+            FRED_IDs[ISO] = f'LRAC64TT{ISO}Q156S'
+
+        #RAW DATA/OBSERVATION--------------------------------------------------------------
+        id = FRED_IDs[country]
+
+        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+        FRED_labor = requests.get(FRED_url).json()
+        #----------------------------------------------------------------------------------
+
+        def is_numeric(str):
+            try:
+                float(str)
+                return True
+            except ValueError:
+                return False
+
+        data = {}
+        for data_point in FRED_labor['observations']:
+            data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+
+        labor_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'{ISO_3166[country]} Unemployment Rate (Seasonally Adjusted)'])
+
+        #PARAMETER - PERIOD ===============================================================need a new way to calculate number of datetime rows
+        
+        #need a new way to calculate number of datetime rows
+
+        #output.index = pd.to_datetime(output.index)
+
+        #return output
+        valid_params = {'valid_interval': ['1d', '1wk', '2wk', '1mo', '1y'],
+                        'valid_period': ['1y', '2y', '5y', '10y', 'max']}
+        
+        params = {'interval': interval,
+                  'period': period}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
             if param_value not in valid_param:
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
             
-        # FRED Eurostat hicp figures across different products
+        FRED_IDs = {
+            '1d': 'RIFSPFFNB',
+            '1wk': 'FF',
+            '2wk': 'RIFSPFFNBWAW',
+            '1mo': 'FEDFUNDS',
+            '1y': 'RIFSPFFNA'
+        }
+
+        #RAW DATA/OBSERVATION--------------------------------------------------------------
+        id = FRED_IDs[interval]
+
+        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+        FRED_rate = requests.get(FRED_url).json()
+        #----------------------------------------------------------------------------------
+
+        def is_numeric(str):
+            try:
+                float(str)
+                return True
+            except ValueError:
+                return False
+
+        data = {}
+        for data_point in FRED_rate['observations']:
+            data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+
+        INTERVALS = {
+            '1d': 'DAILY',
+            '1wk': 'WEEKLY',
+            '2wk': 'BIWEEKLY',
+            '1mo': 'MONTHLY',
+            '1y': 'YEARLY'
+        }
+
+        rate_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'US {INTERVALS[interval]} Effective Federal Funds Rate'])
+
+        #PARAMETER - PERIOD ===============================================================need a new way to calculate number of datetime rows
         
+        #need a new way to calculate number of datetime rows
 
+        #output.index = pd.to_datetime(output.index)
+
+        #return output
+#------------------------------------------------------------------------------------------
+    def housing(): # NOT STARTED
         pass
 #------------------------------------------------------------------------------------------
-    def unemployment():
-        pass
-#------------------------------------------------------------------------------------------
-    def labor_participation():
-        pass
 
-#------------------------------------------------------------------------------------------
+# MRO rate - Eurozone Fed Funds Rate
+# HICP rate - Eurozone Inflation Measure
 
-
-#------------------------------------------------------------------------------------------
+#WORK IN PROGRESS
