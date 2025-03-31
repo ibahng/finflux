@@ -33,9 +33,77 @@ class equity:
                                     f"Please select a valid '{equity.security_type}' symbol")
 #------------------------------------------------------------------------------------------
     def help(self):
-        pass
+        output = '''
+class equity():
+ |  timeseries()------------OHLC stock price timeseries
+ |      period      :str        =5y         [1mo, 6mo, 1y, 2y, 5y, 10y, ytd, max]
+ |      start       :str        =None       [YYYY-MM-DD*]
+ |      end         :str        =None       [YYYY-MM-DD*]
+ |      interval    :str        =1d         [1d, 1wk, 1mo, 3mo]
+ |      data        :str        =all        [open, high, low, close, volume, all]
+ |      calculation :str        =price      [price, simple return, log return]
+ |      round       :bool       =True       [True, False]
+ |      -----api(s): yfinance
+ |
+ |  realtime()--------------Realtime stock price
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): twelve data
+ |  
+ |  statement()-------------IS, BS, CFS data
+ |      display     :str        =json       [json, table]
+ |      statement   :str        =all        [income, balance, cash, all]
+ |      currency    :str        =None       [CCC*]
+ |      unit        :str        =raw        [thousand, million, billion, raw]
+ |      decimal     :bool       =False      [True, False]
+ |      interval    :str        =annual     [annual, quarter]
+ |      -----api(s): yfinance, twelve data
+ |
+ |  quote()-----------------Stock quote: EOD OHLCV, TTM high/low, percent change (5d, 1m, 6m, ytd, 1y, 5y), price/volume SMAs
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance
+ |  
+ |  info()------------------General stock info: country, earnings date, description, company officers
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance, SEC
+ |  
+ |  news()------------------Stock related news
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance
+ |  
+ |  filings()---------------Recent SEC filings within at least one year of filing or to 1,000 filings (whichever is more)
+ |      form        :str        =None       [FORM*]
+ |      -----api(s): SEC
+ |  
+ |  eps()-------------------EPS timeseries
+ |      display     :str        =json       [json, table]
+ |      interval    :str        =annual     [quarter, annual]
+ |      -----api(s): alpha vantage
+ |  
+ |  analyst_estimates()-----Analyst estimates (earnings, revenue, growth, price)
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance
+ |  
+ |  dividend()--------------Dividend timeseries
+ |      display     :str        =json       [json, table]
+ |      -----api(s): yfinance
+ |  
+ |  split()-----------------Stock split timeseries
+ |      display     :str        =json       [json, table]
+ |      -----api(s): yfinance
+ |  
+ |  stats()-----------------Stock financial ratios (valuation, profitability, growth, liquidity, leverage, efficiency, cash flow)
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance
+ |  
+ |  top()-------------------Top stocks of the day
+ |      display     :str        =json       [json, pretty]
+ |      type        :str        =gainer     [gainer, loser, active]
+ |      -----api(s): yfinance
+'''
+
+        print(output)
 #------------------------------------------------------------------------------------------
-    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True): # FINISHED
+    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
         #Checking if the parameter inputs are invalid
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
@@ -71,12 +139,16 @@ class equity:
             output = yf_download
         elif calculation == 'simple return':
             output = (yf_download / yf_download.shift(1))-1
+            if round == True:
+                output = output.round(2)
         elif calculation == 'log return':
             output = np.log(yf_download / yf_download.shift(1))
+            if round == True:
+                output = output.round(2)
 
         return output
 #------------------------------------------------------------------------------------------
-    def realtime(self, display: str = 'json'): # FINISHED
+    def realtime(self, display: str = 'json'): 
         valid_params = {'display': ['json', 'pretty']}
         
         params = {'display': display}
@@ -105,14 +177,12 @@ class equity:
             return output
         
         elif display == 'pretty':
-            output = f'''
-  Symbol: {self.ticker}
-   Price: {round(td_realtime['price'],2)}
-Currency: {td_quote['currency']}
-'''
+            output = f'''  Symbol: {self.ticker}
+   Price: {round(float(td_realtime['price']),2)}
+Currency: {td_quote['currency']}'''
             print(output)
 #------------------------------------------------------------------------------------------
-    def statement(self, statement: str = 'all', currency: str = None, unit: str = 'raw', display: str = 'json', decimal: bool = False, interval: str = 'annual'): # FINISHED
+    def statement(self, display: str = 'json', statement: str = 'all', currency: str = None, unit: str = 'raw', decimal: bool = False, interval: str = 'annual'): 
         valid_params = {'valid_statement' : ['income', 'balance', 'cash', 'all'],
                         'valid_unit' : ['thousand', 'million', 'billion', 'raw'],
                         'valid_display' : ['json', 'table'],
@@ -245,7 +315,7 @@ Currency: {td_quote['currency']}
         #PARAMETER - INTERVAL ==============================================================
         def Income():
             if interval == 'annual':
-                IS = firm.income_stmt
+                IS = firm.income_stmt.iloc[:, 0:4]
             elif interval == 'quarter':
                 IS = firm.quarterly_income_stmt.iloc[:, 0:5]
 
@@ -266,7 +336,7 @@ Currency: {td_quote['currency']}
         
         def Balance():
             if interval == 'annual':
-                BS = firm.balance_sheet
+                BS = firm.balance_sheet.iloc[:, 0:4]
             elif interval == 'quarter':
                 BS = firm.quarterly_balance_sheet.iloc[:, 0:5]
 
@@ -303,7 +373,7 @@ Currency: {td_quote['currency']}
 
         def Cash():
             if interval == 'annual':
-                CF = firm.cash_flow
+                CF = firm.cash_flow.iloc[:, 0:4]
             elif interval == 'quarter':
                 CF = firm.quarterly_cash_flow.iloc[:, 0:5]
 
@@ -373,7 +443,7 @@ Currency: {td_quote['currency']}
         #PARAMETER - CURRENCY ==============================================================
         current_currency = firm.get_info()['financialCurrency'] if 'financialCurrency' in firm.get_info().keys() else '---'
         
-        if currency == current_currency:
+        if currency == current_currency or currency == '---':
             None
         elif currency != None:
             if Config.td_apikey is None:
@@ -405,7 +475,7 @@ Currency: {td_quote['currency']}
             output = data.map(lambda x: f'{x:,}' if isinstance(x, (int, float)) and pd.notna(x) else x)
             return output    
 #------------------------------------------------------------------------------------------
-    def quote(self, display: str = 'json'): # FINISHED
+    def quote(self, display: str = 'json'):
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -498,7 +568,7 @@ MOVING AVERAGES-------------------------
 '''
             print(output)
 #------------------------------------------------------------------------------------------
-    def info(self, display: str = 'json'): # FINISHED
+    def info(self, display: str = 'json'): 
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -596,7 +666,7 @@ COMPANY OFFICERS--------------------------------------------------
             
             print(output)
 #------------------------------------------------------------------------------------------
-    def news(self, display: str = 'json'): # FINISHED
+    def news(self, display: str = 'json'):
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -644,7 +714,7 @@ URL: {i['url']}
 
             print(output)
 #------------------------------------------------------------------------------------------
-    def filings(self, form: str = None): # FINISHED
+    def filings(self, form: str = None): 
         
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
         headers = {'User-Agent': f"{Config.email_address}"}
@@ -673,7 +743,7 @@ URL: {i['url']}
 
         return allForms
 #------------------------------------------------------------------------------------------
-    def eps(self, interval: str = 'annual', display: str = 'json'): # FINISHED
+    def eps(self, display: str = 'json', interval: str = 'annual'): 
         valid_params = {'valid_interval': ['quarter', 'annual'],
                         'valid_display': ['json', 'table']}
         
@@ -684,11 +754,11 @@ URL: {i['url']}
             if param_value not in valid_param:
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
-            
-        #RAW DATA/OBSERVATIONS-------------------------------------------------------------
+        
         if Config.av_apikey is None:
                 raise MissingConfigObject('Missing av_apikey. Please set your Alpha Vantage api key using the set_config() function.')
-        
+
+        #RAW DATA/OBSERVATIONS-------------------------------------------------------------        
         url = f'{Config.av_baseurl}EARNINGS&apikey={Config.av_apikey}&symbol={self.mticker}'
         av_eps = requests.get(url).json()
         #----------------------------------------------------------------------------------
@@ -699,18 +769,19 @@ URL: {i['url']}
             annual_data = av_eps['annualEarnings']
             json_eps_data = {}
             for data_point in annual_data:
-                json_eps_data[f'FY {data_point['fiscalDateEnding'][0:4]}'] = data_point['reportedEPS']
+                json_eps_data[data_point['fiscalDateEnding']] = data_point['reportedEPS']
           
             #json to df of annual eps
             table_eps_data = pd.DataFrame.from_dict(json_eps_data, orient='index', columns=['Reported EPS']).astype(float)
             table_eps_data = table_eps_data.map(lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x)
+            table_eps_data.index = pd.to_datetime(table_eps_data.index)
 
         elif interval == 'quarter':
             #retriving the quarterly portion of the av_eps endpoint
             quarter_data = av_eps['quarterlyEarnings']
             json_eps_data = {}
             for data_point in quarter_data:
-                json_eps_data[f'{data_point['fiscalDateEnding'][0:7]}'] = {
+                json_eps_data[data_point['fiscalDateEnding']] = {
                     'reported eps': float(data_point['reportedEPS']),
                     'estimated eps': (float(data_point['estimatedEPS']) if data_point['estimatedEPS'] != 'None' else '-'),
                     'surprise': float(data_point['surprise']),
@@ -725,6 +796,7 @@ URL: {i['url']}
                                                             'surprise': 'Surprise',
                                                             'surprise percentage': 'Surprise %'})
             table_eps_data = table_eps_data.iloc[::-1]
+            table_eps_data.index = pd.to_datetime(table_eps_data.index)
 
         #PARAMETER - DISPLAY ==============================================================
         if display == 'json':
@@ -735,7 +807,7 @@ URL: {i['url']}
             output = table_eps_data
             return output
 #------------------------------------------------------------------------------------------
-    def analyst_estimates(self, display: str = 'json'): # FINISHED
+    def analyst_estimates(self, display: str = 'json'): 
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -841,7 +913,7 @@ REVENUE ESTIMATE-----------------------------------------in {yf_info['financialC
           HIGH  {com(int(r['current quarter']['high']/1000000)).rjust(8)} |{com(int(r['next quarter']['high']/1000000)).rjust(8)} |{com(int(r['current year']['high']/1000000)).rjust(8)} |{com(int(r['next year']['high']/1000000)).rjust(8)} |
        AVERAGE  {com(int(r['current quarter']['avg']/1000000)).rjust(8)} |{com(int(r['next quarter']['avg']/1000000)).rjust(8)} |{com(int(r['current year']['avg']/1000000)).rjust(8)} |{com(int(r['next year']['avg']/1000000)).rjust(8)} |
            LOW  {com(int(r['current quarter']['low']/1000000)).rjust(8)} |{com(int(r['next quarter']['low']/1000000)).rjust(8)} |{com(int(r['current year']['low']/1000000)).rjust(8)} |{com(int(r['next year']['low']/1000000)).rjust(8)} |
-       -1Y EPS  {com(int(r['current quarter']['yearAgoRevenue']/1000000)).rjust(8)} |{com(int(r['next quarter']['yearAgoRevenue']/1000000)).rjust(8)} |{com(int(r['current year']['yearAgoRevenue']/1000000)).rjust(8)} |{com(int(r['next year']['yearAgoRevenue']/1000000)).rjust(8)} |
+       -1Y REV  {com(int(r['current quarter']['yearAgoRevenue']/1000000)).rjust(8)} |{com(int(r['next quarter']['yearAgoRevenue']/1000000)).rjust(8)} |{com(int(r['current year']['yearAgoRevenue']/1000000)).rjust(8)} |{com(int(r['next year']['yearAgoRevenue']/1000000)).rjust(8)} |
       % CHANGE  {str(two(r['current quarter']['growth']*100)).rjust(8)}%|{str(two(r['next quarter']['growth']*100)).rjust(8)}%|{str(two(r['current year']['growth']*100)).rjust(8)}%|{str(two(r['next year']['growth']*100)).rjust(8)}%|
  # OF ANALYSTS  {str(int(r['current quarter']['numberOfAnalysts'])).rjust(8)} |{str(int(r['next quarter']['numberOfAnalysts'])).rjust(8)} |{str(int(r['current year']['numberOfAnalysts'])).rjust(8)} |{str(int(r['next year']['numberOfAnalysts'])).rjust(8)} |
 
@@ -860,7 +932,7 @@ PRICE ESTIMATE----------------------------------------------------------
             
             print(output)
 #------------------------------------------------------------------------------------------
-    def dividend(self, display: str = 'json'): # FINISHED
+    def dividend(self, display: str = 'json'): 
         valid_params = {'valid_display': ['json', 'table'],}
         
         params = {'display': display}
@@ -887,6 +959,7 @@ PRICE ESTIMATE----------------------------------------------------------
 
         #making all values two decimal points
         dividends_df = dividends_df.map(lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x)
+        dividends_df.index = pd.to_datetime(dividends_df.index)
 
         #PARAMETER - DISPLAY ==============================================================
         if display == 'json':
@@ -896,7 +969,7 @@ PRICE ESTIMATE----------------------------------------------------------
             output = dividends_df
             return output
 #------------------------------------------------------------------------------------------
-    def split(self, display: str = 'json'): # FINISHED
+    def split(self, display: str = 'json'): 
         valid_params = {'valid_display': ['json', 'table'],}
         
         params = {'display': display}
@@ -920,6 +993,7 @@ PRICE ESTIMATE----------------------------------------------------------
         #converting series to dict to dataframe
         splits_dict = yf_splits.to_dict()
         splits_df = pd.DataFrame.from_dict(splits_dict, orient='index', columns=['Splits'])
+        splits_df.index = pd.to_datetime(splits_df.index)
 
         #PARAMETER - DISPLAY ==============================================================
         if display == 'json':
@@ -929,7 +1003,7 @@ PRICE ESTIMATE----------------------------------------------------------
             output = splits_df
             return output
 #------------------------------------------------------------------------------------------
-    def stats(self, display: str = 'json'): # FINISHED
+    def stats(self, display: str = 'json'): 
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -1295,7 +1369,7 @@ PRICE ESTIMATE----------------------------------------------------------
            
             def icrj(num):
                 if pd.isna(num) == True:
-                    return '       nan'
+                    return '           nan'
                 else:
                     return '{:,}'.format(int(num)).rjust(14)
             
@@ -1366,7 +1440,7 @@ CASH FLOW-----------------------------------------------------------------------
         
             print(output)
 #------------------------------------------------------------------------------------------
-    def top(self, display: str = 'json', type: str = 'gainer'): # FINISHED
+    def top(self, display: str = 'json', type: str = 'gainer'): 
         valid_params = {'valid_display': ['json', 'pretty'],
                         'type': {'gainer', 'loser', 'active'}}
         
@@ -1395,7 +1469,7 @@ CASH FLOW-----------------------------------------------------------------------
 
             quote_data[quote['symbol']] = {
                 'symbol': quote['symbol'],
-                'name': quote['longName'],
+                'name': quote['longName'] if 'longName' in quote.keys() else '-',
                 'region': quote['region'],
                 'exchange': quote['fullExchangeName'],
                 'price change': quote['regularMarketChange'],

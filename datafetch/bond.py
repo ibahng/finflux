@@ -4,6 +4,7 @@ import yfinance as yf # type: ignore
 import numpy as np # type: ignore
 import requests # type: ignore
 import pandas as pd # type: ignore
+import matplotlib.pyplot as plt # type: ignore
 from datetime import timedelta, datetime
 
 #------------------------------------------------------------------------------------------
@@ -23,9 +24,41 @@ class MissingConfigObject(Exception):
 class bond:
 #------------------------------------------------------------------------------------------
     def help(self):
-        pass
+        output = '''
+class bond():
+ |  nonUS_10Y_sovereign()---10Y sovereign bond yields for non-US countries
+ |      country     :str        =None       [KR, AT, CL, CZ, GR, FI, ZA, NL, SK, NZ, LU, PL, SI, CH, DE, CA, JP, DK, BE, FR, NO, PT, IT, GB, ES, IE, AU, SE, MX, HU, IS]
+ |      period      :str        =5y         [1y, 2y, 5y, 10y, max]
+ |      -----api(s): FRED(OECD)
+ |
+ |  US_treasury()-----------US treasury bond yield daily timeseries
+ |      maturity    :str        =10y        [6mo, 1y, 2y, 3y, 5y, 7y, 10y, 20y, 30y]
+ |      period      :str        =5y         [6mo, 1y, 2y, 5y, 10y, ytd, max]
+ |      -----api(s): FRED(Board of Governers)
+ |      
+ |  US_curve()--------------US treasury bond yield curve (EOD, 3MO, 6MO)
+ |      display     :str        =graph      [json, table, graph]
+ |      -----api(s): FRED(Board of Governers)
+ |      
+ |  US_eod()----------------US treasury bond eod yield
+ |      display     :str        =json       [json, pretty]
+ |      maturity    :str        =10y        [6mo, 1y, 2y, 3y, 5y, 7y, 10y, 20y, 30y]
+ |      -----api(s): FRED(Board of Governers)
+ |      
+ |  US_quote()--------------US treasury bond quote: TTM high/low, percent change (5d, 1m, 6m, ytd, 1y, 5y), SMAs
+ |      display     :str        =json       [json, pretty]
+ |      maturity    :str        =10y        [6mo, 1y, 2y, 3y, 5y, 7y, 10y, 20y, 30y]
+ |      -----api(s): FRED(Board of Governers)
+ |
+ |  US_HQM_corporate()------US high quality (A, AA, AA) corporate bond yield monthly timeseries
+ |      maturity    :str        =10y        [6mo, 1y, 2y, 3y, 5y, 7y, 10y, 20y, 30y]
+ |      period      :str        =5y         [6mo, 1y, 2y, 5y, 10y, ytd, max]
+ |      -----api(s): FRED(US Treasury)
+'''
+
+        print(output)
 #------------------------------------------------------------------------------------------
-    def nonUS_10Y_sovereign(self, country: str = 'KR', period: str = '5y'): # -----------------------------FINISHED
+    def nonUS_10Y_sovereign(self, country: str = None, period: str = '5y'): 
         valid_params = {'valid_country': ['KR', 'AT', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max']}
         
@@ -116,9 +149,9 @@ class bond:
 
         return output
 #------------------------------------------------------------------------------------------
-    def US_treasury(self, maturity: str = '10y', period: str = '5y'): # -----------------------------FINISHED
+    def US_treasury(self, maturity: str = '10y', period: str = '5y'): 
         valid_params = {'valid_maturity': ['6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y'],
-                        'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']}
+                        'valid_period' : ['6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']}
         
         params = {'maturity': maturity,
                   'valid_period': period}
@@ -187,12 +220,82 @@ class bond:
 
         return output
 #------------------------------------------------------------------------------------------
-    def US_curve(self):
-        pass
+    def US_curve(self, display: str = 'graph'):
+        valid_params = {'valid_display': ['json', 'table', 'graph']}
+        
+        params = {'display': display}
+
+        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
+            if param_value not in valid_param:
+                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
+                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
+        
+        if Config.fred_apikey is None:
+            raise MissingConfigObject('Missing fred_apikey. Please set your FRED api key using the set_config() function.')
+        
+        #RAW DATA/OBSERVATION--------------------------------------------------------------
+        six_m = bond().US_treasury(maturity='6mo', period='6mo')
+        one_y = bond().US_treasury(maturity='1y', period='6mo')
+        two_y = bond().US_treasury(maturity='2y', period='6mo')
+        three_y = bond().US_treasury(maturity='3y', period='6mo')
+        five_y = bond().US_treasury(maturity='5y', period='6mo')
+        seven_y = bond().US_treasury(maturity='7y', period='6mo')
+        ten_y = bond().US_treasury(maturity='10y', period='6mo')
+        twenty_y = bond().US_treasury(maturity='20y', period='6mo')
+        thirty_y = bond().US_treasury(maturity='30y', period='6mo')
+
+        yield_list = [six_m, one_y, two_y, three_y, five_y, seven_y, ten_y, twenty_y, thirty_y]
+        #----------------------------------------------------------------------------------
+        
+        #JSON FORMAT DATA
+        curve_data = {}
+
+        for dataframe in yield_list:
+            curve_data[f'{dataframe.columns[0]}'] = {
+                '6mo': float(dataframe.iloc[0].iloc[0]),
+                '3mo': float(dataframe.iloc[63].iloc[0]),
+                'eod': float(dataframe.iloc[-1].iloc[0])
+            }
+
+        #PARAMETER - DISPLAY ===============================================================
+        if display == 'json':
+            output = curve_data
+        elif display == 'table':
+            output = pd.DataFrame.from_dict(curve_data, orient='index')
+            output.columns = output.columns.str.upper()
+        elif display == 'graph':
+            maturities = []
+            for i in list(curve_data.keys()):
+                maturities.append(i[2:])
+
+            six_m_yields = []
+            three_m_yields = []
+            eod_yields = []
+
+            for maturity in curve_data.keys():
+                six_m_yields.append(curve_data[maturity]['6mo'])
+                three_m_yields.append(curve_data[maturity]['3mo'])
+                eod_yields.append(curve_data[maturity]['eod'])
+
+            fig, ax = plt.subplots()
+            ax.plot(maturities, six_m_yields, label='6MO', color='#A7CBE8', linewidth=2.5)
+            ax.plot(maturities, three_m_yields, label='3MO', color='#2171B5', linewidth=2.5)
+            ax.plot(maturities, eod_yields, label='EOD', color='#1F4E79', linewidth=2.5)
+
+            ax.set_xlabel('Maturity Date')
+            ax.set_ylabel('Yield (%)')
+            ax.set_title('US Treasury Bond Yield Curve')
+
+            ax.legend()
+            
+            output = None
+            plt.show()
+
+        return output
 #------------------------------------------------------------------------------------------
-    def US_eod(self, display: str = 'json', maturity: str = '10y'): # -----------------------------FINISHED
+    def US_eod(self, display: str = 'json', maturity: str = '10y'): 
         valid_params = {'valid_display': ['json', 'pretty'],
-                        'valid_maturity': ['1mo', '3mo', '6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y']}
+                        'valid_maturity': ['6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y']}
         
         params = {'display': display,
                   'maturity': maturity,}
@@ -203,8 +306,6 @@ class bond:
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
             
         FRED_IDs = {
-            '1mo': 'DGS1MO',
-            '3mo': 'DGS3MO',
             '6mo': 'DGS6MO',
             '1y': 'DGS1',
             '2y': 'DGS2',
@@ -252,12 +353,12 @@ MATURITY - {eod_data['maturity']}
    YIELD - {eod_data['yield']}'''
             print(output)
 #------------------------------------------------------------------------------------------
-    def US_quote(self, display: str = 'json', maturity: str = '10y'): # -----------------------------FINISHED
+    def US_quote(self, display: str = 'json', maturity: str = '10y'): 
         valid_params = {'valid_display': ['json', 'pretty'],
-                        'valid_maturity': ['1mo', '3mo', '6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y']}
+                        'valid_maturity': ['6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y']}
         
         params = {'display': display,
-                  'maturity': maturity,}
+                  'maturity': maturity}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
             if param_value not in valid_param:
@@ -268,7 +369,7 @@ MATURITY - {eod_data['maturity']}
             raise MissingConfigObject('Missing fred_apikey. Please set your FRED api key using the set_config() function.')
         
         #RAW DATA/OBSERVATIONS--------------------------------------------------------------
-        US_timeseries = bond().US(display='pretty', maturity=maturity, period='10y')
+        US_timeseries = bond().US_treasury(maturity=maturity, period='10y')
         
         US_eod = bond().US_eod(display='json', maturity=maturity)['yield']
         
@@ -318,9 +419,9 @@ MOVING AVERAGES-------------------------
 '''
             print(output)
 #------------------------------------------------------------------------------------------
-    def US_HQM_corporate(display): #IN PROGRESS
+    def US_HQM_corporate(self, maturity: str = '10y', period: str = '5y'): 
         valid_params = {'valid_maturity': ['6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y'],
-                        'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']}
+                        'valid_period' : ['6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']}
         
         params = {'maturity': maturity,
                   'valid_period': period}
@@ -341,5 +442,50 @@ MOVING AVERAGES-------------------------
             '20y': 'HQMCB20YR',
             '30y': 'HQMCB30YR'
         }    
-        pass
+
+        period_points = {
+            '6mo': -126,
+            '1y': -252,
+            '2y': -504,
+            '5y': -1260,
+            '10y': -2520,
+        }
+
+        if Config.fred_apikey is None:
+            raise MissingConfigObject('Missing fred_apikey. Please set your FRED api key using the set_config() function.')
+        
+        #RAW DATA/OBSERVATION--------------------------------------------------------------
+        id = FRED_IDs[maturity]
+
+        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+        FRED_bond = requests.get(FRED_url).json()
+
+        current_year = pd.Timestamp.now().year
+        #----------------------------------------------------------------------------------
+        def is_numeric(str):
+            try:
+                float(str)
+                return True
+            except ValueError:
+                return False
+        
+        #PARAMETER - PERIOD ================================================================  
+        data = {}
+        if period == 'max':
+            for data_point in FRED_bond['observations']:
+                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+
+        elif period == 'ytd':
+            for data_point in FRED_bond['observations'][-260:]:
+                if data_point['date'][0:4] == str(current_year):
+                    data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+
+        else:
+            for data_point in FRED_bond['observations'][period_points[period]:]:
+                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+
+        output = pd.DataFrame.from_dict(data, orient='index', columns=[f'US HQM {maturity.upper()}'])
+        output.index = pd.to_datetime(output.index)
+
+        return output
 #------------------------------------------------------------------------------------------

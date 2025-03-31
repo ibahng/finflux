@@ -6,4 +6,4 @@ from .crypto import crypto
 from .bond import bond
 from .US_indic import US_indic
 
-__all__ = ['set_config', 'equity', 'fund', 'forex', 'crypto', 'bond', 'econ_indic', 'US_indic']
+__all__ = ['set_config', 'equity', 'fund', 'forex', 'crypto', 'bond', 'US_indic']

@@ -41,9 +41,39 @@ class forex:
                                        f"Please select a valid '{forex.security_type}' symbol")
 #------------------------------------------------------------------------------------------
     def help(self):
-        pass
+        output = '''
+class forex():
+ |  timeseries()------------Forex pair exchange rate timeseries
+ |      period      :str        =5y         [1mo, 6mo, 1y, 2y, 5y, 10y, ytd, max]
+ |      start       :str        =None       [YYYY-MM-DD*]
+ |      end         :str        =None       [YYYY-MM-DD*]
+ |      interval    :str        =1d         [1d, 1wk, 1mo, 3mo]
+ |      data        :str        =all        [open, high, low, close, all]
+ |      round       :bool       =True       [True, False]
+ |      -----api(s): yfinance
+ |
+ |  realtime()--------------Forex pair realtime exchange rate
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): twelve data
+ |      
+ |  conversion()------------Forex pair currency conversion calculator
+ |      display     :str        =json       [json, pretty]
+ |      amount      :int        =None       [INT*]
+ |      rate        :str, float =realtime   [realtime, eod, FLOAT*]
+ |      -----api(s): yfinance, twelve data
+ |      
+ |  quote()-----------------Forex pair quote: EOD OHLCV, TTM high/low, percent change (5d, 1m, 6m, ytd, 1y, 5y), rate/volume SMAs
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance, twelve data
+ |      
+ |  news()------------------Forex pair related news
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance
+'''
+
+        print(output)
 #------------------------------------------------------------------------------------------
-    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
+    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True): 
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
                         'valid_data' : ['open', 'high', 'low', 'close', 'all'],
@@ -117,7 +147,7 @@ Exchange Rate: {realtime_data['price']}
 '''
             print(output)
 #------------------------------------------------------------------------------------------    
-    def conversion(self, amount: int, rate: Union[int, float] = 'realtime', display: str = 'json'):
+    def conversion(self, display: str = 'json', amount: int = None, rate: Union[str, float] = 'realtime'):
         valid_params = {'display': ['json', 'pretty']}
 
         params = {'display': display}
@@ -244,7 +274,7 @@ MOVING AVERAGES-------------------------
 '''
             print(output)
 #------------------------------------------------------------------------------------------
-    def news(self, display: str = 'json'):
+    def news(self, display: str = 'json'): 
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}

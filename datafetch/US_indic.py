@@ -24,9 +24,56 @@ class MissingConfigObject(Exception):
 class US_indic:
 #------------------------------------------------------------------------------------------
     def help(self):
-        pass
+        output = '''
+class US_indic():
+ |  gdp()-------------------US gross domestic product quarterly timeseries
+ |      type        :str        =n          [n, r, n_pc, r_pc, d]
+ |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
+ |      figure      :str        =yoy        [raw, yoy, pop]
+ |      -----api(s): Bureau of Economic Analysis
+ |
+ |  price_index()-----------US core/raw consumer/producer price indices monthly timeseries
+ |      type        :str        =c          [c, p, cc, cp]
+ |      period      :str        =5y         [1y, 2y,  5y, 10y, max, ytd]
+ |      figure      :str        =yoy        [raw, yoy, pop]
+ |      -----api(s): Bureau of Labor Statistics
+ |
+ |  pce()-------------------US personal consumption expenditure monthly timeseries
+ |      type        :str        =raw        [raw, core]
+ |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
+ |      figure      :str        =yoy        [raw, yoy, pop]
+ |      -----api(s): Bureau of Economic Analysis
+ |
+ |  unemployment()----------US unemployment rate monthly timeseries
+ |      type        :str        =U-3        [U-3, U-6, g=male, g=female, r=white, r=black, r=asian, r=hispanic, e<hs, e=hs, e<bach, e>=bach]
+ |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
+ |      -----api(s): Bureau of Labor Statistics
+ |
+ |  labor()-----------------US labor related indicator statistics monthly timeseries (weekly for 'claims')
+ |      type        :str        =None       [participation, payroll, quits, openings, earnings, claims]
+ |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
+ |      -----api(s): Bureau of Labor Statistics
+ |
+ |  sentiment()-------------US sentiment markers
+ |      type        :str        =c_mcsi     [c_mcsi, c_oecd, b_oecd]
+ |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
+ |      -----api(s): 
+ |
+ |  fed_rate()--------------US federal funds rate timeseries # INPROGRESS
+ |      interval    :str        =1d         [1d, 1wk, 2wk, 1mo]
+ |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
+ |      -----api(s): FRED(Board of Governers)
+ |
+ |  housing()---------------US housing related indicator statistics monthly timeseries (weekly for '##y_rates')
+ |      type        :str        =starts     [starts, nsales, esales, 30y_rate, 15y_rate]
+ |      period      :str        =5y         [1y, 2y, 5y, 10y, ytd, max]
+ |      figure      :str        =raw        [raw, yoy, pop]
+ |      -----api(s): FRED(Census Bureau, NAR, Freddie Mac)
+'''
+
+        print(output)
 #------------------------------------------------------------------------------------------
-    def gdp(self, type: str = 'n', period: str = '5y', figure: str = 'yoy'): # FINISHED
+    def gdp(self, type: str = 'n', period: str = '5y', figure: str = 'yoy'): 
         valid_params = {'valid_type': ['n', 'r', 'n_pc', 'r_pc', 'd'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd'],
                         'valid_figure': ['raw', 'yoy', 'pop']}
@@ -109,7 +156,7 @@ class US_indic:
 
         return output
 #------------------------------------------------------------------------------------------
-    def price_index(self, type: str = 'c', period: str = '5y', figure: str = 'yoy'): # FINISHED
+    def price_index(self, type: str = 'c', period: str = '5y', figure: str = 'yoy'): 
         valid_params = {'valid_type': ['c', 'p', 'cc', 'cp'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd'],
                         'valid_figure': ['raw', 'yoy', 'pop']}
@@ -237,7 +284,7 @@ class US_indic:
 
         return output
 #------------------------------------------------------------------------------------------
-    def pce(self, type: str = 'raw', period: str = '5y', figure: str = 'yoy'): # FINISHED
+    def pce(self, type: str = 'raw', period: str = '5y', figure: str = 'yoy'): 
         valid_params = {'valid_type': ['raw', 'core'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd'],
                         'valid_figure': ['raw', 'yoy', 'pop']}
@@ -323,7 +370,7 @@ class US_indic:
 
         return output
 #------------------------------------------------------------------------------------------
-    def unemployment(self, type: str = 'U-3', period: str = '5y'): # FINISHED
+    def unemployment(self, type: str = 'U-3', period: str = '5y'): 
         valid_params = {'valid_type': ['U-3', 'U-6', 'g=male', 'g=female', 'r=white', 'r=black', 'r=asian', 'r=hispanic', 'e<hs', 'e=hs', 'e<bach', 'e>=bach'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'ytd', 'max']}
         
@@ -441,7 +488,7 @@ class US_indic:
 
         return output
 #------------------------------------------------------------------------------------------
-    def labor(self, type: str = None, period: str = '5y'): # FINISHED
+    def labor(self, type: str = None, period: str = '5y'): 
         valid_params = {'valid_type': ['participation', 'payroll', 'quits', 'openings', 'earnings', 'claims'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd']}
         
@@ -566,29 +613,75 @@ class US_indic:
 
         return output
 #------------------------------------------------------------------------------------------
-    def sentiment(self, type: str = 'c_umich', period: str = '5y', figure: str = 'raw'): # DATA READY
+    def sentiment(self, type: str = 'c_mcsi', period: str = '5y'): 
         valid_params = {'valid_type': ['c_mcsi', 'c_oecd', 'b_oecd'],
-                        'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd'],
-                        'valid_figure': ['raw', 'yoy', 'pop']}
+                        'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd']}
         
         params = {'type': type,
-                  'period': period,
-                  'figure': figure}
+                  'period': period}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
             if param_value not in valid_param:
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                  
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
-        #RAW DATA/OBSERVATION-----------------------------------------------------------FRED
-        # UMCSENT - UMich Consumer Confidence Index
-        # CSCICP03USM665S - Composite Consumer Confidence Amplitude Adjusted for United States (OECD)
-        # BSCICP02USM460S - Business Tendency Surveys (Manufacturing): Confidence Indicators: Composite Indicators: National Indicator for US (OECD)
+            
+        FRED_IDs = {
+            'c_mcsi': ['UMCSENT', 'Michigan Consumer Sentiment Index'], #UMich consumer sentiment
+            'c_oecd': ['CSCICP03USM665S', 'Composite Consumer Confidence Amplitude Adjusted for United States'], #OECD consumer confidence
+            'b_oecd': ['BSCICP02USM460S', 'Business Tendency Surveys Indicator for US (Manufacturing)'] #OECD business confidence
+        }    
+
+        period_points = {
+            '6mo': -7,
+            '1y': -13,
+            '2y': -25,
+            '5y': -61,
+            '10y': -121,
+        }
+
+        if Config.fred_apikey is None:
+            raise MissingConfigObject('Missing fred_apikey. Please set your FRED api key using the set_config() function.')
+        
+        #RAW DATA/OBSERVATION--------------------------------------------------------------
+        id = FRED_IDs[type][0]
+
+        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+        FRED_yield = requests.get(FRED_url).json()
+
+        current_year = pd.Timestamp.now().year
         #----------------------------------------------------------------------------------
+
+        def is_numeric(str):
+            try:
+                float(str)
+                return True
+            except ValueError:
+                return False
+        
+        #PARAMETER - PERIOD ================================================================  
+        data = {}
+        if period == 'max':
+            for data_point in FRED_yield['observations']:
+                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+
+        elif period == 'ytd':
+            for data_point in FRED_yield['observations'][-260:]:
+                if data_point['date'][0:4] == str(current_year):
+                    data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+
+        else:
+            for data_point in FRED_yield['observations'][period_points[period]:]:
+                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+
+        output = pd.DataFrame.from_dict(data, orient='index', columns=[f'{FRED_IDs[type][1]}'])
+        output.index = pd.to_datetime(output.index)
+
+        return output
 #------------------------------------------------------------------------------------------
-    def fed_rate(self, interval: str = '1d', period: str = '5y'): # IN PROGRESS
-        valid_params = {'valid_interval': ['1d', '1wk', '2wk', '1mo', '1y'],
-                        'valid_period': ['1y', '2y', '5y', '10y', 'max']}
+    def fed_rate(self, interval: str = '1d', period: str = '5y'): 
+        valid_params = {'valid_interval': ['1d', '1wk', '2wk', '1mo'],
+                        'valid_period': ['1y', '2y', '5y', '10y', 'ytd', 'max']}
         
         params = {'interval': interval,
                   'period': period}
@@ -599,18 +692,46 @@ class US_indic:
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
             
         FRED_IDs = {
-            '1d': 'RIFSPFFNB',
-            '1wk': 'FF',
-            '2wk': 'RIFSPFFNBWAW',
-            '1mo': 'FEDFUNDS',
-            '1y': 'RIFSPFFNA'
+            '1d': ['RIFSPFFNB', 'DAILY'], 
+            '1wk': ['FF', 'WEEKLY'], 
+            '2wk': ['RIFSPFFNBWAW', 'BIWEEKLY'], 
+            '1mo': ['FEDFUNDS', 'MONTHLY']
+        }
+
+        period_points = {
+            '1d': {
+                '1y': -262,
+                '2y': -525,
+                '5y': -1311,
+                '10y': -2621,
+            },
+            '1wk': {
+                '1y': -53,
+                '2y': -105,
+                '5y': -261,
+                '10y': -521,
+            },
+            '2wk': {
+                '1y': -27,
+                '2y': -53,
+                '5y': -131,
+                '10y': -261,
+            },
+            '1mo': {
+                '1y': -13,
+                '2y': -25,
+                '5y': -61,
+                '10y': -121,
+            }
         }
 
         #RAW DATA/OBSERVATION--------------------------------------------------------------
-        id = FRED_IDs[interval]
+        id = FRED_IDs[interval][0]
 
         FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
         FRED_rate = requests.get(FRED_url).json()
+
+        current_year = pd.Timestamp.now().year
         #----------------------------------------------------------------------------------
 
         def is_numeric(str):
@@ -619,32 +740,30 @@ class US_indic:
                 return True
             except ValueError:
                 return False
-
-        data = {}
-        for data_point in FRED_rate['observations']:
-            data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
-
-        INTERVALS = {
-            '1d': 'DAILY',
-            '1wk': 'WEEKLY',
-            '2wk': 'BIWEEKLY',
-            '1mo': 'MONTHLY',
-            '1y': 'YEARLY'
-        }
-
-        rate_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'US {INTERVALS[interval]} Effective Federal Funds Rate'])
-
-        #PARAMETER - PERIOD ===============================================================need a new way to calculate number of datetime rows
         
-        #need a new way to calculate number of datetime rows
+        #PARAMETER - PERIOD ================================================================  
+        data = {}
+        if period == 'max':
+            for data_point in FRED_rate['observations']:
+                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
 
-        #output.index = pd.to_datetime(output.index)
+        elif period == 'ytd':
+            for data_point in FRED_rate['observations'][-300:]:
+                if data_point['date'][0:4] == str(current_year):
+                    data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
 
-        #return output
+        else:
+            for data_point in FRED_rate['observations'][period_points[interval][period]:]:
+                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+
+        output = pd.DataFrame.from_dict(data, orient='index', columns=[f'Federal Funds Rate ({FRED_IDs[interval][1]})'])
+        output.index = pd.to_datetime(output.index)
+
+        return output
 #------------------------------------------------------------------------------------------
-    def housing(self, type: str = 'starts', period: str = '5y', figure: str = 'raw'):  # FINISHED
+    def housing(self, type: str = 'starts', period: str = '5y', figure: str = 'raw'): 
         valid_params = {'valid_type' : ['starts', 'nsales', 'esales', '30y_rate', '15y_rate'],
-                        'valid_period' : ['1y', '2y', '5y', '10y', 'ytd', 'max'],
+                        'valid_period' : ['1y', '2y', '5y', '10y', 'max', 'ytd'],
                         'valid_figure' : ['raw', 'yoy', 'pop']}
         
         params = {'type': type,

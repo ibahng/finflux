@@ -21,7 +21,7 @@ class MissingConfigObject(Exception):
         self.msg = msg
 
 #------------------------------------------------------------------------------------------
-class crypto:
+class crypto: 
     security_type = 'CRYPTOCURRENCY'
 
     def __init__(self,ticker):
@@ -36,9 +36,40 @@ class crypto:
                                        f"Please select a valid '{crypto.security_type}' symbol")
 #------------------------------------------------------------------------------------------
     def help(self):
-        pass
+        output = '''
+class crypto():
+ |  timeseries()------------Coin exchange rate timeseries
+ |      period      :str        =5y         [1y, 2y, 5y, 10y, max]
+ |      start       :str        =None       [YYYY-MM-DD*]
+ |      end         :str        =None       [YYYY-MM-DD*]
+ |      interval    :str        =1d         [1d, 1wk, 1mo, 3mo]
+ |      data        :str        =all        [open, high, low, close, all]
+ |      calculation :str        =price      [price, simple return, log return]
+ |      round       :bool       =True       [True, False]
+ |      -----api(s): yfinance
+ |
+ |  realtime()--------------Coin realtime exchange rate
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): twelve data
+ |      
+ |  conversion()------------Coin currency conversion calculator
+ |      display     :str        =json       [json, pretty]
+ |      amount      :int        =None       [INT*]
+ |      rate        :str, float =realtime   [realtime, eod, FLOAT*]
+ |      -----api(s): yfinance, twelve data
+ |      
+ |  quote()-----------------Coin quote: EOD OHLCV, TTM high/low, percent change (5d, 1m, 6m, ytd, 1y, 5y), rate/volume SMAs
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance
+ |      
+ |  news()------------------Coin related news
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance
+'''
+
+        print(output)
 #------------------------------------------------------------------------------------------
-    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True): # -----------------------------FINISHED
+    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True): 
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
                         'valid_data' : ['open', 'high', 'low', 'close', 'all'],
@@ -114,12 +145,9 @@ class crypto:
         elif calculation == 'log return':
             output = np.log(timeseries_data / timeseries_data.shift(1))
 
-        #rounding to 2 decimals
-        output = timeseries_data.round(2)
-
         return output
 #------------------------------------------------------------------------------------------
-    def realtime(self, display: str = 'json'): # -----------------------------FINISHED
+    def realtime(self, display: str = 'json'): 
         valid_params = {'display': ['json', 'pretty']}
 
         params = {'display': display}
@@ -174,8 +202,8 @@ Exchange Rate: {realtime_data['price']:2f}
 '''
             print(output)
 #------------------------------------------------------------------------------------------    
-    def conversion(self, amount: int, rate: Union[int, float] = 'realtime', display: str = 'json'): # -----------------------------FINISHED
-        valid_params = {'display': ['json', 'pretty']}
+    def conversion(self, display: str = 'json', amount: int = None, rate: Union[str, float] = 'realtime'): 
+        valid_params = {'valid_display': ['json', 'pretty']}
 
         params = {'display': display}
 
@@ -208,15 +236,13 @@ Exchange Rate: {realtime_data['price']:2f}
             output = data
             return output
         if display == 'pretty':
-            output =f'''
-     Conversion: {data['conversion']}
+            output =f'''     Conversion: {data['conversion']}
   Exchange Rate: {data['exchange rate']}
  Pre-conversion: {data['pre-conversion']}
-Post-conversion: {round(data['post-conversion'],2)}
-'''
+Post-conversion: {round(data['post-conversion'],2)}'''
             print(output)
 #------------------------------------------------------------------------------------------
-    def quote(self, display: str = 'json'): # -----------------------------FINISHED
+    def quote(self, display: str = 'json'): 
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -295,7 +321,7 @@ MOVING AVERAGES-------------------------
 '''
             print(output)
 #------------------------------------------------------------------------------------------
-    def news(self, display: str = 'json'): # -----------------------------FINISHED
+    def news(self, display: str = 'json'): 
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}

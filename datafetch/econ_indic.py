@@ -22,6 +22,17 @@ class MissingConfigObject(Exception):
 #------------------------------------------------------------------------------------------
 class econ_indic:
 #------------------------------------------------------------------------------------------
+    def help(self):
+        output = '''
+class econ_indic(): IN PROGRESS CLASS
+ |  nonUS_10Y_sovereign()---10Y sovereign bond yields for non-US countries
+ |      country     :str    =None   [KR, AT, CL, CZ, GR, FI, ZA, NL, SK, NZ, LU, PL, SI, CH, DE, CA, JP, DK, BE, FR, NO, PT, IT, GB, ES, IE, AU, SE, MX, HU, IS]
+ |      period      :str    =5y     [1y, 2y, 5y, 10y, max]
+ |
+'''
+
+        print(output)
+#------------------------------------------------------------------------------------------
     def gdp(self, country: str = 'US', type: str = 'nominal', period: str = '5y', figure: str = 'quarter', base: str = '2020-Q1'): # IN PROGRESS
         valid_params = {'valid_country': ["US", "CN", "JP", "DE", "GB", "FR", "IN", "IT", "CA", "KR", "RU", "BR", "AU", "NL", "ES", "CH", "SE", "BE", "AT", "PL", "SG", "HK", "TW", 
                                           "MX", "SA", "AE", "NG", "ZA", "ID", "NO", "QA", "IR", "KZ", "CL", "TR", "VN", "TH", "MY", "PH", "EG", "PK", "BD", "IL", "DK", "FI", "UA", 

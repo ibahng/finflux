@@ -29,10 +29,50 @@ class fund:
         quoteType = yf.Ticker(self.ticker).get_info()['quoteType']
         if quoteType != fund.security_type_1 and quoteType != fund.security_type_2:
             raise InvalidSecurityError(f"Invalid security type. "
-                                       f"Please select a valid '{fund.security_type_1}' or  '{fund.security_type_2}' symbol")
+                                       f"Please select a valid '{fund.security_type_1}' or '{fund.security_type_2}' symbol")
 #------------------------------------------------------------------------------------------
     def help(self):
-        pass
+        output = '''
+class fund():
+ |  timeseries()------------OHLC fund price daily timeseries
+ |      period      :str        =5y         [1mo, 6mo, 1y, 2y, 5y, 10y, ytd, max]
+ |      start       :str        =None       [YYYY-MM-DD*]
+ |      end         :str        =None       [YYYY-MM-DD*]
+ |      interval    :str        =1d         [1d, 1wk, 1mo, 3mo]
+ |      data        :str        =all        [open, high, low, close, all]
+ |      round       :bool       =True       [True, False]
+ |      -----api(s): yfinance
+ |
+ |  eod()-------------------End of day fund price
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance
+ |      
+ |  equity_holdings()-------Top ten equity holdings
+ |      display     :str        =json       [json, table]
+ |      -----api(s): yfinance
+ |      
+ |  info()------------------General fund info: sector weighting, asset classes, etc.
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance, SEC
+ |      
+ |  news()------------------Fund related news
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance
+ |
+ |  quote()-----------------Fund quote: EOD OHLCV, TTM high/low, percent change (5d, 1m, 6m, ytd, 1y, 5y), price/volume SMAs
+ |      display     :str        =json       [json, pretty]
+ |      -----api(s): yfinance
+ |
+ |  split()-----------------Fund split timeseries
+ |      display     :str        =json       [json, table]
+ |      -----api(s): yfinance
+ |
+ |  dividend()--------------Fund dividend timeseries
+ |      display     :str        =json       [json, table]
+ |      -----api(s): yfinance
+'''
+
+        print(output)
 #------------------------------------------------------------------------------------------
     def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
@@ -102,14 +142,12 @@ class fund:
             output = eod_data
             return output
         elif display == 'pretty':
-            output = f'''
-  Symbol: {self.ticker}
+            output = f'''  Symbol: {self.ticker}
    Price: {eod_data['eod price']:.2f}
-Currency: {eod_data['currency']}
-'''
+Currency: {eod_data['currency']}'''
             print(output)
 #------------------------------------------------------------------------------------------
-    def equity_holdings(self, display: str = 'json'):
+    def equity_holdings(self, display: str = 'json'): 
         valid_params = {'display': ['json', 'table']}
 
         params = {'display': display}
@@ -138,7 +176,7 @@ Currency: {eod_data['currency']}
 
         #PARAMETER - DISPLAY ==============================================================
         if display == 'json':
-            output = yf_top_holdings.to_dict()
+            output = yf_top_holdings.to_dict(orient='index ')
             return output
         if display == 'table':
             output = yf_top_holdings
