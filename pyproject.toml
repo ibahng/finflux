@@ -23,4 +23,4 @@ dependencies = [
 keywords = ["finance", "api", "funds", "stocks", "forex", "crypto"]
 
 [project.urls]
-Repository = "https://github.com/ibahng/datafetch/tree/main"
+Repository = "https://github.com/ibahng/finflux/tree/main"
