@@ -1,4 +1,4 @@
-from datafetch.base_var import Config
+from finflux.base_var import Config
 
 import yfinance as yf # type: ignore
 import numpy as np # type: ignore
