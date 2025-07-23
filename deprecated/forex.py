@@ -49,6 +49,7 @@ class forex():
  |      end         :str        =None       [YYYY-MM-DD*]
  |      interval    :str        =1d         [1d, 1wk, 1mo, 3mo]
  |      data        :str        =all        [open, high, low, close, all]
+ |      calculation :str        =price      [price, simple return, log return]
  |      round       :bool       =True       [True, False]
  |      -----api(s): yfinance
  |

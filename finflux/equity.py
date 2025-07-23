@@ -716,6 +716,9 @@ URL: {i['url']}
 #------------------------------------------------------------------------------------------
     def filings(self, form: str = None): 
         
+        if Config.email_address is None:
+                raise MissingConfigObject('Missing email_address. Please set your email address using the set_config() function.')
+
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
         headers = {'User-Agent': f"{Config.email_address}"}
         companyTickers = requests.get("https://www.sec.gov/files/company_tickers.json", headers=headers) #ticker-cik json data request
