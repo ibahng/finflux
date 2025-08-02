@@ -5,6 +5,8 @@ import numpy as np # type: ignore
 import requests # type: ignore
 import pandas as pd # type: ignore
 from datetime import timedelta
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 #------------------------------------------------------------------------------------------
 class InvalidParameterError(Exception):
@@ -32,77 +34,6 @@ class equity:
             raise InvalidSecurityError(f"Invalid security type. "
                                     f"Please select a valid '{equity.security_type}' symbol")
 #------------------------------------------------------------------------------------------
-    def help(self):
-        output = '''
-class equity():
- |  timeseries()------------OHLC stock price timeseries
- |      period      :str        =5y         [1mo, 6mo, 1y, 2y, 5y, 10y, ytd, max]
- |      start       :str        =None       [YYYY-MM-DD*]
- |      end         :str        =None       [YYYY-MM-DD*]
- |      interval    :str        =1d         [1d, 1wk, 1mo, 3mo]
- |      data        :str        =all        [open, high, low, close, volume, all]
- |      calculation :str        =price      [price, simple return, log return]
- |      round       :bool       =True       [True, False]
- |      -----api(s): yfinance
- |
- |  realtime()--------------Realtime stock price
- |      display     :str        =json       [json, pretty]
- |      -----api(s): twelve data
- |  
- |  statement()-------------IS, BS, CFS data
- |      display     :str        =json       [json, table]
- |      statement   :str        =all        [income, balance, cash, all]
- |      currency    :str        =None       [CCC*]
- |      unit        :str        =raw        [thousand, million, billion, raw]
- |      decimal     :bool       =False      [True, False]
- |      interval    :str        =annual     [annual, quarter]
- |      -----api(s): yfinance, twelve data
- |
- |  quote()-----------------Stock quote: EOD OHLCV, TTM high/low, percent change (5d, 1m, 6m, ytd, 1y, 5y), price/volume SMAs
- |      display     :str        =json       [json, pretty]
- |      -----api(s): yfinance
- |  
- |  info()------------------General stock info: country, earnings date, description, company officers
- |      display     :str        =json       [json, pretty]
- |      -----api(s): yfinance, SEC
- |  
- |  news()------------------Stock related news
- |      display     :str        =json       [json, pretty]
- |      -----api(s): yfinance
- |  
- |  filings()---------------Recent SEC filings within at least one year of filing or to 1,000 filings (whichever is more)
- |      form        :str        =None       [FORM*]
- |      -----api(s): SEC
- |  
- |  eps()-------------------EPS timeseries
- |      display     :str        =json       [json, table]
- |      interval    :str        =annual     [quarter, annual]
- |      -----api(s): alpha vantage
- |  
- |  analyst_estimates()-----Analyst estimates (earnings, revenue, growth, price)
- |      display     :str        =json       [json, pretty]
- |      -----api(s): yfinance
- |  
- |  dividend()--------------Dividend timeseries
- |      display     :str        =json       [json, table]
- |      -----api(s): yfinance
- |  
- |  split()-----------------Stock split timeseries
- |      display     :str        =json       [json, table]
- |      -----api(s): yfinance
- |  
- |  stats()-----------------Stock financial ratios (valuation, profitability, growth, liquidity, leverage, efficiency, cash flow)
- |      display     :str        =json       [json, pretty]
- |      -----api(s): yfinance
- |  
- |  top()-------------------Top stocks of the day
- |      display     :str        =json       [json, pretty]
- |      type        :str        =gainer     [gainer, loser, active]
- |      -----api(s): yfinance
-'''
-
-        print(output)
-#------------------------------------------------------------------------------------------
     def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
         #Checking if the parameter inputs are invalid
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
@@ -124,8 +55,11 @@ class equity():
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
         #Downloading the raw price data timeseries from yahoo finance with some presets'''
-        #Note: The start, end parameters override the period parameter
-        yf_download = yf.download(self.ticker, period=period, start=start, end=end, interval=interval, ignore_tz=True, rounding=round, group_by='column', progress=False)
+        #Note start and end parameters will override any period parameter presence
+        if start == None and end == None:
+            yf_download = yf.download(self.ticker, period=period, interval=interval, ignore_tz=True, rounding=round, group_by='column', progress=False, auto_adjust=True)
+        elif start != None and end != None:
+            yf_download = yf.download(self.ticker, start=start, end=end, interval=interval, ignore_tz=True, rounding=round, group_by='column', progress=False, auto_adjust=True)
         #----------------------------------------------------------------------------------
 
         #PARAMETER - DATA =================================================================
@@ -184,7 +118,7 @@ Currency: {td_quote['currency']}'''
 #------------------------------------------------------------------------------------------
     def statement(self, display: str = 'json', statement: str = 'all', currency: str = None, unit: str = 'raw', decimal: bool = False, interval: str = 'annual'): 
         valid_params = {'valid_statement' : ['income', 'balance', 'cash', 'all'],
-                        'valid_unit' : ['thousand', 'million', 'billion', 'raw'],
+                        'valid_unit' : ['thousand', 'million', 'raw'],
                         'valid_display' : ['json', 'table'],
                         'valid_decimal' : [True, False],
                         'valid_interval' : ['annual', 'quarter']}
@@ -437,8 +371,6 @@ Currency: {td_quote['currency']}'''
             data /= 1000
         elif unit == 'million':
             data /= 1000000
-        elif unit == 'billion':
-            data /= 1000000000
 
         #PARAMETER - CURRENCY ==============================================================
         current_currency = firm.get_info()['financialCurrency'] if 'financialCurrency' in firm.get_info().keys() else '---'
@@ -473,7 +405,7 @@ Currency: {td_quote['currency']}'''
             return output
         elif display == 'table':
             output = data.map(lambda x: f'{x:,}' if isinstance(x, (int, float)) and pd.notna(x) else x)
-            return output    
+            return output
 #------------------------------------------------------------------------------------------
     def quote(self, display: str = 'json'):
         valid_params = {'valid_display': ['json', 'pretty'],}
@@ -486,16 +418,37 @@ Currency: {td_quote['currency']}'''
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
 
         #RAW DATA/OBSERVATIONS--------------------------------------------------------------
-        yf_download = yf.download(self.ticker, progress=False)
+        today = date.today().strftime("%Y-%m-%d")
+        six_y_ago = str(int(today[0:4])-6) + today[4:]
+        
+        yf_download = yf.download(self.ticker, progress=False, auto_adjust=True, start=six_y_ago, end=today)
         
         yf_quote = yf.Ticker(self.ticker).get_fast_info()
 
         yf_history_metadata = yf.Ticker(self.ticker).get_history_metadata()
 
-        yf_eod = yf.download(self.ticker, progress=False)['Close'].iloc[-1].iloc[0]
+        yf_eod = yf.download(self.ticker, progress=False, auto_adjust=True)['Close'].iloc[-1].iloc[0]
 
         current_year = pd.Timestamp.now().year
         #-----------------------------------------------------------------------------------
+        
+        #DATES
+        initial_dates = [
+                    date.today() - relativedelta(years=5),
+                    date.today() - relativedelta(years=1),
+                    date.today() - relativedelta(months=6),
+                    date.today() - relativedelta(months=1)
+                    #we do not need a date for 5 days because the # days is fixed
+                ]
+
+        initial_dates = [pd.Timestamp(d) for d in initial_dates]
+
+        final_dates = []
+
+        for d in initial_dates:
+            while d not in yf_download.index.tolist():
+                d = d + relativedelta(days=1)
+            final_dates.append(d)
         
         #JSON FORMAT DATA
         quote_data = {
@@ -513,16 +466,16 @@ Currency: {td_quote['currency']}'''
                 'volume': int((yf_download['Volume'].iloc[-1]).iloc[0])
             },
             'ttm': {
-                'high': round(float((yf_download['High'].iloc[-252:].max()).iloc[0]),2),
-                'low': round(float((yf_download['Low'].iloc[-252:].min()).iloc[0]),2)
+                'high': round(float((yf_download['High'].loc[final_dates[1]:].max()).iloc[0]),2),
+                'low': round(float((yf_download['Low'].loc[final_dates[1]:].min()).iloc[0]),2)
             },
             'percent change': {
-                '5y': float(((yf_eod/yf_download['Close'].iloc[-1260]) - 1).iloc[0]) if yf_download.shape[0]>1260 else np.nan,
-                '1y': float(((yf_eod/yf_download['Close'].iloc[-252]) - 1).iloc[0]) if yf_download.shape[0]>252 else np.nan,
+                '5y': float(((yf_eod/yf_download['Close'].loc[final_dates[0]]) - 1).iloc[0]) if yf_download.shape[0]>1265 else np.nan,
+                '1y': float(((yf_eod/yf_download['Close'].loc[final_dates[1]]) - 1).iloc[0]) if yf_download.shape[0]>260 else np.nan,
                 'ytd': float(((yf_eod/yf_download['Close'][yf_download.index.year == current_year].iloc[0]) - 1).iloc[0]),
-                '6m': float(((yf_eod/yf_download['Close'].iloc[-126]) - 1).iloc[0]) if yf_download.shape[0]>126 else np.nan,
-                '1m': float(((yf_eod/yf_download['Close'].iloc[-21]) - 1).iloc[0]) if yf_download.shape[0]>21 else np.nan,
-                '5d': float(((yf_eod/yf_download['Close'].iloc[-5]) - 1).iloc[0]) if yf_download.shape[0]>5 else np.nan
+                '6m': float(((yf_eod/yf_download['Close'].loc[final_dates[2]]) - 1).iloc[0]) if yf_download.shape[0]>130 else np.nan,
+                '1m': float(((yf_eod/yf_download['Close'].loc[final_dates[3]]) - 1).iloc[0]) if yf_download.shape[0]>25 else np.nan,
+                '5d': float(((yf_eod/yf_download['Close'].iloc[-5]) - 1).iloc[0]) if yf_download.shape[0]>6 else np.nan
             },
             '50d average price': float((yf_download['Close'].iloc[-50:].mean()).iloc[0]),
             '200d average price': float((yf_download['Close'].iloc[-200:].mean()).iloc[0]),
@@ -666,54 +619,6 @@ COMPANY OFFICERS--------------------------------------------------
             
             print(output)
 #------------------------------------------------------------------------------------------
-    def news(self, display: str = 'json'):
-        valid_params = {'valid_display': ['json', 'pretty'],}
-        
-        params = {'display': display}
-
-        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
-            if param_value not in valid_param:
-                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
-                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
-        
-        #RAW DATA/OBSERVATIONS-------------------------------------------------------------
-        news = yf.Ticker(self.ticker).get_news()
-        #----------------------------------------------------------------------------------
-
-        #JSON DATA FORMAT
-        news_data = []
-        for article in news:
-            article = article['content']
-            data_point = {
-                'title': article['title'],
-                'publish date': f'{article['pubDate'][0:10]} {article['pubDate'][11:19]}',
-                'provider': article['provider']['displayName'],
-                'snippet': article['summary'],
-                'url': article['canonicalUrl']['url'],
-            }
-            news_data.append(data_point)
-
-        #PARAMETER - DISPLAY ==============================================================
-        if display == 'json':
-            output = news_data
-            return output
-        if display == 'pretty':
-            article_strings = '---------------------------------------------------------------------------------\n'
-            
-            for i in news_data:
-                string = f'''{i['title']}
-{i['provider']} -- {i['publish date']}
-
-{i['snippet']}
-
-URL: {i['url']}
----------------------------------------------------------------------------------\n'''
-                article_strings += string
-
-            output = article_strings
-
-            print(output)
-#------------------------------------------------------------------------------------------
     def filings(self, form: str = None): 
         
         if Config.email_address is None:
@@ -769,7 +674,7 @@ URL: {i['url']}
         #PARAMETER - INTERVAL =============================================================
         if interval == 'annual':
             #retriving the annual portion of the av_eps endpoint
-            annual_data = av_eps['annualEarnings']
+            annual_data = av_eps['annualEarnings'][1:][::-1]
             json_eps_data = {}
             for data_point in annual_data:
                 json_eps_data[data_point['fiscalDateEnding']] = data_point['reportedEPS']
@@ -1031,7 +936,7 @@ PRICE ESTIMATE----------------------------------------------------------
         yf_raw_qIS = yf.Ticker(self.ticker).quarterly_income_stmt
 
         #OTHER
-        yf_eod = yf.download(self.ticker, progress=False)['Close'].iloc[-1].iloc[0]
+        yf_eod = yf.download(self.ticker, progress=False, auto_adjust=True)['Close'].iloc[-1].iloc[0]
 
         yf_quote = yf.Ticker(self.ticker).get_fast_info()
 
@@ -1093,7 +998,7 @@ PRICE ESTIMATE----------------------------------------------------------
         for date_list in date_lists:
             for date in date_list:
                 try:
-                    a = yf.download(self.ticker, progress=False, ignore_tz=True).loc[date]
+                    a = yf.download(self.ticker, progress=False, ignore_tz=True, auto_adjust=True, period='5y').loc[date]
                     FY_prices.append(float(a.iloc[0]))
                     break
                 except KeyError:
@@ -1441,62 +1346,5 @@ CASH FLOW-----------------------------------------------------------------------
     FCFE.DA.WC.NonCash  ttm  {icrj(cf['fcfe_DA.WC.otherNonCash']['ttm'])} |{icrj(cf['fcfe_DA.WC.otherNonCash'][fy[0]])} |{icrj(cf['fcfe_DA.WC.otherNonCash'][fy[1]])} |{icrj(cf['fcfe_DA.WC.otherNonCash'][fy[2]])} |{icrj(cf['fcfe_DA.WC.otherNonCash'][fy[3]])} |
 '''
         
-            print(output)
-#------------------------------------------------------------------------------------------
-    def top(self, display: str = 'json', type: str = 'gainer'): 
-        valid_params = {'valid_display': ['json', 'pretty'],
-                        'type': {'gainer', 'loser', 'active'}}
-        
-        params = {'display': display,
-                  'type': type}
-
-        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
-            if param_value not in valid_param:
-                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
-                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
-            
-        #RAW DATA/OBSERVATIONS-------------------------------------------------------------
-        #PARAMETER - TYPE =================================================================
-        if type == 'gainer':
-            quotes = yf.screen('day_gainers')['quotes']
-        elif type == 'loser':
-            quotes = yf.screen('day_losers')['quotes']
-        elif type == 'active':
-            quotes = yf.screen('most_actives')['quotes']
-        #----------------------------------------------------------------------------------
-
-        #JSON FORMAT DATA
-        quote_data = {}
-        for quote in quotes:
-            quote_info = yf.Ticker(quote['symbol']).get_info()
-
-            quote_data[quote['symbol']] = {
-                'symbol': quote['symbol'],
-                'name': quote['longName'] if 'longName' in quote.keys() else '-',
-                'region': quote['region'],
-                'exchange': quote['fullExchangeName'],
-                'price change': quote['regularMarketChange'],
-                'percent change': quote['regularMarketChangePercent'],
-                'volume': quote['regularMarketVolume'],
-                'sector': quote_info.get('sector', '-'),
-                'industry': quote_info.get('industry', '-')
-            }
-
-        #PARAMETER - DISPLAY ==============================================================
-        if display == 'json':
-            output = quote_data
-            return quote_data
-        if display == 'pretty':
-            output = '--------------------------------------------------------------\n'
-            for k in quote_data.keys():
-                a = f'''           Identifier: {quote_data[k]['symbol']} - {quote_data[k]['name']}
-      Region/Exchange: {quote_data[k]['region']} - {quote_data[k]['exchange']}
-Price(Percent) Change: {round(quote_data[k]['price change'], 2)} ({round(quote_data[k]['percent change'], 2)}%)
-               Volume: {quote_data[k]['volume']:,}
-      Sector/Industry: {quote_data[k]['sector']} - {quote_data[k]['industry']}
---------------------------------------------------------------
-'''
-                output += a
-
             print(output)
 #------------------------------------------------------------------------------------------

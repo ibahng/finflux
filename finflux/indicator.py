@@ -4,8 +4,9 @@ import yfinance as yf # type: ignore
 import numpy as np # type: ignore
 import requests # type: ignore
 import pandas as pd # type: ignore
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 import json
+from dateutil.relativedelta import relativedelta
 
 #------------------------------------------------------------------------------------------
 class InvalidParameterError(Exception):
@@ -21,57 +22,7 @@ class MissingConfigObject(Exception):
         self.msg = msg
 
 #------------------------------------------------------------------------------------------
-class US_indic:
-#------------------------------------------------------------------------------------------
-    def help(self):
-        output = '''
-class US_indic():
- |  gdp()-------------------US gross domestic product quarterly timeseries
- |      type        :str        =n          [n, r, n_pc, r_pc, d]
- |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
- |      figure      :str        =yoy        [raw, yoy, pop]
- |      -----api(s): Bureau of Economic Analysis
- |
- |  price_index()-----------US core/raw consumer/producer price indices monthly timeseries
- |      type        :str        =c          [c, p, cc, cp]
- |      period      :str        =5y         [1y, 2y,  5y, 10y, max, ytd]
- |      figure      :str        =yoy        [raw, yoy, pop]
- |      -----api(s): Bureau of Labor Statistics
- |
- |  pce()-------------------US personal consumption expenditure monthly timeseries
- |      type        :str        =raw        [raw, core]
- |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
- |      figure      :str        =yoy        [raw, yoy, pop]
- |      -----api(s): Bureau of Economic Analysis
- |
- |  unemployment()----------US unemployment rate monthly timeseries
- |      type        :str        =U-3        [U-3, U-6, g=male, g=female, r=white, r=black, r=asian, r=hispanic, e<hs, e=hs, e<bach, e>=bach]
- |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
- |      -----api(s): Bureau of Labor Statistics
- |
- |  labor()-----------------US labor related indicator statistics monthly timeseries (weekly for 'claims')
- |      type        :str        =None       [participation, payroll, quits, openings, earnings, claims]
- |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
- |      -----api(s): Bureau of Labor Statistics
- |
- |  sentiment()-------------US sentiment markers
- |      type        :str        =c_mcsi     [c_mcsi, c_oecd, b_oecd]
- |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
- |      -----api(s): 
- |
- |  fed_rate()--------------US federal funds rate timeseries # INPROGRESS
- |      interval    :str        =1d         [1d, 1wk, 2wk, 1mo]
- |      period      :str        =5y         [1y, 2y, 5y, 10y, max, ytd]
- |      -----api(s): FRED(Board of Governers)
- |
- |  housing()---------------US housing related indicator statistics monthly timeseries (weekly for '##y_rates')
- |      type        :str        =starts     [starts, nsales, esales, 30y_rate, 15y_rate]
- |      period      :str        =5y         [1y, 2y, 5y, 10y, ytd, max]
- |      figure      :str        =raw        [raw, yoy, pop]
- |      -----api(s): FRED(Census Bureau, NAR, Freddie Mac)
-'''
-
-        print(output)
+class indicator:
 #------------------------------------------------------------------------------------------
     def gdp(self, type: str = 'n', period: str = '5y', figure: str = 'yoy'): 
         valid_params = {'valid_type': ['n', 'r', 'n_pc', 'r_pc', 'd'],
@@ -149,7 +100,7 @@ class US_indic():
             data_df = data_df[data_df.index.str[0:4] == current_year]
             output = data_df
         elif period != 'max' or period != 'ytd':
-            data_df = data_df[period_to_df[period]:]
+            data_df = data_df.iloc[period_to_df[period]:]
             output = data_df
         
         output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
@@ -277,7 +228,7 @@ class US_indic():
             data_df = data_df[data_df.index.str[0:4] == current_year]
             output = data_df
         elif period != 'max' or period != 'ytd':
-            data_df = data_df[period_to_df[period]:]
+            data_df = data_df.iloc[period_to_df[period]:]
             output = data_df
         
         output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
@@ -365,7 +316,7 @@ class US_indic():
             data_df = data_df[data_df.index.str[0:4] == current_year]
             output = data_df
         elif period != 'max' or period != 'ytd':
-            data_df = data_df[period_to_df[period]:]
+            data_df = data_df.iloc[period_to_df[period]:]
             output = data_df
 
         return output
@@ -481,7 +432,7 @@ class US_indic():
             data_df = data_df[data_df.index.str[0:4] == current_year]
             output = data_df
         elif period != 'max' or period != 'ytd':
-            data_df = data_df[period_to_df[period]:]
+            data_df = data_df.iloc[period_to_df[period]:]
             output = data_df
         
         output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
@@ -596,7 +547,7 @@ class US_indic():
             '1y': [-13,-53],
             '2y': [-25,-105],
             '5y': [-61,-261],
-            '10y': [-121,-521]
+            '10y': [-121,-522]
         }      
 
         if period == 'max':
@@ -606,7 +557,7 @@ class US_indic():
             data_df = data_df[data_df.index.str[0:4] == current_year]
             output = data_df
         elif period != 'max' or period != 'ytd':
-            data_df = data_df[period_to_df[period][identifiers[type][2]]:]
+            data_df = data_df.iloc[period_to_df[period][identifiers[type][2]]:]
             output = data_df
         
         output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
@@ -623,7 +574,6 @@ class US_indic():
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
             if param_value not in valid_param:
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
-                                 
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
             
         FRED_IDs = {
@@ -666,7 +616,7 @@ class US_indic():
                 data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
 
         elif period == 'ytd':
-            for data_point in FRED_yield['observations'][-260:]:
+            for data_point in FRED_yield['observations'][-15:]:
                 if data_point['date'][0:4] == str(current_year):
                     data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
 
@@ -699,12 +649,6 @@ class US_indic():
         }
 
         period_points = {
-            '1d': {
-                '1y': -262,
-                '2y': -525,
-                '5y': -1311,
-                '10y': -2621,
-            },
             '1wk': {
                 '1y': -53,
                 '2y': -105,
@@ -725,39 +669,65 @@ class US_indic():
             }
         }
 
-        #RAW DATA/OBSERVATION--------------------------------------------------------------
-        id = FRED_IDs[interval][0]
-
-        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
-        FRED_rate = requests.get(FRED_url).json()
-
-        current_year = pd.Timestamp.now().year
-        #----------------------------------------------------------------------------------
-
         def is_numeric(str):
             try:
                 float(str)
                 return True
             except ValueError:
                 return False
+
+        #RAW DATA/OBSERVATION--------------------------------------------------------------
+        id = FRED_IDs[interval][0]
+
+        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+        FRED_rate = requests.get(FRED_url).json()
         
-        #PARAMETER - PERIOD ================================================================  
         data = {}
+        for data_point in FRED_rate['observations']:
+            data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+        
+        rate_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'Federal Funds Rate ({FRED_IDs[interval][1]})'])
+        rate_df.index = pd.to_datetime(rate_df.index)
+
+        current_year = pd.Timestamp.now().year
+        #----------------------------------------------------------------------------------
+
+        #DATES
+        initial_dates = [
+                    date.today() - relativedelta(years=1),
+                    date.today() - relativedelta(years=2),
+                    date.today() - relativedelta(years=5),
+                    date.today() - relativedelta(years=10)
+                ]
+
+        initial_dates = [pd.Timestamp(d) for d in initial_dates]
+
+        final_dates_list = []
+
+        for d in initial_dates:
+            while d not in rate_df.index.tolist():
+                d = d + relativedelta(days=1)
+            final_dates_list.append(d)
+
+        final_dates = {
+            '1y': final_dates_list[0],
+            '2y': final_dates_list[1],
+            '5y': final_dates_list[2],
+            '10y': final_dates_list[3],
+        }
+    
+        #PARAMETER - PERIOD ================================================================  
         if period == 'max':
-            for data_point in FRED_rate['observations']:
-                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+            output = rate_df
 
         elif period == 'ytd':
-            for data_point in FRED_rate['observations'][-300:]:
-                if data_point['date'][0:4] == str(current_year):
-                    data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+            output = rate_df[rate_df.index.year == current_year]
 
         else:
-            for data_point in FRED_rate['observations'][period_points[interval][period]:]:
-                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
-
-        output = pd.DataFrame.from_dict(data, orient='index', columns=[f'Federal Funds Rate ({FRED_IDs[interval][1]})'])
-        output.index = pd.to_datetime(output.index)
+            if interval == '1d':
+                output = rate_df.loc[final_dates[period]:]
+            elif interval != '1d':
+                output = rate_df.iloc[period_points[interval][period]:]
 
         return output
 #------------------------------------------------------------------------------------------
@@ -776,11 +746,11 @@ class US_indic():
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
 
         identifiers = {
-            'starts': ['HOUST', 'Housing Starts SAAR (Thousands)', 'MoM', 0], #CENSUS M
-            'nsales': ['HSN1F', 'New Housing Sales SAAR (Thousands)', 'MoM', 0], #CENSUS M
-            'esales': ['EXHOSLUSM495S', 'Existing Housing Sales SAAR (Thousands)', 'MoM', 0], #NAR M
-            '30y_rate': ['MORTGAGE30US', '30 Year Mortgage Rate', 'WoW', 1], #Freddie Mac W
-            '15y_rate': ['MORTGAGE15US', '15 Year Mortgage Rate', 'Wow', 1] #Freddie Mac W
+            'starts': ['HOUST', 'Housing Starts SAAR (Thousands)', 'MoM', 0, 12], #CENSUS M
+            'nsales': ['HSN1F', 'New Housing Sales SAAR (Thousands)', 'MoM', 0, 12], #CENSUS M
+            'esales': ['EXHOSLUSM495S', 'Existing Housing Sales SAAR (Thousands)', 'MoM', 0, 12], #NAR M (Only provides data from a year back)
+            '30y_rate': ['MORTGAGE30US', '30 Year Mortgage Rate', 'WoW', 1, 52], #Freddie Mac W
+            '15y_rate': ['MORTGAGE15US', '15 Year Mortgage Rate', 'Wow', 1, 52] #Freddie Mac W
         }
         
         #RAW DATA/OBSERVATION----------------------------------------------------------FRED
@@ -804,19 +774,10 @@ class US_indic():
 
         data_df = pd.DataFrame.from_dict(data_dict, orient='index', columns=[f'{identifiers[type][1]}'])
 
-        #PARAMETER - FIGURE ================================================================
-        if figure == 'raw':
-            pass
-        elif figure == 'yoy':
-            data_df[f'{identifiers[type][1].split(' (')[0]} YoY % Change'] = (((data_df[f'{identifiers[type][1]}']/data_df[f'{identifiers[type][1]}'].shift(12)) - 1) * 100).round(2)
-            del data_df[f'{identifiers[type][1]}']
-            data_df = data_df.drop(data_df.index[0:12])
-        elif figure == 'pop':
-            data_df[f'{identifiers[type][1].split(' (')[0]} {identifiers[type][2]} % Change'] = (((data_df[f'{identifiers[type][1]}']/data_df[f'{identifiers[type][1]}'].shift(1)) - 1) * 100).round(2)
-            del data_df[f'{identifiers[type][1]}']
-            data_df = data_df.drop(data_df.index[0:1])
+        if type == 'esales':
+            data_df = data_df.drop(data_df.index[0])
+            data_df[f'{identifiers[type][1]}'] = (data_df[f'{identifiers[type][1]}']/1000).astype(int)
 
-        #PARAMETER - PERIOD ================================================================
         period_to_df = {
             '1y': [-13,-53],
             '2y': [-25,-105],
@@ -824,6 +785,31 @@ class US_indic():
             '10y': [-121,-521]
         }
 
+        #PARAMETER - FIGURE ================================================================
+        if figure == 'raw':
+            pass
+        elif figure == 'yoy':
+            data_df[f'{identifiers[type][1].split(' (')[0]} YoY % Change'] = (
+                (
+                    (
+                        data_df[f'{identifiers[type][1]}'] / data_df[f'{identifiers[type][1]}'].shift(identifiers[type][4])
+                    ) - 1
+                ) * 100
+            ).round(2)
+            del data_df[f'{identifiers[type][1]}']
+            data_df = data_df.drop(data_df.index[0:12])
+        elif figure == 'pop':
+            data_df[f'{identifiers[type][1].split(' (')[0]} {identifiers[type][2]} % Change'] = (
+                (
+                    (
+                        data_df[f'{identifiers[type][1]}'] / data_df[f'{identifiers[type][1]}'].shift(1)
+                    ) - 1
+                ) * 100
+            ).round(2)
+            del data_df[f'{identifiers[type][1]}']
+            data_df = data_df.drop(data_df.index[0:1])
+
+        #PARAMETER - PERIOD ================================================================
         if period == 'max':
             output = data_df
         elif period == 'ytd':
@@ -836,5 +822,8 @@ class US_indic():
         
         output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
 
-        return output
+        if type != 'esales':
+            return output
+        elif type == 'esales':
+            print('*NOTE: Data avaliablity limited at 1y. YoY figure calculation invalid.')
 #------------------------------------------------------------------------------------------

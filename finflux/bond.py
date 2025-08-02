@@ -6,6 +6,8 @@ import requests # type: ignore
 import pandas as pd # type: ignore
 import matplotlib.pyplot as plt # type: ignore
 from datetime import timedelta, datetime
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 #------------------------------------------------------------------------------------------
 class InvalidParameterError(Exception):
@@ -22,41 +24,6 @@ class MissingConfigObject(Exception):
 
 #------------------------------------------------------------------------------------------
 class bond:
-#------------------------------------------------------------------------------------------
-    def help(self):
-        output = '''
-class bond():
- |  nonUS_10Y_sovereign()---10Y sovereign bond yields for non-US countries
- |      country     :str        =None       [KR, AT, CL, CZ, GR, FI, ZA, NL, SK, NZ, LU, PL, SI, CH, DE, CA, JP, DK, BE, FR, NO, PT, IT, GB, ES, IE, AU, SE, MX, HU, IS]
- |      period      :str        =5y         [1y, 2y, 5y, 10y, max]
- |      -----api(s): FRED(OECD)
- |
- |  US_treasury()-----------US treasury bond yield daily timeseries
- |      maturity    :str        =10y        [6mo, 1y, 2y, 3y, 5y, 7y, 10y, 20y, 30y]
- |      period      :str        =5y         [6mo, 1y, 2y, 5y, 10y, ytd, max]
- |      -----api(s): FRED(Board of Governers)
- |      
- |  US_curve()--------------US treasury bond yield curve (EOD, 3MO, 6MO)
- |      display     :str        =graph      [json, table, graph]
- |      -----api(s): FRED(Board of Governers)
- |      
- |  US_eod()----------------US treasury bond eod yield
- |      display     :str        =json       [json, pretty]
- |      maturity    :str        =10y        [6mo, 1y, 2y, 3y, 5y, 7y, 10y, 20y, 30y]
- |      -----api(s): FRED(Board of Governers)
- |      
- |  US_quote()--------------US treasury bond quote: TTM high/low, percent change (5d, 1m, 6m, ytd, 1y, 5y), SMAs
- |      display     :str        =json       [json, pretty]
- |      maturity    :str        =10y        [6mo, 1y, 2y, 3y, 5y, 7y, 10y, 20y, 30y]
- |      -----api(s): FRED(Board of Governers)
- |
- |  US_HQM_corporate()------US high quality (A, AA, AA) corporate bond yield monthly timeseries
- |      maturity    :str        =10y        [6mo, 1y, 2y, 3y, 5y, 7y, 10y, 20y, 30y]
- |      period      :str        =5y         [6mo, 1y, 2y, 5y, 10y, ytd, max]
- |      -----api(s): FRED(US Treasury)
-'''
-
-        print(output)
 #------------------------------------------------------------------------------------------
     def nonUS_10Y_sovereign(self, country: str = None, period: str = '5y'): 
         valid_params = {'valid_country': ['KR', 'AT', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS'],
@@ -166,57 +133,78 @@ class bond():
             '1y': 'DGS1',
             '2y': 'DGS2',
             '3y': 'DGS3',
-            '5y': 'DGS5',
             '7y': 'DGS7',
-            '10y': 'DGS10',
             '20y': 'DGS20',
-            '30y': 'DGS30'
-        }    
+        }
 
-        period_points = {
-            '6mo': -126,
-            '1y': -252,
-            '2y': -504,
-            '5y': -1260,
-            '10y': -2520,
+        YF_TICKERS = {
+            '5y': '^FVX',
+            '10y': '^TNX',
+            '30y': '^TYX'
         }
 
         if Config.fred_apikey is None:
             raise MissingConfigObject('Missing fred_apikey. Please set your FRED api key using the set_config() function.')
         
         #RAW DATA/OBSERVATION--------------------------------------------------------------
-        id = FRED_IDs[maturity]
+        if maturity in ['6mo', '1y', '2y', '3y', '7y', '20y']:
+            id = FRED_IDs[maturity]
 
-        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
-        FRED_yield = requests.get(FRED_url).json()
+            FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+            FRED_yield = requests.get(FRED_url).json()
+            yield_df = pd.DataFrame(FRED_yield['observations'])
+            yield_df = yield_df.drop(columns=['realtime_start', 'realtime_end'])
+            yield_df['date'] = pd.to_datetime(yield_df['date'])
+            yield_df['value'] = pd.to_numeric(yield_df['value'], errors='coerce')
+            yield_df = yield_df.set_index('date')
+            yield_df.index.name = 'Date'
+            yield_df = yield_df.rename(columns={'value': f'US {maturity.upper()}'})
+
+        if maturity in ['5y', '10y', '30y']:
+            id = YF_TICKERS[maturity]
+                
+            yield_df = yf.download(id, progress=False, auto_adjust=True, period='max')['Close']
+            yield_df.columns.name = None
+            yield_df = yield_df.rename(columns={id: f'US {maturity.upper()}'})
 
         current_year = pd.Timestamp.now().year
         #----------------------------------------------------------------------------------
-
-        def is_numeric(str):
-            try:
-                float(str)
-                return True
-            except ValueError:
-                return False
         
+        #DATES
+        initial_dates = [
+            date.today() - relativedelta(months=6),
+            date.today() - relativedelta(years=1),
+            date.today() - relativedelta(years=2),
+            date.today() - relativedelta(years=5),
+            date.today() - relativedelta(years=10)
+        ]
+
+        initial_dates = [pd.Timestamp(d) for d in initial_dates]
+
+        f_dates = []
+
+        for d in initial_dates:
+            while d not in yield_df.index.tolist():
+                d = d + relativedelta(days=1)
+            f_dates.append(d)
+
+        final_dates = {
+            '6mo' : f_dates[0],
+            '1y' : f_dates[1],
+            '2y' : f_dates[2],
+            '5y' : f_dates[3],
+            '10y' : f_dates[4],
+        }
+
         #PARAMETER - PERIOD ================================================================  
-        data = {}
         if period == 'max':
-            for data_point in FRED_yield['observations']:
-                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+            output = yield_df
 
         elif period == 'ytd':
-            for data_point in FRED_yield['observations'][-260:]:
-                if data_point['date'][0:4] == str(current_year):
-                    data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+            output = yield_df[yield_df.index.year == current_year]
 
         else:
-            for data_point in FRED_yield['observations'][period_points[period]:]:
-                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
-
-        output = pd.DataFrame.from_dict(data, orient='index', columns=[f'US {maturity.upper()}'])
-        output.index = pd.to_datetime(output.index)
+            output = yield_df.loc[final_dates[period]:]
 
         return output
 #------------------------------------------------------------------------------------------
@@ -310,21 +298,30 @@ class bond():
             '1y': 'DGS1',
             '2y': 'DGS2',
             '3y': 'DGS3',
-            '5y': 'DGS5',
             '7y': 'DGS7',
-            '10y': 'DGS10',
             '20y': 'DGS20',
-            '30y': 'DGS30'
+        }
+
+        YF_TICKERS = {
+            '5y': '^FVX',
+            '10y': '^TNX',
+            '30y': '^TYX'
         }
         
         if Config.fred_apikey is None:
             raise MissingConfigObject('Missing fred_apikey. Please set your FRED api key using the set_config() function.')
         
         #RAW DATA/OBSERVATION--------------------------------------------------------------
-        id = FRED_IDs[maturity]
+        if maturity in ['6mo', '1y', '2y', '3y', '7y', '20y']:
+            id = FRED_IDs[maturity]
 
-        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
-        FRED_yield = requests.get(FRED_url).json()
+            FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+            FRED_yield = requests.get(FRED_url).json()
+
+        if maturity in ['5y', '10y', '30y']:
+            id = YF_TICKERS[maturity]
+                
+            yf_download = yf.download(id, progress=False, auto_adjust=True, period='max')['Close']
         #----------------------------------------------------------------------------------
 
         def is_numeric(str):
@@ -335,12 +332,21 @@ class bond():
                 return False
 
         #JSON FORMAT DATA
-        eod_data = {
-            'country': 'United States',
-            'maturity': maturity.upper(),
-            'date': FRED_yield['observations'][-1]['date'],
-            'yield': (float(FRED_yield['observations'][-1]['value']) if is_numeric(FRED_yield['observations'][-1]['value']) else np.nan)
-        }
+        if maturity in ['6mo', '1y', '2y', '3y', '7y', '20y']:
+            eod_data = {
+                'country': 'United States',
+                'maturity': maturity.upper(),
+                'date': FRED_yield['observations'][-1]['date'],
+                'yield': (float(FRED_yield['observations'][-1]['value']) if is_numeric(FRED_yield['observations'][-1]['value']) else np.nan)
+            }
+
+        if maturity in ['5y', '10y', '30y']:
+            eod_data = {
+                'country': 'United States',
+                'maturity': maturity.upper(),
+                'date': yf_download.iloc[-1].name.strftime('%Y-%m-%d'),
+                'yield': float(round(yf_download.iloc[-1].iloc[0], 2))
+            }
 
         #PARAMETER - DISPLAY ===============================================================
         if display == 'json':
@@ -376,20 +382,44 @@ MATURITY - {eod_data['maturity']}
         current_year = pd.Timestamp.now().year
         #-----------------------------------------------------------------------------------
         
+        #DATES
+        initial_dates = [
+            date.today() - relativedelta(years=5),
+            date.today() - relativedelta(years=1),
+            date.today() - relativedelta(months=6),
+            date.today() - relativedelta(months=1)
+        ]
+
+        initial_dates = [pd.Timestamp(d) for d in initial_dates]
+
+        f_dates = []
+
+        for d in initial_dates:
+            while d not in US_timeseries.index.tolist():
+                d = d + relativedelta(days=1)
+            f_dates.append(d)
+
+        final_dates = {
+            '5y' : f_dates[0],
+            '1y' : f_dates[1],
+            '6m' : f_dates[2],
+            '1m' : f_dates[3],
+        }
+
         #JSON FORMAT DATA
         quote_data = {
             'identifier': f'US {maturity.upper()} Treasury Bond Yield',
             'ttm': {
-                'high': round(float((US_timeseries.iloc[-252:].max()).iloc[0]),2),
-                'low': round(float((US_timeseries.iloc[-252:].min()).iloc[0]),2)
+                'high': round(float((US_timeseries.loc[final_dates['1y']:].max()).iloc[0]),2),
+                'low': round(float((US_timeseries.loc[final_dates['1y']:].min()).iloc[0]),2)
             },
             'percent change': {
-                '5y': float(((US_eod/US_timeseries.iloc[-1260]) - 1).iloc[0] if pd.notna(US_timeseries.iloc[-1260].iloc[0]) else ((US_eod/US_timeseries.iloc[-1260]) - 1).iloc[1]),
-                '1y': float(((US_eod/US_timeseries.iloc[-252]) - 1).iloc[0] if pd.notna(US_timeseries.iloc[-252].iloc[0]) else ((US_eod/US_timeseries.iloc[-252]) - 1).iloc[1]),
-                'ytd': float(((US_eod/US_timeseries[US_timeseries.index.year == current_year].iloc[0]) - 1).iloc[0] if pd.notna(US_timeseries[US_timeseries.index.year == current_year].iloc[0].iloc[0]) else ((US_eod/US_timeseries[US_timeseries.index.year == current_year].iloc[1]) - 1).iloc[0]),
-                '6m': float(((US_eod/US_timeseries.iloc[-126]) - 1).iloc[0] if pd.notna(US_timeseries.iloc[-126].iloc[0]) else ((US_eod/US_timeseries.iloc[-126]) - 1).iloc[1]),
-                '1m': float(((US_eod/US_timeseries.iloc[-21]) - 1).iloc[0] if pd.notna(US_timeseries.iloc[-21].iloc[0]) else ((US_eod/US_timeseries.iloc[-21]) - 1).iloc[1]),
-                '5d': float(((US_eod/US_timeseries.iloc[-5]) - 1).iloc[0] if pd.notna(US_timeseries.iloc[-5].iloc[0]) else ((US_eod/US_timeseries.iloc[-5]) - 1).iloc[1])
+                '5y': float(((US_eod/US_timeseries.loc[final_dates['5y']]) - 1).iloc[0]) if pd.notna(US_timeseries.loc[final_dates['5y']].iloc[0]) else '-',
+                '1y': float(((US_eod/US_timeseries.loc[final_dates['1y']]) - 1).iloc[0]) if pd.notna(US_timeseries.loc[final_dates['1y']].iloc[0]) else '-',
+                'ytd': float(((US_eod/US_timeseries[US_timeseries.index.year == current_year].iloc[0]) - 1).iloc[0]) if pd.notna(US_timeseries[US_timeseries.index.year == current_year].iloc[0].iloc[0]) else ((US_eod/US_timeseries[US_timeseries.index.year == current_year].iloc[1]) - 1).iloc[0],
+                '6m': float(((US_eod/US_timeseries.loc[final_dates['6m']]) - 1).iloc[0]) if pd.notna(US_timeseries.loc[final_dates['6m']].iloc[0]) else '-',
+                '1m': float(((US_eod/US_timeseries.loc[final_dates['1m']]) - 1).iloc[0]) if pd.notna(US_timeseries.loc[final_dates['1m']].iloc[0]) else '-',
+                '5d': float(((US_eod/US_timeseries.iloc[-5]) - 1).iloc[0]) if pd.notna(US_timeseries.iloc[-5].iloc[0]) else '-'
             },
             '50d average price': float((US_timeseries.iloc[-50:].mean()).iloc[0]),
             '200d average price': float((US_timeseries.iloc[-200:].mean()).iloc[0])
@@ -404,8 +434,8 @@ MATURITY - {eod_data['maturity']}
 {quote_data['identifier']} Quote
 
 TTM HIGH/LOW----------------------------
-         HIGH --  {round(quote_data['ttm']['high'],2):,}
-          LOW --  {round(quote_data['ttm']['low'],2):,}
+         HIGH --  {quote_data['ttm']['high']}
+          LOW --  {quote_data['ttm']['low']}
 PERCENT CHANGE--------------------------
        5 YEAR -- {' ' if pd.isna(quote_data['percent change']['5y']) or quote_data['percent change']['5y']>0 else ''}{round(quote_data['percent change']['5y'] * 100,2)}%
        1 YEAR -- {' ' if pd.isna(quote_data['percent change']['1y']) or quote_data['percent change']['1y']>0 else ''}{round(quote_data['percent change']['1y'] * 100,2)}%
@@ -441,14 +471,6 @@ MOVING AVERAGES-------------------------
             '10y': 'HQMCB10YR',
             '20y': 'HQMCB20YR',
             '30y': 'HQMCB30YR'
-        }    
-
-        period_points = {
-            '6mo': -126,
-            '1y': -252,
-            '2y': -504,
-            '5y': -1260,
-            '10y': -2520,
         }
 
         if Config.fred_apikey is None:
@@ -458,34 +480,46 @@ MOVING AVERAGES-------------------------
         id = FRED_IDs[maturity]
 
         FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
-        FRED_bond = requests.get(FRED_url).json()
+        FRED_yield = requests.get(FRED_url).json()
+        yield_df = pd.DataFrame(FRED_yield['observations'])
+        yield_df = yield_df.drop(columns=['realtime_start', 'realtime_end'])
+        yield_df['date'] = pd.to_datetime(yield_df['date'])
+        yield_df['value'] = pd.to_numeric(yield_df['value'], errors='coerce')
+        yield_df = yield_df.set_index('date')
+        yield_df.index.name = 'Date'
+        yield_df = yield_df.rename(columns={'value': f'US HQM {maturity.upper()}'})
 
         current_year = pd.Timestamp.now().year
         #----------------------------------------------------------------------------------
-        def is_numeric(str):
-            try:
-                float(str)
-                return True
-            except ValueError:
-                return False
+        #DATES
+        initial_dates = [
+            date.today().replace(day=1) - relativedelta(months=6),
+            date.today().replace(day=1) - relativedelta(years=1),
+            date.today().replace(day=1) - relativedelta(years=2),
+            date.today().replace(day=1) - relativedelta(years=5),
+            date.today().replace(day=1) - relativedelta(years=10)
+        ]
+
+        initial_dates = [pd.Timestamp(d) for d in initial_dates]
+
+        final_dates = {
+            '6mo' : initial_dates[0],
+            '1y' : initial_dates[1],
+            '2y' : initial_dates[2],
+            '5y' : initial_dates[3],
+            '10y' : initial_dates[4],
+        }
         
         #PARAMETER - PERIOD ================================================================  
-        data = {}
+        #PARAMETER - PERIOD ================================================================  
         if period == 'max':
-            for data_point in FRED_bond['observations']:
-                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+            output = yield_df
 
         elif period == 'ytd':
-            for data_point in FRED_bond['observations'][-260:]:
-                if data_point['date'][0:4] == str(current_year):
-                    data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+            output = yield_df[yield_df.index.year == current_year]
 
         else:
-            for data_point in FRED_bond['observations'][period_points[period]:]:
-                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
-
-        output = pd.DataFrame.from_dict(data, orient='index', columns=[f'US HQM {maturity.upper()}'])
-        output.index = pd.to_datetime(output.index)
+            output = yield_df.loc[final_dates[period]:]
 
         return output
 #------------------------------------------------------------------------------------------

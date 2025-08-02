@@ -3,9 +3,7 @@
 -->
 # FinFlux API
 
-`finflux` offers financial and market data # FinFlux API
-
-`finflux` offers financial and market data retrieval through multiple publicly available free REST JSON API endpoints found online in one aggregate Python library.
+`finflux` offers financial and market data retrieval through multiple publicly available free REST JSON API endpoints found online in one aggregate Python library, currently covering equities, bonds, and US economic indicators.
 
 
 `finflux` utilizes both first-party and third-party APIs connected to the sources listed below.
@@ -37,7 +35,7 @@ import finflux as fin
 Before accessing data retrieval functions, you must set your API keys and email address to use certain functions within the library that require an identifier. If no API key or email address is found when needed, a `MissingConfigObject` error will be raised.
 
 Currently, functions utilizing Twelve Data, Alpha Vantage, SEC, FRED, BEA, and BLS APIs all require identifiers in the form of API keys (with the exception of the SEC, requiring an email address instead). Use the links below to retrieve API keys for each source.
-- [Twelve Data](https://twelvedata.com/pricing)
+- [Twelve Data](https://twelvedata.com/)
 - [Alpha Vantage](https://www.alphavantage.co/support/#api-key)
 - [Federal Reserve Economic Data](https://fred.stlouisfed.org/docs/api/api_key.html)
 - [Bureau of Economic Analysis](https://apps.bea.gov/api/signup/)
@@ -75,4 +73,16 @@ EXAMPLE #1: Retrieving table formatted annual income statement data in EUR in mi
 
 ```python
 finflux.equity('AAPL').statement(display='table', statement='income', currency='EUR', unit='million', decimal=False, interval='annual')
+```
+
+EXAMPLE #2: filler (bonds)
+
+```python
+finflux.bond().
+```
+
+EXAMPLE #3: filler (US indicator)
+
+```python
+finflux.US_indic
 ```
