@@ -9,7 +9,6 @@
 `finflux` utilizes both first-party and third-party APIs connected to the sources listed below.
 - Yahoo Finance
 - Twelve Data
-- Alpha Vantage
 - Securities and Exchange Commission (SEC)
 - Organization for Economic Co-operation and Development (OECD)
 - Board of Governors of the Federal Reserve System

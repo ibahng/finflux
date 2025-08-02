@@ -545,7 +545,7 @@ MOVING AVERAGES-------------------------
                 raise MissingConfigObject('Missing email_address. Please set your email address using the set_config() function.')
 
         sec_header = {'User-Agent': f"{Config.email_address}"}
-        sec_list = requests.get("https://www.sec.gov/files/company_tickers.json", headers=sec_header).json()
+        sec_list = requests.get(f'{Config.sec_baseurl}files/company_tickers.json', headers=sec_header).json()
 
         companyData = pd.DataFrame.from_dict(sec_list, orient='index')
 
@@ -628,7 +628,7 @@ COMPANY OFFICERS--------------------------------------------------
 
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
         headers = {'User-Agent': f"{Config.email_address}"}
-        companyTickers = requests.get("https://www.sec.gov/files/company_tickers.json", headers=headers) #ticker-cik json data request
+        companyTickers = requests.get(f'{Config.sec_baseurl}files/company_tickers.json', headers=headers) #ticker-cik json data request
         
         companyData = pd.DataFrame.from_dict(companyTickers.json(), orient='index')
         companyData['cik_str'] = companyData['cik_str'].astype(str).str.zfill(10) # adding leading zeros to cik

@@ -50,7 +50,7 @@ class indicator:
             raise MissingConfigObject('Missing bea_apikey. Please set your BEA api key using the set_config() function.')
 
         #RAW DATA/OBSERVATION-----------------------------------------------------------BEA
-        url = f'https://apps.bea.gov/api/data/?&UserID={Config.bea_apikey}' + '&method=GetData' + '&datasetname=NIPA' + f'&TableName={identifiers[type][0]}' + '&Frequency=Q' + '&Year=X'
+        url = f'{Config.bea_baseurl}/?&UserID={Config.bea_apikey}' + '&method=GetData' + '&datasetname=NIPA' + f'&TableName={identifiers[type][0]}' + '&Frequency=Q' + '&Year=X'
         response = requests.get(url).json()
         #----------------------------------------------------------------------------------
 
@@ -139,7 +139,7 @@ class indicator:
             
             headers = {'Content-type': 'application/json'}
             data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":start_year, "endyear":end_year, 'registrationkey':Config.bls_apikey})
-            response = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+            response = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
 
             data_list = response['Results']['series'][0]['data'][::-1]
 
@@ -151,29 +151,29 @@ class indicator:
                 return response['Results']['series'][0]['data']
 
             data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'2011', "endyear":end_year, 'registrationkey':Config.bls_apikey})
-            response_1 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+            response_1 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
             data_list = dlist(response_1)
 
             data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1991', "endyear":'2010', 'registrationkey':Config.bls_apikey})
-            response_2 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+            response_2 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
             data_list.extend(dlist(response_2))
 
             if type not in ('p', 'cp'):
                 data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1971', "endyear":'1990', 'registrationkey':Config.bls_apikey})
-                response_3 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                response_3 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                 data_list.extend(dlist(response_3))
 
                 data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1951', "endyear":'1970', 'registrationkey':Config.bls_apikey})
-                response_4 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                response_4 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                 data_list.extend(dlist(response_4))
 
                 if type not in ('cc'):
                     data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1931', "endyear":'1950', 'registrationkey':Config.bls_apikey})
-                    response_5 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                    response_5 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                     data_list.extend(dlist(response_5))
 
                     data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1911', "endyear":'1930', 'registrationkey':Config.bls_apikey})
-                    response_6 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                    response_6 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                     data_list.extend(dlist(response_6))
             
             data_list = data_list[::-1]
@@ -260,7 +260,7 @@ class indicator:
             raise MissingConfigObject('Missing bea_apikey. Please set your BEA api key using the set_config() function.')
 
         #RAW DATA/OBSERVATION-----------------------------------------------------------BEA
-        url = f'https://apps.bea.gov/api/data/?&UserID={Config.bea_apikey}' + '&method=GetData' + '&datasetname=NIPA' + f'&TableName={identifiers[type][0]}' + '&Frequency=M' + '&Year=X'
+        url = f'{Config.bea_baseurl}/?&UserID={Config.bea_apikey}' + '&method=GetData' + '&datasetname=NIPA' + f'&TableName={identifiers[type][0]}' + '&Frequency=M' + '&Year=X'
         response = requests.get(url).json()
         #----------------------------------------------------------------------------------
 
@@ -363,7 +363,7 @@ class indicator:
             
             headers = {'Content-type': 'application/json'}
             data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":start_year, "endyear":end_year, 'registrationkey':Config.bls_apikey})
-            response = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+            response = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
 
             data_list = response['Results']['series'][0]['data'][::-1]
 
@@ -375,26 +375,26 @@ class indicator:
                 return response['Results']['series'][0]['data']
 
             data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'2021', "endyear":end_year, 'registrationkey':Config.bls_apikey})
-            response_1 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+            response_1 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
             data_list = dlist(response_1)
 
             data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'2001', "endyear":'2020', 'registrationkey':Config.bls_apikey})
-            response_2 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+            response_2 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
             data_list.extend(dlist(response_2))
 
             if type not in ('r=asian'):
                 data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1981', "endyear":'2000', 'registrationkey':Config.bls_apikey})
-                response_3 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                response_3 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                 data_list.extend(dlist(response_3))
 
                 if type not in ('U-6', 'e<hs', 'e=hs', 'e<bach', 'e>=bach'):
                     data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1961', "endyear":'1980', 'registrationkey':Config.bls_apikey})
-                    response_4 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                    response_4 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                     data_list.extend(dlist(response_4))
 
                     if type not in ('r=black', 'r=hispanic'):
                         data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1941', "endyear":'1960', 'registrationkey':Config.bls_apikey})
-                        response_5 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                        response_5 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                         data_list.extend(dlist(response_5))
             
             data_list = data_list[::-1]
@@ -482,7 +482,7 @@ class indicator:
                 
                 headers = {'Content-type': 'application/json'}
                 data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":start_year, "endyear":end_year, 'registrationkey':Config.bls_apikey})
-                response = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                response = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
 
                 data_list = response['Results']['series'][0]['data'][::-1]
 
@@ -494,24 +494,24 @@ class indicator:
                     return response['Results']['series'][0]['data']
 
                 data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'2011', "endyear":end_year, 'registrationkey':Config.bls_apikey})
-                response_1 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                response_1 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                 data_list = dlist(response_1)
 
                 data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1991', "endyear":'2010', 'registrationkey':Config.bls_apikey})
-                response_2 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                response_2 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                 data_list.extend(dlist(response_2))
 
                 if type not in ('quits', 'openings', 'earnings'):
                     data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1971', "endyear":'1990', 'registrationkey':Config.bls_apikey})
-                    response_3 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                    response_3 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                     data_list.extend(dlist(response_3))
 
                     data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1951', "endyear":'1970', 'registrationkey':Config.bls_apikey})
-                    response_4 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                    response_4 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                     data_list.extend(dlist(response_4))
 
                     data = json.dumps({"seriesid": [identifiers[type][0]],"startyear":'1931', "endyear":'1950', 'registrationkey':Config.bls_apikey})
-                    response_5 = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers).json()
+                    response_5 = requests.post(Config.bls_baseurl, data=data, headers=headers).json()
                     data_list.extend(dlist(response_5))
                 
                 data_list = data_list[::-1]
@@ -603,7 +603,7 @@ class indicator:
         #RAW DATA/OBSERVATION--------------------------------------------------------------
         id = FRED_IDs[type][0]
 
-        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+        FRED_url = f'{Config.fred_baseurl}series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
         FRED_yield = requests.get(FRED_url).json()
 
         current_year = pd.Timestamp.now().year
@@ -687,7 +687,7 @@ class indicator:
         #RAW DATA/OBSERVATION--------------------------------------------------------------
         id = FRED_IDs[interval][0]
 
-        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+        FRED_url = f'{Config.fred_baseurl}series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
         FRED_rate = requests.get(FRED_url).json()
         
         data = {}
@@ -764,7 +764,7 @@ class indicator:
         }
         
         #RAW DATA/OBSERVATION----------------------------------------------------------FRED
-        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={identifiers[type][0]}&api_key={Config.fred_apikey}&file_type=json'
+        FRED_url = f'{Config.fred_baseurl}series/observations?series_id={identifiers[type][0]}&api_key={Config.fred_apikey}&file_type=json'
         data_list = requests.get(FRED_url).json()['observations']
         #----------------------------------------------------------------------------------
         

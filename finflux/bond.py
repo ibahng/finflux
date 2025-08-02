@@ -91,7 +91,7 @@ class bond:
         #RAW DATA/OBSERVATION--------------------------------------------------------------
         id = FRED_IDs[country]
 
-        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+        FRED_url = f'{Config.fred_baseurl}series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
         FRED_bond = requests.get(FRED_url).json()
         #----------------------------------------------------------------------------------
 
@@ -151,7 +151,7 @@ class bond:
         if maturity in ['6mo', '1y', '2y', '3y', '7y', '20y']:
             id = FRED_IDs[maturity]
 
-            FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+            FRED_url = f'{Config.fred_baseurl}series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
             FRED_yield = requests.get(FRED_url).json()
             yield_df = pd.DataFrame(FRED_yield['observations'])
             yield_df = yield_df.drop(columns=['realtime_start', 'realtime_end'])
@@ -316,7 +316,7 @@ class bond:
         if maturity in ['6mo', '1y', '2y', '3y', '7y', '20y']:
             id = FRED_IDs[maturity]
 
-            FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+            FRED_url = f'{Config.fred_baseurl}series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
             FRED_yield = requests.get(FRED_url).json()
 
         if maturity in ['5y', '10y', '30y']:
@@ -480,7 +480,7 @@ MOVING AVERAGES-------------------------
         #RAW DATA/OBSERVATION--------------------------------------------------------------
         id = FRED_IDs[maturity]
 
-        FRED_url = f'https://api.stlouisfed.org/fred/series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
+        FRED_url = f'{Config.fred_baseurl}series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
         FRED_yield = requests.get(FRED_url).json()
         yield_df = pd.DataFrame(FRED_yield['observations'])
         yield_df = yield_df.drop(columns=['realtime_start', 'realtime_end'])
