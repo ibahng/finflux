@@ -104,6 +104,7 @@ class indicator:
             output = data_df
         
         output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
+        output.index.name = 'Date'
 
         return output
 #------------------------------------------------------------------------------------------
@@ -232,6 +233,7 @@ class indicator:
             output = data_df
         
         output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
+        output.index.name = 'Date'
 
         return output
 #------------------------------------------------------------------------------------------
@@ -318,6 +320,9 @@ class indicator:
         elif period != 'max' or period != 'ytd':
             data_df = data_df.iloc[period_to_df[period]:]
             output = data_df
+
+        output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
+        output.index.name = 'Date'
 
         return output
 #------------------------------------------------------------------------------------------
@@ -436,10 +441,11 @@ class indicator:
             output = data_df
         
         output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
+        output.index.name = 'Date'
 
         return output
 #------------------------------------------------------------------------------------------
-    def labor(self, type: str = None, period: str = '5y'): 
+    def labor(self, type: str = 'participation', period: str = '5y'): 
         valid_params = {'valid_type': ['participation', 'payroll', 'quits', 'openings', 'earnings', 'claims'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd']}
         
@@ -561,6 +567,7 @@ class indicator:
             output = data_df
         
         output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
+        output.index.name = 'Date'
 
         return output
 #------------------------------------------------------------------------------------------
@@ -626,6 +633,7 @@ class indicator:
 
         output = pd.DataFrame.from_dict(data, orient='index', columns=[f'{FRED_IDs[type][1]}'])
         output.index = pd.to_datetime(output.index)
+        output.index.name = 'Date'
 
         return output
 #------------------------------------------------------------------------------------------
@@ -688,6 +696,7 @@ class indicator:
         
         rate_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'Federal Funds Rate ({FRED_IDs[interval][1]})'])
         rate_df.index = pd.to_datetime(rate_df.index)
+        rate_df.index.name= 'Date'
 
         current_year = pd.Timestamp.now().year
         #----------------------------------------------------------------------------------
@@ -728,6 +737,7 @@ class indicator:
                 output = rate_df.loc[final_dates[period]:]
             elif interval != '1d':
                 output = rate_df.iloc[period_points[interval][period]:]
+
 
         return output
 #------------------------------------------------------------------------------------------
@@ -821,6 +831,7 @@ class indicator:
             output = data_df
         
         output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
+        output.index.name = 'Date'
 
         if type != 'esales':
             return output

@@ -35,7 +35,6 @@ class equity:
                                     f"Please select a valid '{equity.security_type}' symbol")
 #------------------------------------------------------------------------------------------
     def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
-        #Checking if the parameter inputs are invalid
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
                         'valid_data' : ['open', 'high', 'low', 'close', 'volume', 'all'],
@@ -48,14 +47,12 @@ class equity:
                   'calculation': calculation,
                   'round': round}
         
-        #Raising an error if the parameter is invalid
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
             if param_value not in valid_param:
                 raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
                                             f"Please choose a valid parameter: {', '.join(valid_param)}")
         #RAW DATA/OBSERVATIONS-------------------------------------------------------------
-        #Downloading the raw price data timeseries from yahoo finance with some presets'''
-        #Note start and end parameters will override any period parameter presence
+        #Note: start and end parameters will override any period parameter presence
         if start == None and end == None:
             yf_download = yf.download(self.ticker, period=period, interval=interval, ignore_tz=True, rounding=round, group_by='column', progress=False, auto_adjust=True)
         elif start != None and end != None:
@@ -67,6 +64,11 @@ class equity:
             yf_download = yf_download
         else:
             yf_download = yf_download[data.capitalize()]
+        
+        #STANDARDIZING TABLE---------------------------------------------------------------
+        yf_download.columns = yf_download.columns.droplevel([1])
+        yf_download.columns.name = None
+        yf_download.columns = [f'{self.ticker} Close', f'{self.ticker} High', f'{self.ticker} Low', f'{self.ticker} Open', f'{self.ticker} Volume']
 
         #PARAMETER - CALCULATION ==========================================================
         if calculation == 'price':
@@ -651,70 +653,6 @@ COMPANY OFFICERS--------------------------------------------------
 
         return allForms
 #------------------------------------------------------------------------------------------
-    def eps(self, display: str = 'json', interval: str = 'annual'): 
-        valid_params = {'valid_interval': ['quarter', 'annual'],
-                        'valid_display': ['json', 'table']}
-        
-        params = {'interval': interval,
-                  'display': display}
-
-        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
-            if param_value not in valid_param:
-                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
-                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
-        
-        if Config.av_apikey is None:
-                raise MissingConfigObject('Missing av_apikey. Please set your Alpha Vantage api key using the set_config() function.')
-
-        #RAW DATA/OBSERVATIONS-------------------------------------------------------------        
-        url = f'{Config.av_baseurl}EARNINGS&apikey={Config.av_apikey}&symbol={self.mticker}'
-        av_eps = requests.get(url).json()
-        #----------------------------------------------------------------------------------
-
-        #PARAMETER - INTERVAL =============================================================
-        if interval == 'annual':
-            #retriving the annual portion of the av_eps endpoint
-            annual_data = av_eps['annualEarnings'][1:][::-1]
-            json_eps_data = {}
-            for data_point in annual_data:
-                json_eps_data[data_point['fiscalDateEnding']] = data_point['reportedEPS']
-          
-            #json to df of annual eps
-            table_eps_data = pd.DataFrame.from_dict(json_eps_data, orient='index', columns=['Reported EPS']).astype(float)
-            table_eps_data = table_eps_data.map(lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x)
-            table_eps_data.index = pd.to_datetime(table_eps_data.index)
-
-        elif interval == 'quarter':
-            #retriving the quarterly portion of the av_eps endpoint
-            quarter_data = av_eps['quarterlyEarnings']
-            json_eps_data = {}
-            for data_point in quarter_data:
-                json_eps_data[data_point['fiscalDateEnding']] = {
-                    'reported eps': float(data_point['reportedEPS']),
-                    'estimated eps': (float(data_point['estimatedEPS']) if data_point['estimatedEPS'] != 'None' else '-'),
-                    'surprise': float(data_point['surprise']),
-                    'surprise percentage': (float(data_point['estimatedEPS']) if data_point['estimatedEPS'] != 'None' else '-')
-                }
-
-            #json to df of quarterly eps
-            table_eps_data = pd.DataFrame.from_dict(json_eps_data, orient='index')
-            table_eps_data = table_eps_data.map(lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x)
-            table_eps_data = table_eps_data.rename(columns={'reported eps': 'Reported EPS',
-                                                            'estimated eps': 'Estimated EPS',
-                                                            'surprise': 'Surprise',
-                                                            'surprise percentage': 'Surprise %'})
-            table_eps_data = table_eps_data.iloc[::-1]
-            table_eps_data.index = pd.to_datetime(table_eps_data.index)
-
-        #PARAMETER - DISPLAY ==============================================================
-        if display == 'json':
-            output = json_eps_data
-            return output
-        
-        elif display == 'table':
-            output = table_eps_data
-            return output
-#------------------------------------------------------------------------------------------
     def analyst_estimates(self, display: str = 'json'): 
         valid_params = {'valid_display': ['json', 'pretty'],}
         
@@ -863,11 +801,13 @@ PRICE ESTIMATE----------------------------------------------------------
 
         #converting series to dict to dataframe
         dividends_dict = yf_dividends.to_dict()
-        dividends_df = pd.DataFrame.from_dict(dividends_dict, orient='index', columns=['Dividends'])
+        dividends_df = pd.DataFrame.from_dict(dividends_dict, orient='index', columns=[f'{self.ticker} Dividends'])
 
         #making all values two decimal points
         dividends_df = dividends_df.map(lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x)
+        dividends_df = dividends_df.astype(np.float64)
         dividends_df.index = pd.to_datetime(dividends_df.index)
+        dividends_df.index.name = 'Date'
 
         #PARAMETER - DISPLAY ==============================================================
         if display == 'json':
@@ -900,8 +840,9 @@ PRICE ESTIMATE----------------------------------------------------------
 
         #converting series to dict to dataframe
         splits_dict = yf_splits.to_dict()
-        splits_df = pd.DataFrame.from_dict(splits_dict, orient='index', columns=['Splits'])
+        splits_df = pd.DataFrame.from_dict(splits_dict, orient='index', columns=[f'{self.ticker} Splits'])
         splits_df.index = pd.to_datetime(splits_df.index)
+        splits_df.index.name = 'Date'
 
         #PARAMETER - DISPLAY ==============================================================
         if display == 'json':

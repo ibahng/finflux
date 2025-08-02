@@ -113,6 +113,7 @@ class bond:
 
         output = pd.DataFrame.from_dict(data, orient='index', columns=[f'{ISO_3166[country]} 10Y'])
         output.index = pd.to_datetime(output.index)
+        output.index.name = 'Date'
 
         return output
 #------------------------------------------------------------------------------------------
