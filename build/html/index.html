@@ -44,6 +44,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API reference" href="reference/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -122,6 +123,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="development/index.html">
+    Development
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -197,6 +211,19 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="development/index.html">
+    Development
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -249,9 +276,79 @@
                   
   <section id="finflux-documentation">
 <h1>finflux documentation<a class="headerlink" href="#finflux-documentation" title="Link to this heading">#</a></h1>
-<p>Add your content using <code class="docutils literal notranslate"><span class="pre">reStructuredText</span></code> syntax. See the
-<a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a>
-documentation for details.</p>
+<div class="admonition-important-legal-disclaimers admonition">
+<p class="admonition-title">IMPORTANT LEGAL DISCLAIMERS</p>
+<p><code class="docutils literal notranslate"><span class="pre">finflux</span></code> is a Python library that provides a unified interface to access publicly available financial data via first- and third-party APIs, including yfinance, Twelve Data, FRED, BLS, BEA, and SEC. This project is <strong>not</strong> affiliated with or endorsed by any of these providers. All data and trademarks remain the property of their respective owners.</p>
+<p>The library is provided “as is” without warranties of any kind. <strong>No guarantees</strong> are made regarding the accuracy, completeness, or reliability of the data retrieved. Users assume <strong>full responsibility</strong> for how they use the information and are solely responsible for complying with each provider’s terms of service and rate limits.</p>
+<p>By using <code class="docutils literal notranslate"><span class="pre">finflux</span></code>, you agree that the authors and contributors are <strong>not</strong> liable for any damages resulting from its use.</p>
+</div>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">finflux</span></code> is a Python library that aggregates financial and market data from multiple publicly available RESTful JSON APIs. It currently covers equities, bonds, and U.S. economic indicators, offering a consistent and lightweight way to access and work with this data using straightforward code.</p>
+<p><code class="docutils literal notranslate"><span class="pre">finflux</span></code> leverages both first-party and third-party APIs sourced from the data providers listed below:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://finance.yahoo.com/">Yahoo Finance</a></p></li>
+<li><p><a class="reference external" href="https://twelvedata.com/">Twelve Data</a></p></li>
+<li><p><a class="reference external" href="https://www.sec.gov/">Securities and Exchange Commission (SEC)</a></p></li>
+<li><p><a class="reference external" href="https://www.oecd.org/en.html">Organization for Economic Co-operation and Development (OECD)</a></p></li>
+<li><p><a class="reference external" href="https://www.federalreserve.gov/">Board of Governors of the Federal Reserve System</a></p></li>
+<li><p><a class="reference external" href="https://home.treasury.gov/">U.S. Department of the Treasury</a></p></li>
+<li><p><a class="reference external" href="https://www.bea.gov/">Bureau of Economic Analysis (BEA)</a></p></li>
+<li><p><a class="reference external" href="https://www.bls.gov/">Bureau of Labor Statistics (BLS)</a></p></li>
+<li><p><a class="reference external" href="https://www.census.gov/">U.S. Census Bureau</a></p></li>
+<li><p><a class="reference external" href="https://www.nar.realtor/">National Association of REALTORS® (NAR)</a></p></li>
+<li><p><a class="reference external" href="https://www.freddiemac.com/">Freddie Mac</a></p></li>
+<li><p><a class="reference external" href="https://umich.edu/">University of Michigan</a></p></li>
+</ul>
+</section>
+<section id="install">
+<h2>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>finflux
+</pre></div>
+</div>
+</section>
+<section id="quick-start">
+<h2>Quick start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
+<p>First, import the library.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">finflux</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ff</span>
+</pre></div>
+</div>
+<p>Before using data retrieval functions, you must configure your API keys and email address for specific endpoints that require user identification. If a required identifier is missing when calling a function, a <code class="docutils literal notranslate"><span class="pre">MissingConfigObject</span></code> error will be raised.</p>
+<p>Currently, functions that access Twelve Data, FRED, BEA, BLS, and SEC data require identifiers: API keys for all except the SEC, which requires an email address. Use the links below to obtain the necessary credentials for each provider.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://twelvedata.com/">Twelve Data</a></p></li>
+<li><p><a class="reference external" href="https://fred.stlouisfed.org/docs/api/api_key.html">Federal Reserve Economic Data</a></p></li>
+<li><p><a class="reference external" href="https://apps.bea.gov/api/signup/">Bureau of Economic Analysis</a></p></li>
+<li><p><a class="reference external" href="https://data.bls.gov/registrationEngine/">Bureau of Labor Statistics</a></p></li>
+</ul>
+<p>Once you have obtained all required credentials, configure your API keys and email address using the <code class="docutils literal notranslate"><span class="pre">set_config</span></code> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ff</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span>
+   <span class="n">td</span> <span class="o">=</span> <span class="s1">&#39;your_twelve_data_api_key&#39;</span><span class="p">,</span>
+   <span class="n">email</span> <span class="o">=</span> <span class="s1">&#39;example@example.com&#39;</span><span class="p">,</span>
+   <span class="n">fred</span> <span class="o">=</span> <span class="s1">&#39;your_FRED_api_key&#39;</span><span class="p">,</span>
+   <span class="n">bea</span> <span class="o">=</span> <span class="s1">&#39;your_BEA_api_key&#39;</span><span class="p">,</span>
+   <span class="n">bls</span> <span class="o">=</span> <span class="s1">&#39;your_BLS_api_key&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="use-case-examples">
+<h2>Use Case Examples<a class="headerlink" href="#use-case-examples" title="Link to this heading">#</a></h2>
+<p>EXAMPLE #1: Retrieving dataframe formatted annual income statement data in EUR in millions excluding units past the decimals for Apple Inc. (AAPL).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ff</span><span class="o">.</span><span class="n">equity</span><span class="p">(</span><span class="s1">&#39;AAPL&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">statement</span><span class="p">(</span><span class="n">display</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="s1">&#39;income&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;EUR&#39;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;million&#39;</span><span class="p">,</span> <span class="n">decimal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="s1">&#39;annual&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>EXAMPLE #2: Retrieving dataframe formatted monthly timeseries of the US high quality market (A, AA, AAA credit ratings) 7 year maturity corporate bond yield for the past 10 years.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ff</span><span class="o">.</span><span class="n">bond</span><span class="p">()</span><span class="o">.</span><span class="n">US_HQM_corporate</span><span class="p">(</span><span class="n">maturity</span><span class="o">=</span><span class="s1">&#39;7y&#39;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s1">&#39;10y&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/index.html">Development</a></li>
+</ul>
+</div>
+</section>
 </section>
 
 
@@ -264,6 +361,15 @@ documentation for details.</p>
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="right-next"
+       href="reference/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">API reference</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -274,6 +380,21 @@ documentation for details.</p>
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install">Install</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-case-examples">Use Case Examples</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">
