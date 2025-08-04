@@ -19,6 +19,4 @@
 - Freddie Mac
 - University of Michigan
 
-Check out our website for information on installation, set up, and detailed API documentation.
-
-Place holder for website link
+Check out our [readthedocs](https://finflux.readthedocs.io/en/latest/index.html) for information on installation, set up, and detailed API documentation.

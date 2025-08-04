@@ -26,5 +26,5 @@ keywords = ["finance", "api", "stocks", "indicators", "bonds"]
 packages = ["finflux"]
 
 [project.urls]
-
+Documentation = "https://finflux.readthedocs.io/en/latest/index.html"
 Repository = "https://github.com/ibahng/finflux/tree/main"
