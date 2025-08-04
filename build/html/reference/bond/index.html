@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Bond &#8212; finflux 0.3.0 documentation</title>
+    <title>Fixed Income - finflux.bond() &#8212; finflux 0.3.0 documentation</title>
   
   
   
@@ -44,8 +44,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/bond/index';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Indicator" href="../indicator/index.html" />
-    <link rel="prev" title="Equity" href="../equity/index.html" />
+    <link rel="next" title="Indicator - finflux.indicator()" href="../indicator/index.html" />
+    <link rel="prev" title="Equity - finflux.equity()" href="../equity/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -251,10 +251,10 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../equity/index.html">Equity</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Bond</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../indicator/index.html">Indicator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../top/index.html">Top</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../equity/index.html">Equity - finflux.equity()</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Fixed Income - finflux.bond()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../indicator/index.html">Indicator - finflux.indicator()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../top/index.html">Top Performers - finflux.top()</a></li>
 </ul>
 </div>
 </nav></div>
@@ -298,7 +298,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">API reference</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Bond</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Fixed Income - finflux.bond()</span></li>
   </ul>
 </nav>
 </div>
@@ -315,9 +315,123 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="bond">
-<h1>Bond<a class="headerlink" href="#bond" title="Link to this heading">#</a></h1>
-<p>Lorem Ipsum</p>
+  <section id="fixed-income-finflux-bond">
+<h1>Fixed Income - finflux.bond()<a class="headerlink" href="#fixed-income-finflux-bond" title="Link to this heading">#</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">bond()</span></code> class does not require any prior input.</p>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="nonUS_10Y_sovereign">
+<span class="sig-name descname"><span class="pre">nonUS_10Y_sovereign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">country</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nonUS_10Y_sovereign" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>country</strong> (<em>str</em>) – The country for which data is requested; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'KR'</span></code> , <code class="docutils literal notranslate"><span class="pre">'AT'</span></code> , <code class="docutils literal notranslate"><span class="pre">'CL'</span></code> , <code class="docutils literal notranslate"><span class="pre">'CZ'</span></code> , <code class="docutils literal notranslate"><span class="pre">'GR'</span></code> , <code class="docutils literal notranslate"><span class="pre">'FI'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ZA'</span></code> , <code class="docutils literal notranslate"><span class="pre">'NL'</span></code> , <code class="docutils literal notranslate"><span class="pre">'SK'</span></code> , <code class="docutils literal notranslate"><span class="pre">'NZ'</span></code> , <code class="docutils literal notranslate"><span class="pre">'LU'</span></code> , <code class="docutils literal notranslate"><span class="pre">'PL'</span></code> , <code class="docutils literal notranslate"><span class="pre">'SI'</span></code> , <code class="docutils literal notranslate"><span class="pre">'CH'</span></code> , <code class="docutils literal notranslate"><span class="pre">'DE'</span></code> , <code class="docutils literal notranslate"><span class="pre">'CA'</span></code> , <code class="docutils literal notranslate"><span class="pre">'JP'</span></code> , <code class="docutils literal notranslate"><span class="pre">'DK'</span></code> , <code class="docutils literal notranslate"><span class="pre">'BE'</span></code> , <code class="docutils literal notranslate"><span class="pre">'FR'</span></code> , <code class="docutils literal notranslate"><span class="pre">'NO'</span></code> , <code class="docutils literal notranslate"><span class="pre">'PT'</span></code> , <code class="docutils literal notranslate"><span class="pre">'IT'</span></code> , <code class="docutils literal notranslate"><span class="pre">'GB'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ES'</span></code> , <code class="docutils literal notranslate"><span class="pre">'IE'</span></code> , <code class="docutils literal notranslate"><span class="pre">'AU'</span></code> , <code class="docutils literal notranslate"><span class="pre">'SE'</span></code> , <code class="docutils literal notranslate"><span class="pre">'MX'</span></code> , <code class="docutils literal notranslate"><span class="pre">'HU'</span></code> , <code class="docutils literal notranslate"><span class="pre">'IS'</span></code></p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame of the monthly timeseries of a country’s 10 year soverign bond yield.</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Federal Reserve Economic Data (Organization for Economic Co-operation and Development)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="US_treasury">
+<span class="sig-name descname"><span class="pre">US_treasury</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maturity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'10y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#US_treasury" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maturity</strong> (<em>str</em>) – The maturity of the Treasury bond; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'3y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'7y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'20y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'30y'</span></code></p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame of the daily timeseries of a US Treasury bond</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Federal Reserve Economic Data (Board of Governers of the Federal Reserve System)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="US_curve">
+<span class="sig-name descname"><span class="pre">US_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'graph'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#US_curve" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code> , <code class="docutils literal notranslate"><span class="pre">'graph'</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The US Treasury bond yield curve data, formatted as either a JSON output, a pandas DataFrame, or a matplotlib graph</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Federal Reserve Economic Data (Board of Governers of the Federal Reserve System)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="US_eod">
+<span class="sig-name descname"><span class="pre">US_eod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maturity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'10y'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#US_eod" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pretty'</span></code></p></li>
+<li><p><strong>maturity</strong> (<em>str</em>) – The maturity of the Treasury bond; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'3y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'7y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'20y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'30y'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A JSON- or string-formatted display of the specified Treasury bond’s latest end-of-day yield.</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Federal Reserve Economic Data (Board of Governers of the Federal Reserve System)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="US_quote">
+<span class="sig-name descname"><span class="pre">US_quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maturity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'10y'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#US_quote" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pretty'</span></code></p></li>
+<li><p><strong>maturity</strong> (<em>str</em>) – The maturity of the Treasury bond; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'3y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'7y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'20y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'30y'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The specified Treasury bond’s quote, including TTM high/low, percentage changes over various periods, and SMAs for yield, formatted as either JSON or a string.</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Federal Reserve Economic Data (Board of Governers of the Federal Reserve System)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="US_HQM_corporate">
+<span class="sig-name descname"><span class="pre">US_HQM_corporate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maturity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'10y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#US_HQM_corporate" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maturity</strong> (<em>str</em>) – The maturity of the Treasury bond; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'3y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'7y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'20y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'30y'</span></code></p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame of the monthly timeseries of the high quality market (A, AA, AAA credit ratings) corporate bond yield</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Federal Reserve Economic Data (US Department of Treasury)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -336,7 +450,7 @@
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Equity</p>
+        <p class="prev-next-title">Equity - finflux.equity()</p>
       </div>
     </a>
     <a class="right-next"
@@ -344,7 +458,7 @@
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Indicator</p>
+        <p class="prev-next-title">Indicator - finflux.indicator()</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -358,6 +472,26 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nonUS_10Y_sovereign"><code class="docutils literal notranslate"><span class="pre">nonUS_10Y_sovereign()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#US_treasury"><code class="docutils literal notranslate"><span class="pre">US_treasury()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#US_curve"><code class="docutils literal notranslate"><span class="pre">US_curve()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#US_eod"><code class="docutils literal notranslate"><span class="pre">US_eod()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#US_quote"><code class="docutils literal notranslate"><span class="pre">US_quote()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#US_HQM_corporate"><code class="docutils literal notranslate"><span class="pre">US_HQM_corporate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">

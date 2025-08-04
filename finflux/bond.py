@@ -27,7 +27,7 @@ class bond:
 #------------------------------------------------------------------------------------------
     def nonUS_10Y_sovereign(self, country: str = None, period: str = '5y'): 
         valid_params = {'valid_country': ['KR', 'AT', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS'],
-                        'valid_period': ['1y', '2y', '5y', '10y', 'max']}
+                        'valid_period': ['1y', '2y', '5y', '10y', 'ytd', 'max']}
         
         #South Korea, Austria, Chile, Czechia, Greece, Finland, South Africa, Netherlands, Slovakia, New Zealand, Luxembourg, Poland, Slovenia, Switzerland, Germany, Canada, Japan, Denmark, Belgium, France, Norway, Portugal, Italy, United Kingdom, Spain, Ireland, Australia, Sweden, Mexico, Hungary, Iceland
 
@@ -93,6 +93,8 @@ class bond:
 
         FRED_url = f'{Config.fred_baseurl}series/observations?series_id={id}&api_key={Config.fred_apikey}&file_type=json'
         FRED_bond = requests.get(FRED_url).json()
+
+        current_year = pd.Timestamp.now().year
         #----------------------------------------------------------------------------------
 
         def is_numeric(str):
@@ -107,6 +109,10 @@ class bond:
         if period == 'max':
             for data_point in FRED_bond['observations']:
                 data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+        elif period == 'ytd':
+            for data_point in FRED_bond['observations']:
+                if data_point['date'][0:4] == str(current_year):
+                    data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
         else:
             for data_point in FRED_bond['observations'][period_points[period]:]:
                 data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)

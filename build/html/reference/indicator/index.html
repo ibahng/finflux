@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Indicator &#8212; finflux 0.3.0 documentation</title>
+    <title>Indicator - finflux.indicator() &#8212; finflux 0.3.0 documentation</title>
   
   
   
@@ -44,8 +44,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/indicator/index';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Top" href="../top/index.html" />
-    <link rel="prev" title="Bond" href="../bond/index.html" />
+    <link rel="next" title="Top Performers - finflux.top()" href="../top/index.html" />
+    <link rel="prev" title="Fixed Income - finflux.bond()" href="../bond/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -251,10 +251,10 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../equity/index.html">Equity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bond/index.html">Bond</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Indicator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../top/index.html">Top</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../equity/index.html">Equity - finflux.equity()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bond/index.html">Fixed Income - finflux.bond()</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Indicator - finflux.indicator()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../top/index.html">Top Performers - finflux.top()</a></li>
 </ul>
 </div>
 </nav></div>
@@ -298,7 +298,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">API reference</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Indicator</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Indicator - finflux.indicator()</span></li>
   </ul>
 </nav>
 </div>
@@ -315,9 +315,168 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="indicator">
-<h1>Indicator<a class="headerlink" href="#indicator" title="Link to this heading">#</a></h1>
-<p>Lorem Ipsum</p>
+  <section id="indicator-finflux-indicator">
+<h1>Indicator - finflux.indicator()<a class="headerlink" href="#indicator-finflux-indicator" title="Link to this heading">#</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">indicator()</span></code> class does not require any prior input.</p>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="gdp">
+<span class="sig-name descname"><span class="pre">gdp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yoy'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdp" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – Type of gross domestic product; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'n'</span></code> (nominal) , <code class="docutils literal notranslate"><span class="pre">'r'</span></code> (real) , <code class="docutils literal notranslate"><span class="pre">'n_pc'</span></code> (nominal per capita) , <code class="docutils literal notranslate"><span class="pre">'r_pc'</span></code> (real per capita) , <code class="docutils literal notranslate"><span class="pre">'d'</span></code> (deflator)</p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> ,</p></li>
+<li><p><strong>figure</strong> (<em>str</em>) – Data interpretation; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'raw'</span></code> , <code class="docutils literal notranslate"><span class="pre">'yoy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pop'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame of a quarterly timeseries for specified US gross domestic product data</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bureau of Economic Analysis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="price_index">
+<span class="sig-name descname"><span class="pre">price_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'c'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yoy'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#price_index" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – Type of price index; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'c'</span></code> (core) , <code class="docutils literal notranslate"><span class="pre">'p'</span></code> (producer) , <code class="docutils literal notranslate"><span class="pre">'cc'</span></code> (core consumer) , <code class="docutils literal notranslate"><span class="pre">'cp'</span></code> (core producer)</p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
+<li><p><strong>figure</strong> (<em>str</em>) – Data interpretation; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'raw'</span></code> , <code class="docutils literal notranslate"><span class="pre">'yoy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pop'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe of a monthly timeseries for specified US price index data</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bureau of Labor Statistics</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pce">
+<span class="sig-name descname"><span class="pre">pce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yoy'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pce" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – Type of personal consumption expenditure; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'raw'</span></code> , <code class="docutils literal notranslate"><span class="pre">'core'</span></code></p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
+<li><p><strong>figure</strong> (<em>str</em>) – Data interpretation; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'raw'</span></code> , <code class="docutils literal notranslate"><span class="pre">'yoy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pop'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe of a monthly timeseries for specified US personal consumption expenditure data</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bureau of Economic Analysis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="unemployment">
+<span class="sig-name descname"><span class="pre">unemployment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'U-3'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unemployment" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – Type of unemployment; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'U-3'</span></code> (unemployment) , <code class="docutils literal notranslate"><span class="pre">'U-6'</span></code> (underemployment) , <code class="docutils literal notranslate"><span class="pre">'g=male'</span></code> , <code class="docutils literal notranslate"><span class="pre">'g=female'</span></code> , <code class="docutils literal notranslate"><span class="pre">'r=white'</span></code> , <code class="docutils literal notranslate"><span class="pre">'r=black'</span></code> , <code class="docutils literal notranslate"><span class="pre">'r=asian'</span></code> , <code class="docutils literal notranslate"><span class="pre">'r=hispanic'</span></code> , <code class="docutils literal notranslate"><span class="pre">'e&lt;hs'</span></code> (less than HS education) , <code class="docutils literal notranslate"><span class="pre">'e=hs'</span></code> , <code class="docutils literal notranslate"><span class="pre">'e&lt;bach'</span></code> (less than bachelor’s degree) , <code class="docutils literal notranslate"><span class="pre">'e&gt;=bach'</span></code></p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe of a monthly timeseries for specified US unemployment data</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bureau of Labor Statistics</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="labor">
+<span class="sig-name descname"><span class="pre">labor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'participation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#labor" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – Type of labor metric; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'participation'</span></code> (Labor Force Participation Rate) , <code class="docutils literal notranslate"><span class="pre">'payroll'</span></code> (Nonfarm Payrolls) , <code class="docutils literal notranslate"><span class="pre">'quits'</span></code> (Quits Rate) , <code class="docutils literal notranslate"><span class="pre">'openings'</span></code> (Job Openings Rate) , <code class="docutils literal notranslate"><span class="pre">'earnings'</span></code> (Average Hourly Earnings) , <code class="docutils literal notranslate"><span class="pre">'claims'</span></code> (Initial Claims)</p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe of a monthly or weekly timeseries for specified US labor metric data</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bureau of Labor Statistics</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sentiment">
+<span class="sig-name descname"><span class="pre">sentiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'c_msci'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sentiment" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – Type of sentiment indicator; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'c_mcsi'</span></code> (University of Michigan Consumer Sentiment) , <code class="docutils literal notranslate"><span class="pre">'c_oecd'</span></code> (OECD Consumer Confidence) , <code class="docutils literal notranslate"><span class="pre">'b_oecd'</span></code> (OECD Business Confidence)</p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe of a monthly timeseries for specified US sentiment data</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FRED (University of Michigan, Organization for Economic Co-operation and Development)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fed_rate">
+<span class="sig-name descname"><span class="pre">fed_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fed_rate" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong> (<em>str</em>) – Data frequency; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1d'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1wk'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2wk'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code></p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe of a timeseries for the US federal funds rate</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FRED (Board of Governors of the Federal Reserve System)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="housing">
+<span class="sig-name descname"><span class="pre">housing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'starts'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raw'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#housing" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>str</em>) – Type of housing metric; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'starts'</span></code> (Housing Starts) , <code class="docutils literal notranslate"><span class="pre">'nsales'</span></code> (New Housing Sales) , <code class="docutils literal notranslate"><span class="pre">'esales'</span></code> (Existing Housing Sales) , <code class="docutils literal notranslate"><span class="pre">'30y_rate'</span></code> (30 Year Mortgage Rate) , <code class="docutils literal notranslate"><span class="pre">'15y_rate'</span></code> (15 Year Mortgage Rate)</p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
+<li><p><strong>figure</strong> (<em>str</em>) – Data interpretation; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'raw'</span></code> , <code class="docutils literal notranslate"><span class="pre">'yoy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pop'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe of a monthly or weekly timeseries for specified US housing metric data</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FRED (US Census Bureau, National Association of Realtors, Freddie Mac)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -336,7 +495,7 @@
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Bond</p>
+        <p class="prev-next-title">Fixed Income - finflux.bond()</p>
       </div>
     </a>
     <a class="right-next"
@@ -344,7 +503,7 @@
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Top</p>
+        <p class="prev-next-title">Top Performers - finflux.top()</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -358,6 +517,28 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gdp"><code class="docutils literal notranslate"><span class="pre">gdp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#price_index"><code class="docutils literal notranslate"><span class="pre">price_index()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pce"><code class="docutils literal notranslate"><span class="pre">pce()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unemployment"><code class="docutils literal notranslate"><span class="pre">unemployment()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#labor"><code class="docutils literal notranslate"><span class="pre">labor()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sentiment"><code class="docutils literal notranslate"><span class="pre">sentiment()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fed_rate"><code class="docutils literal notranslate"><span class="pre">fed_rate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#housing"><code class="docutils literal notranslate"><span class="pre">housing()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">

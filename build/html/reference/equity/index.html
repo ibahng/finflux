@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>finflux.equity() &#8212; finflux 0.3.0 documentation</title>
+    <title>Equity - finflux.equity() &#8212; finflux 0.3.0 documentation</title>
   
   
   
@@ -44,7 +44,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/equity/index';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Bond" href="../bond/index.html" />
+    <link rel="next" title="Fixed Income - finflux.bond()" href="../bond/index.html" />
     <link rel="prev" title="API reference" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -251,10 +251,10 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">finflux.equity()</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bond/index.html">Bond</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../indicator/index.html">Indicator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../top/index.html">Top</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Equity - finflux.equity()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bond/index.html">Fixed Income - finflux.bond()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../indicator/index.html">Indicator - finflux.indicator()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../top/index.html">Top Performers - finflux.top()</a></li>
 </ul>
 </div>
 </nav></div>
@@ -298,7 +298,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">API reference</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">finflux.equity()</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Equity - finflux.equity()</span></li>
   </ul>
 </nav>
 </div>
@@ -315,17 +315,25 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="finflux-equity">
-<h1>finflux.equity()<a class="headerlink" href="#finflux-equity" title="Link to this heading">#</a></h1>
+  <section id="equity-finflux-equity">
+<h1>Equity - finflux.equity()<a class="headerlink" href="#equity-finflux-equity" title="Link to this heading">#</a></h1>
+<p>Before accessing the <code class="docutils literal notranslate"><span class="pre">equity()</span></code> class functions, you must first assign a string-formatted ticker symbol to the class’s <code class="docutils literal notranslate"><span class="pre">ticker</span></code> attribute.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">finflux</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ff</span>
+<span class="n">ff</span><span class="o">.</span><span class="n">equity</span><span class="p">(</span><span class="s1">&#39;TICKER&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">example_function</span><span class="p">(</span><span class="n">param1</span> <span class="o">=</span> <span class="s1">&#39;param&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="c1">#NOTE: Only ticker symbols searchable via Yahoo Finance are supported</span>
+</pre></div>
+</div>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="timeseries">
 <span class="sig-name descname"><span class="pre">timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'price'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">round</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#timeseries" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>period</strong> (<em>str</em>) – Duration of the timeseries (used if <strong>start</strong> and <strong>end</strong> parameters are not provided); VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code></p></li>
-<li><p><strong>start</strong> (<em>None</em><em> or </em><em>str</em>) – Start date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
-<li><p><strong>end</strong> (<em>None</em><em> or </em><em>str</em>) – End date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries (used if <strong>start</strong> and <strong>end</strong> parameters are not provided); VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code></p></li>
+<li><p><strong>start</strong> (<em>None</em><em> or </em><em>str</em>) – Optional start date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
+<li><p><strong>end</strong> (<em>None</em><em> or </em><em>str</em>) – Optional end date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
 <li><p><strong>interval</strong> (<em>str</em>) – Data frequency; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1d'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1wk'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'3mo'</span></code></p></li>
 <li><p><strong>data</strong> (<em>str</em>) – Type of OHLCV data to retrieve; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'open'</span></code> , <code class="docutils literal notranslate"><span class="pre">'high'</span></code> , <code class="docutils literal notranslate"><span class="pre">'low'</span></code> , <code class="docutils literal notranslate"><span class="pre">'close'</span></code> , <code class="docutils literal notranslate"><span class="pre">'volume'</span></code> , <code class="docutils literal notranslate"><span class="pre">'all'</span></code></p></li>
 <li><p><strong>calculation</strong> (<em>str</em>) – Data interpretation; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'price'</span></code> , <code class="docutils literal notranslate"><span class="pre">'simple</span> <span class="pre">return'</span></code> , <code class="docutils literal notranslate"><span class="pre">'log</span> <span class="pre">return'</span></code></p></li>
@@ -333,7 +341,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas DataFrame with timeseries data for the specified equity.</p>
+<dd class="field-even"><p>A pandas DataFrame of a timeseries price and volume data for the specified equity.</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
@@ -375,7 +383,7 @@
 <dd class="field-even"><p>The specified equity’s financial statement data for the four most recent periods, formatted as either JSON or a pandas DataFrame.</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
+<dd class="field-odd"><p>Yahoo Finance (yfinance), Twelve Data</p>
 </dd>
 </dl>
 </dd></dl>
@@ -388,7 +396,7 @@
 <dd class="field-odd"><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pretty'</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame or None</p>
+<dd class="field-even"><p>The specified equity’s stock quote, including EOD OHLCV figures, TTM high/low, percentage changes over various periods, and SMAs for price and volume, formatted as either JSON or a string.</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
@@ -404,10 +412,10 @@
 <dd class="field-odd"><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pretty'</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame or None</p>
+<dd class="field-even"><p>An overview of the specified equity’s descriptive metadata, formatted as either JSON or a string.</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
+<dd class="field-odd"><p>Yahoo Finance (yfinance), US Securities and Exchange Commission</p>
 </dd>
 </dl>
 </dd></dl>
@@ -417,10 +425,10 @@
 <span class="sig-name descname"><span class="pre">filings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#filings" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>form</strong> (<em>str</em>)</p>
+<dd class="field-odd"><p><strong>form</strong> (<em>str</em>) – Specifies the form (e.g., <code class="docutils literal notranslate"><span class="pre">'10-K'</span></code> or <code class="docutils literal notranslate"><span class="pre">'8-K'</span></code>) to retrieve - REQUIRED</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame or None</p>
+<dd class="field-even"><p>A pandas DataFrame of the metadata of the specified equity’s <code class="docutils literal notranslate"><span class="pre">form</span></code> within “at least one year’s of filing or to 1,000 (whichever is more) of the most recent filings” (<a class="reference external" href="https://www.sec.gov/search-filings/edgar-application-programming-interfaces">SEC EDGAR APIs</a>)</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>US Securities and Exchange Commission</p>
@@ -436,7 +444,7 @@
 <dd class="field-odd"><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pretty'</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame or None</p>
+<dd class="field-even"><p>The specified equity’s earnings, revenue, growth, and price estimates for the current/next quarter and year, formatted as either JSON or a string.</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
@@ -452,7 +460,7 @@
 <dd class="field-odd"><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame or None</p>
+<dd class="field-even"><p>A pandas DataFrame or JSON-formatted output of the timeseries dividend data for the specified equity.</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
@@ -468,7 +476,7 @@
 <dd class="field-odd"><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame or None</p>
+<dd class="field-even"><p>A pandas DataFrame or JSON-formatted output of the timeseries stock split data for the specified equity.</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
@@ -484,7 +492,7 @@
 <dd class="field-odd"><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pretty'</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame or None</p>
+<dd class="field-even"><p>A comprehensive overview of the specified equity’s valuation, profitability, growth, liquidity, leverage, efficiency, and cash flow metrics across the past four fiscal years and the most recent period.</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
@@ -492,6 +500,7 @@
 </dl>
 </dd></dl>
 
+</section>
 </section>
 
 
@@ -518,7 +527,7 @@
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Bond</p>
+        <p class="prev-next-title">Fixed Income - finflux.bond()</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -541,16 +550,19 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#timeseries"><code class="docutils literal notranslate"><span class="pre">timeseries()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#realtime"><code class="docutils literal notranslate"><span class="pre">realtime()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statement"><code class="docutils literal notranslate"><span class="pre">statement()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quote"><code class="docutils literal notranslate"><span class="pre">quote()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#info"><code class="docutils literal notranslate"><span class="pre">info()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#filings"><code class="docutils literal notranslate"><span class="pre">filings()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyst_estimates"><code class="docutils literal notranslate"><span class="pre">analyst_estimates()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dividend"><code class="docutils literal notranslate"><span class="pre">dividend()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#split"><code class="docutils literal notranslate"><span class="pre">split()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stats"><code class="docutils literal notranslate"><span class="pre">stats()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#timeseries"><code class="docutils literal notranslate"><span class="pre">timeseries()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#realtime"><code class="docutils literal notranslate"><span class="pre">realtime()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statement"><code class="docutils literal notranslate"><span class="pre">statement()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quote"><code class="docutils literal notranslate"><span class="pre">quote()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#info"><code class="docutils literal notranslate"><span class="pre">info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filings"><code class="docutils literal notranslate"><span class="pre">filings()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analyst_estimates"><code class="docutils literal notranslate"><span class="pre">analyst_estimates()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dividend"><code class="docutils literal notranslate"><span class="pre">dividend()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#split"><code class="docutils literal notranslate"><span class="pre">split()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stats"><code class="docutils literal notranslate"><span class="pre">stats()</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

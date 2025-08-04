@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Top &#8212; finflux 0.3.0 documentation</title>
+    <title>Top Performers - finflux.top() &#8212; finflux 0.3.0 documentation</title>
   
   
   
@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Development" href="../../development/index.html" />
-    <link rel="prev" title="Indicator" href="../indicator/index.html" />
+    <link rel="prev" title="Indicator - finflux.indicator()" href="../indicator/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -251,10 +251,10 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../equity/index.html">Equity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bond/index.html">Bond</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../indicator/index.html">Indicator</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Top</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../equity/index.html">Equity - finflux.equity()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bond/index.html">Fixed Income - finflux.bond()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../indicator/index.html">Indicator - finflux.indicator()</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Top Performers - finflux.top()</a></li>
 </ul>
 </div>
 </nav></div>
@@ -298,7 +298,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">API reference</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Top</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Top Performers - finflux.top()</span></li>
   </ul>
 </nav>
 </div>
@@ -315,9 +315,89 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="top">
-<h1>Top<a class="headerlink" href="#top" title="Link to this heading">#</a></h1>
-<p>Lorem Ipsum</p>
+  <section id="top-performers-finflux-top">
+<h1>Top Performers - finflux.top()<a class="headerlink" href="#top-performers-finflux-top" title="Link to this heading">#</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">top()</span></code> class does not require any prior input.</p>
+<p>Other commets about different parameters</p>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="gainer">
+<span class="sig-name descname"><span class="pre">gainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gainer" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
+<li><p><strong>sector</strong> – Sector of interest; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'all'</span></code> , <code class="docutils literal notranslate"><span class="pre">'basic</span> <span class="pre">materials'</span></code> , <code class="docutils literal notranslate"><span class="pre">'communication</span> <span class="pre">services'</span></code> , <code class="docutils literal notranslate"><span class="pre">'consumer</span> <span class="pre">cyclical'</span></code> , <code class="docutils literal notranslate"><span class="pre">'consumer</span> <span class="pre">defensive'</span></code> , <code class="docutils literal notranslate"><span class="pre">'energy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'financial</span> <span class="pre">services'</span></code> , <code class="docutils literal notranslate"><span class="pre">'healthcare'</span></code> , <code class="docutils literal notranslate"><span class="pre">'industrials'</span></code> , <code class="docutils literal notranslate"><span class="pre">'real</span> <span class="pre">estate'</span></code> , <code class="docutils literal notranslate"><span class="pre">'technology'</span></code> , <code class="docutils literal notranslate"><span class="pre">'utilities'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A JSON-formatted output or pandas DataFrame listing the equities with the highest percentage price appreciation from the last trading day.</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loser">
+<span class="sig-name descname"><span class="pre">loser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loser" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
+<li><p><strong>sector</strong> – Sector of interest; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'all'</span></code> , <code class="docutils literal notranslate"><span class="pre">'basic</span> <span class="pre">materials'</span></code> , <code class="docutils literal notranslate"><span class="pre">'communication</span> <span class="pre">services'</span></code> , <code class="docutils literal notranslate"><span class="pre">'consumer</span> <span class="pre">cyclical'</span></code> , <code class="docutils literal notranslate"><span class="pre">'consumer</span> <span class="pre">defensive'</span></code> , <code class="docutils literal notranslate"><span class="pre">'energy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'financial</span> <span class="pre">services'</span></code> , <code class="docutils literal notranslate"><span class="pre">'healthcare'</span></code> , <code class="docutils literal notranslate"><span class="pre">'industrials'</span></code> , <code class="docutils literal notranslate"><span class="pre">'real</span> <span class="pre">estate'</span></code> , <code class="docutils literal notranslate"><span class="pre">'technology'</span></code> , <code class="docutils literal notranslate"><span class="pre">'utilities'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A JSON-formatted output or pandas DataFrame listing the equities with the highest percentage price depreciation from the last trading day.</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="active">
+<span class="sig-name descname"><span class="pre">active</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#active" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
+<li><p><strong>sector</strong> – Sector of interest; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'all'</span></code> , <code class="docutils literal notranslate"><span class="pre">'basic</span> <span class="pre">materials'</span></code> , <code class="docutils literal notranslate"><span class="pre">'communication</span> <span class="pre">services'</span></code> , <code class="docutils literal notranslate"><span class="pre">'consumer</span> <span class="pre">cyclical'</span></code> , <code class="docutils literal notranslate"><span class="pre">'consumer</span> <span class="pre">defensive'</span></code> , <code class="docutils literal notranslate"><span class="pre">'energy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'financial</span> <span class="pre">services'</span></code> , <code class="docutils literal notranslate"><span class="pre">'healthcare'</span></code> , <code class="docutils literal notranslate"><span class="pre">'industrials'</span></code> , <code class="docutils literal notranslate"><span class="pre">'real</span> <span class="pre">estate'</span></code> , <code class="docutils literal notranslate"><span class="pre">'technology'</span></code> , <code class="docutils literal notranslate"><span class="pre">'utilities'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A JSON-formatted output or pandas DataFrame listing the equities with the highest trading volume from the last trading day.</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cap">
+<span class="sig-name descname"><span class="pre">cap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cap" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
+<li><p><strong>sector</strong> – Sector of interest; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'all'</span></code> , <code class="docutils literal notranslate"><span class="pre">'basic</span> <span class="pre">materials'</span></code> , <code class="docutils literal notranslate"><span class="pre">'communication</span> <span class="pre">services'</span></code> , <code class="docutils literal notranslate"><span class="pre">'consumer</span> <span class="pre">cyclical'</span></code> , <code class="docutils literal notranslate"><span class="pre">'consumer</span> <span class="pre">defensive'</span></code> , <code class="docutils literal notranslate"><span class="pre">'energy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'financial</span> <span class="pre">services'</span></code> , <code class="docutils literal notranslate"><span class="pre">'healthcare'</span></code> , <code class="docutils literal notranslate"><span class="pre">'industrials'</span></code> , <code class="docutils literal notranslate"><span class="pre">'real</span> <span class="pre">estate'</span></code> , <code class="docutils literal notranslate"><span class="pre">'technology'</span></code> , <code class="docutils literal notranslate"><span class="pre">'utilities'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A JSON-formatted output or pandas DataFrame listing the equities with the highest market capitalizations from the last trading day.</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -336,7 +416,7 @@
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Indicator</p>
+        <p class="prev-next-title">Indicator - finflux.indicator()</p>
       </div>
     </a>
     <a class="right-next"
@@ -358,6 +438,24 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gainer"><code class="docutils literal notranslate"><span class="pre">gainer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loser"><code class="docutils literal notranslate"><span class="pre">loser()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#active"><code class="docutils literal notranslate"><span class="pre">active()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cap"><code class="docutils literal notranslate"><span class="pre">cap()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">
