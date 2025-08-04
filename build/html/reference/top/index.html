@@ -318,7 +318,10 @@
   <section id="top-performers-finflux-top">
 <h1>Top Performers - finflux.top()<a class="headerlink" href="#top-performers-finflux-top" title="Link to this heading">#</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">top()</span></code> class does not require any prior input.</p>
-<p>Other commets about different parameters</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently, the stock outputs of <code class="docutils literal notranslate"><span class="pre">top()</span></code> are limited to equities listed on the NYSE and NASDAQ exchanges. To minimize noise, the <code class="docutils literal notranslate"><span class="pre">gainer()</span></code> , <code class="docutils literal notranslate"><span class="pre">loser()</span></code> , and <code class="docutils literal notranslate"><span class="pre">active()</span></code> functions apply default equity filters, requiring a minimum intraday market capitalization of $300 million and a trading volume of at least 500,000 shares.</p>
+</div>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="py function">

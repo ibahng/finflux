@@ -1,7 +1,7 @@
 Fixed Income - finflux.bond()
 ===============================
 
-The ``bond()`` class does not require any prior input.
+The ``bond()`` class does not require any input.
 
 Functions
 -----------

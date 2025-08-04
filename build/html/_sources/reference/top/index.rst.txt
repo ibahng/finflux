@@ -3,7 +3,9 @@ Top Performers - finflux.top()
 
 The ``top()`` class does not require any prior input.
 
-Other commets about different parameters
+.. note:: 
+   
+   Currently, the stock outputs of ``top()`` are limited to equities listed on the NYSE and NASDAQ exchanges. To minimize noise, the ``gainer()`` , ``loser()`` , and ``active()`` functions apply default equity filters, requiring a minimum intraday market capitalization of $300 million and a trading volume of at least 500,000 shares.
 
 Functions
 -----------

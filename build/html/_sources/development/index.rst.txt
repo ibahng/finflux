@@ -1,4 +1,6 @@
 Development
 ===========
 
-Lorem ipsum
+Work in progress.
+
+Coming soon.

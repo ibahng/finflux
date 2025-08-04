@@ -1,7 +1,7 @@
 Indicator - finflux.indicator()
 ================================
 
-The ``indicator()`` class does not require any prior input.
+The ``indicator()`` class does not require any input.
 
 Functions
 -----------
