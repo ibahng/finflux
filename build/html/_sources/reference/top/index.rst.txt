@@ -1,7 +1,7 @@
 Top Performers - finflux.top()
 ==============================
 
-The ``top()`` class does not require any prior input.
+The ``top()`` class does not require any input.
 
 .. note:: 
    

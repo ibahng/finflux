@@ -8,13 +8,16 @@ Functions
 
 .. py:function:: nonUS_10Y_sovereign(country = None, period = '5y')
 
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :type display: str
+
    :param country: The country for which data is requested; VALID VALUES: ``'KR'`` , ``'AT'`` , ``'CL'`` , ``'CZ'`` , ``'GR'`` , ``'FI'`` , ``'ZA'`` , ``'NL'`` , ``'SK'`` , ``'NZ'`` , ``'LU'`` , ``'PL'`` , ``'SI'`` , ``'CH'`` , ``'DE'`` , ``'CA'`` , ``'JP'`` , ``'DK'`` , ``'BE'`` , ``'FR'`` , ``'NO'`` , ``'PT'`` , ``'IT'`` , ``'GB'`` , ``'ES'`` , ``'IE'`` , ``'AU'`` , ``'SE'`` , ``'MX'`` , ``'HU'`` , ``'IS'``
    :type country: str
    
    :param period: The duration of the timeseries; VALID VALUES: ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'ytd'`` , ``'max'`` 
    :type period: str
 
-   :return: A pandas DataFrame of the monthly timeseries of a country's 10 year soverign bond yield.
+   :return: A pandas DataFrame or row oriented JSON formatted output of the monthly timeseries of a country's 10 year soverign bond yield.
    :source: Federal Reserve Economic Data (Organization for Economic Co-operation and Development)
 
 
@@ -70,11 +73,14 @@ Functions
 
 .. py:function:: US_HQM_corporate(maturity = '10y', period = '5y')
 
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :type display: str
+
    :param maturity: The maturity of the Treasury bond; VALID VALUES: ``'6mo'`` , ``'1y'`` , ``'2y'`` , ``'3y'`` , ``'5y'`` , ``'7y'`` , ``'10y'`` , ``'20y'`` , ``'30y'``
    :type maturity: str
 
    :param period: The duration of the timeseries; VALID VALUES: ``'6mo'`` , ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'ytd'`` , ``'max'``
    :type period: str
    
-   :return: A pandas DataFrame of the monthly timeseries of the high quality market (A, AA, AAA credit ratings) corporate bond yield
+   :return: A pandas DataFrame or row oriented JSON formatted output of the monthly timeseries of the high quality market (A, AA, AAA credit ratings) corporate bond yield
    :source: Federal Reserve Economic Data (US Department of Treasury)

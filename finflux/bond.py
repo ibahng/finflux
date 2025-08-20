@@ -25,13 +25,15 @@ class MissingConfigObject(Exception):
 #------------------------------------------------------------------------------------------
 class bond:
 #------------------------------------------------------------------------------------------
-    def nonUS_10Y_sovereign(self, country: str = None, period: str = '5y'): 
-        valid_params = {'valid_country': ['KR', 'AT', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS'],
+    def nonUS_10Y_sovereign(self, display: str = 'table', country: str = None, period: str = '5y'): 
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_country': ['KR', 'AT', 'CL', 'CZ', 'GR', 'FI', 'ZA', 'NL', 'SK', 'NZ', 'LU', 'PL', 'SI', 'CH', 'DE', 'CA', 'JP', 'DK', 'BE', 'FR', 'NO', 'PT', 'IT', 'GB', 'ES', 'IE', 'AU', 'SE', 'MX', 'HU', 'IS'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'ytd', 'max']}
         
         #South Korea, Austria, Chile, Czechia, Greece, Finland, South Africa, Netherlands, Slovakia, New Zealand, Luxembourg, Poland, Slovenia, Switzerland, Germany, Canada, Japan, Denmark, Belgium, France, Norway, Portugal, Italy, United Kingdom, Spain, Ireland, Australia, Sweden, Mexico, Hungary, Iceland
 
-        params = {'country': country,
+        params = {'display': display,
+                  'country': country,
                   'period': period}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
@@ -108,20 +110,35 @@ class bond:
         data = {}
         if period == 'max':
             for data_point in FRED_bond['observations']:
-                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+                data[data_point['date']] = (round(float(data_point['value']), 2) if is_numeric(data_point['value']) else np.nan)
         elif period == 'ytd':
             for data_point in FRED_bond['observations']:
                 if data_point['date'][0:4] == str(current_year):
-                    data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+                    data[data_point['date']] = (round(float(data_point['value']), 2) if is_numeric(data_point['value']) else np.nan)
         else:
             for data_point in FRED_bond['observations'][period_points[period]:]:
-                data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
+                data[data_point['date']] = (round(float(data_point['value']), 2) if is_numeric(data_point['value']) else np.nan)
 
-        output = pd.DataFrame.from_dict(data, orient='index', columns=[f'{ISO_3166[country]} 10Y'])
-        output.index = pd.to_datetime(output.index)
-        output.index.name = 'Date'
+        data_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'{ISO_3166[country]} 10Y'])
+        data_df.index = pd.to_datetime(data_df.index)
+        data_df.index.name = 'Date'
 
-        return output
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = data_df
+            return output
+        elif display == 'json':
+            data_df.index = data_df.index.strftime('%Y-%m-%d')
+
+            data_json_list = []
+            for index, row in data_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{data_df.columns[0]}': float(row[f'{data_df.columns[0]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
 #------------------------------------------------------------------------------------------
     def US_treasury(self, maturity: str = '10y', period: str = '5y'): 
         valid_params = {'valid_maturity': ['6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y'],
@@ -247,9 +264,9 @@ class bond:
 
         for dataframe in yield_list:
             curve_data[f'{dataframe.columns[0]}'] = {
-                '6mo': float(dataframe.iloc[0].iloc[0]),
-                '3mo': float(dataframe.iloc[63].iloc[0]),
-                'eod': float(dataframe.iloc[-1].iloc[0])
+                '6mo': round(float(dataframe.iloc[0].iloc[0]), 2),
+                '3mo': round(float(dataframe.iloc[63].iloc[0]), 2),
+                'eod': round(float(dataframe.iloc[-1].iloc[0]), 2)
             }
 
         #PARAMETER - DISPLAY ===============================================================
@@ -456,11 +473,13 @@ MOVING AVERAGES-------------------------
 '''
             print(output)
 #------------------------------------------------------------------------------------------
-    def US_HQM_corporate(self, maturity: str = '10y', period: str = '5y'): 
-        valid_params = {'valid_maturity': ['6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y'],
+    def US_HQM_corporate(self, display: str = 'table', maturity: str = '10y', period: str = '5y'): 
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_maturity': ['6mo', '1y', '2y', '3y', '5y', '7y', '10y', '20y', '30y'],
                         'valid_period' : ['6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']}
         
-        params = {'maturity': maturity,
+        params = {'display': display,
+                  'maturity': maturity,
                   'valid_period': period}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
@@ -518,15 +537,29 @@ MOVING AVERAGES-------------------------
         }
         
         #PARAMETER - PERIOD ================================================================  
-        #PARAMETER - PERIOD ================================================================  
         if period == 'max':
-            output = yield_df
+            yield_df = yield_df
 
         elif period == 'ytd':
-            output = yield_df[yield_df.index.year == current_year]
+            yield_df = yield_df[yield_df.index.year == current_year]
 
         else:
-            output = yield_df.loc[final_dates[period]:]
+            yield_df = yield_df.loc[final_dates[period]:]
 
-        return output
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = yield_df
+            return output
+        elif display == 'json':
+            yield_df.index = yield_df.index.strftime('%Y-%m-%d')
+
+            data_json_list = []
+            for index, row in yield_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{yield_df.columns[0]}': float(row[f'{yield_df.columns[0]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
 #------------------------------------------------------------------------------------------

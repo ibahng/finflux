@@ -7,6 +7,10 @@ import pandas as pd # type: ignore
 from datetime import timedelta
 from datetime import date
 from dateutil.relativedelta import relativedelta
+import datetime
+import matplotlib.pyplot as plt
+from pandas.tseries.offsets import BDay
+from matplotlib.ticker import FuncFormatter
 
 #------------------------------------------------------------------------------------------
 class InvalidParameterError(Exception):
@@ -18,6 +22,10 @@ class InvalidSecurityError(Exception):
         self.msg = msg
 
 class MissingConfigObject(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg
+
+class ChartReadabilityError(Exception):
     def __init__(self, msg: str):
         self.msg = msg
 
@@ -34,14 +42,16 @@ class equity:
             raise InvalidSecurityError(f"Invalid security type. "
                                     f"Please select a valid '{equity.security_type}' symbol")
 #------------------------------------------------------------------------------------------
-    def timeseries(self, period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
-        valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
+    def timeseries(self, display: str = 'table', period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
+        valid_params = {'valid_display' : ['table', 'json'],
+                        'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
                         'valid_data' : ['open', 'high', 'low', 'close', 'volume', 'all'],
                         'valid_calculation' : ['price', 'simple return', 'log return'],
                         'valid_round' : [True, False]}
         
-        params = {'period': period,
+        params = {'display': display,
+                  'period': period,
                   'interval': interval,
                   'data': data,
                   'calculation': calculation,
@@ -59,30 +69,350 @@ class equity:
             yf_download = yf.download(self.ticker, start=start, end=end, interval=interval, ignore_tz=True, rounding=round, group_by='column', progress=False, auto_adjust=True)
         #----------------------------------------------------------------------------------
 
-        #PARAMETER - DATA =================================================================
-        if data == 'all':
-            yf_download = yf_download
-        else:
-            yf_download = yf_download[data.capitalize()]
-        
         #STANDARDIZING TABLE---------------------------------------------------------------
         yf_download.columns = yf_download.columns.droplevel([1])
         yf_download.columns.name = None
         yf_download.columns = [f'{self.ticker} Close', f'{self.ticker} High', f'{self.ticker} Low', f'{self.ticker} Open', f'{self.ticker} Volume']
 
+        #PARAMETER - DATA =================================================================
+        if data == 'all':
+            yf_download = yf_download
+        else:
+            yf_download = yf_download[f'{self.ticker} {data.capitalize()}']
+
         #PARAMETER - CALCULATION ==========================================================
         if calculation == 'price':
-            output = yf_download
+            yf_download = yf_download
         elif calculation == 'simple return':
-            output = (yf_download / yf_download.shift(1))-1
+            yf_download = (yf_download / yf_download.shift(1))-1
+            yf_download = yf_download.drop(yf_download.index[0])
             if round == True:
-                output = output.round(2)
+                yf_download = yf_download.round(2)
         elif calculation == 'log return':
-            output = np.log(yf_download / yf_download.shift(1))
+            yf_download = np.log(yf_download / yf_download.shift(1))
+            yf_download = yf_download.drop(yf_download.index[0])
             if round == True:
-                output = output.round(2)
+                yf_download = yf_download.round(2)
+
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = yf_download
+        elif display == 'json':
+            yf_download.index = yf_download.index.strftime('%Y-%m-%d')
+            
+            yf_download_list = []
+            if data == 'all':
+                for index, row in yf_download.iterrows():
+                    a = {
+                        'Date': index,
+                        f'{self.ticker} Open': float(row[f'{self.ticker} Open']),
+                        f'{self.ticker} High': float(row[f'{self.ticker} Open']),
+                        f'{self.ticker} Low': float(row[f'{self.ticker} Open']),
+                        f'{self.ticker} Close': float(row[f'{self.ticker} Open']),
+                        f'{self.ticker} Volume': float(row[f'{self.ticker} Open'])
+                    }
+                    yf_download_list.append(a)
+            elif data != 'all':
+                for index, row in yf_download.iterrows():
+                    a = {
+                        'Date': index,
+                        f'{self.ticker} {data.title()}': row[f'{self.ticker} {data.title()}']
+                    }
+                    yf_download_list.append(a)
+            
+            output = yf_download_list
 
         return output
+#------------------------------------------------------------------------------------------
+    def candle_chart(self, period: str = '6mo', start: str = None, end: str = None, interval: str = '1d', sma: list = None, volume: bool = True, bollinger: list = None, o_label: bool = True, h_label: bool = True, l_label: bool = True, c_label: bool = True, legend: bool = False, title: bool = True, show: str = True, save: str = False):
+        valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
+                        'valid_interval' : ['1d', '1wk', '1mo'],
+                        'valid_volume' : [True, False],
+                        'valid_o_label' : [True, False],
+                        'valid_h_label' : [True, False],
+                        'valid_l_label' : [True, False],
+                        'valid_c_label' : [True, False],
+                        'valid_legend': [True, False],
+                        'valid_title': [True, False],
+                        'valid_show' : [True, False],
+                        'valid_save' : [True, False]}
+        
+        params = {'period': period,
+                  'interval': interval,
+                  'volume': volume,
+                  'o_label': o_label,
+                  'h_label': h_label,
+                  'l_label': l_label,
+                  'c_label': c_label,
+                  'legend': legend,
+                  'title': title,
+                  'show': show,
+                  'save': save}
+        
+        #SMA will be int or list from 10-300 inclusive
+        #bollinger will be 0.1-3.0 SDs floats inclusive with 0.05 increments; only works when sma is an int
+        
+        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
+            if param_value not in valid_param:
+                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
+                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
+        #RAW DATA/OBSERVATIONS-------------------------------------------------------------
+        data = self.timeseries(period=period, data='all', calculation='price', round=True, interval=interval, start=start, end=end)
+        data['DateNum'] = [x for x in range(0,len(data))]
+        #----------------------------------------------------------------------------------
+
+        #SETTING LIMITS ON NUMBER OF DATA DF ROWS POSSIBLE---------------------------------(this is to prevent overly cramped candlestick formatting)
+        if len(data) > 265:
+            raise ChartReadabilityError(f"Number of OHLC candles are capped at 265 to ensure plot readability. The current selection contains {len(data)} data points. Please reduce the time period or choose a larger interval.")
+            #1d interval and 1y period is ~262 datapoints
+            #1wk interval and 5y period is ~250 datapoints
+            #1mo interval and 10y period is well below the cap
+
+        #SETTING LIMITS ON SMA AND BOLLINGER BAND SD---------------------------------------
+        #SMA 10-300 inclusive ints
+        if isinstance(sma, list):
+            if len(sma) > 5:
+                raise ChartReadabilityError(f"Number of SMA lines are capped at 5 to ensure plot readability. The current selection contains {len(sma)} SMA lines. Please reduce the number of SMA lines.")
+            for sma_i in sma:
+                if sma_i > 300 or sma_i < 10:
+                    raise InvalidParameterError(f"Invalid sma parameter '{sma_i}'. "
+                                            f"Please choose an integer between 10 and 300 (inclusive)")
+
+        #BB 0.1-3.0 inclusive floats
+        if isinstance(bollinger, list):
+            if len(sma) != len(bollinger):
+                raise InvalidParameterError(f"Number of bollinger band standard deviation does not match the number of SMA lines. The current selection contains {len(sma)} SMA lines. Please match the number of bollinger band standard deviations to {len(sma)}.")
+            for bollinger_i in bollinger:
+                if bollinger_i != None:
+                    if bollinger_i > 3 or bollinger_i < 0.1:
+                        raise InvalidParameterError(f"Invalid bollinger parameter '{bollinger_i}'. "
+                                                    f"Please choose an integer or float between 0.1 and 3 (inclusive)")
+
+        #SETTING UP DATA DATAFRAME WITH OPTIONAL SMA AND BOLLINGER BAND COLUMN(S)----------
+        if sma is not None:
+            max_c_data = self.timeseries(period='max', data='all', calculation='price', round=True, interval=interval)
+            #creating sma columns in data dataframe based on bollinger condition
+            if bollinger == None:
+                for i in sma:
+                    max_c_data[f'SMA {i}'] = max_c_data[f'{self.ticker} Close'].rolling(window=i).mean()
+                    data[f'SMA {i}'] = max_c_data[f'SMA {i}'].tail(len(data))
+            elif isinstance(bollinger, list):
+                for i, b in zip(sma, bollinger):
+                    if b != None:
+                        max_c_data[f'SMA {i}'] = max_c_data[f'{self.ticker} Close'].rolling(window=i).mean()
+                        data[f'SMA {i}'] = max_c_data[f'SMA {i}'].tail(len(data))
+                        max_c_data[f'SD {i}'] = max_c_data[f'{self.ticker} Close'].rolling(window=i).std()
+                        data[f'bollinger_upper {i}'] = data[f'SMA {i}'] + (b * max_c_data[f'SD {i}'].tail(len(data)))
+                        data[f'bollinger_lower {i}'] = data[f'SMA {i}'] - (b * max_c_data[f'SD {i}'].tail(len(data)))
+                    elif b == None:
+                        max_c_data[f'SMA {i}'] = max_c_data[f'{self.ticker} Close'].rolling(window=i).mean()
+                        data[f'SMA {i}'] = max_c_data[f'SMA {i}'].tail(len(data))
+
+        #CREATING THE MAIN FIG AX PAIR WITH AN OPTIONAL VOLUME AX--------------------------
+        if volume == True:
+            fig, (ax_p, ax_v) = plt.subplots(nrows=2, ncols=1, gridspec_kw={'height_ratios': [3,1]}, figsize=(10, 6), dpi=300)
+            plt.subplots_adjust(hspace=0)
+        elif volume == False:
+            fig, ax_p = plt.subplots(figsize=(10, 4.5), dpi=300)
+
+        #PLOTTING THE MAIN OHLC CANDLESTICKS-----------------------------------------------
+        if len(data) > 200:
+            candle_width = 0.3
+        elif len(data) > 150:
+            candle_width = 0.4
+        elif len(data) > 100:
+            candle_width = 0.5
+        elif len(data) > 50:
+            candle_width = 0.6
+        else:
+            candle_width = 0.7
+        
+        for index, row in data.iterrows():
+            color = 'green' if row[f'{self.ticker} Close'] >= row[f'{self.ticker} Open'] else 'red'
+            #wick
+            ax_p.vlines(row['DateNum'], row[f'{self.ticker} Low'], row[f'{self.ticker} High'], color=color, linewidth=0.25)
+            #box
+            ax_p.add_patch(plt.Rectangle(
+                (row['DateNum'] - (candle_width/2), min(row[f'{self.ticker} Open'], row[f'{self.ticker} Close'])), # bottom left corner of the rectangle
+                candle_width, # horizontal width of the rectangle
+                abs(row[f'{self.ticker} Close'] - row[f'{self.ticker} Open']), #vertical height of the rectangle
+                color=color #fill color of the rectangle
+            ))
+        
+        #PLOTTING THE OPTIONAL VOLUME BARS IN SEPERATE AXES BELOW THE OHLC CHART-----------
+        if volume == True:
+            for index, row in data.iterrows():
+                color = 'green' if row[f'{self.ticker} Close'] >= row[f'{self.ticker} Open'] else 'red'
+                ax_v.bar(row['DateNum'],
+                        row[f'{self.ticker} Volume'],
+                        color = 'green' if row[f'{self.ticker} Close'] >= row[f'{self.ticker} Open'] else 'red',
+                        width = 0.8,
+                        alpha = 0.3)
+                
+        #REPLACING VOLUME CHART YAXIS LABELS WITH USER FRIENDLY OPTIONS--------------------
+        if volume == True:
+            def human_format(x, pos):
+                if x >= 1_000_000_000:
+                    return f'{int(x*1e-9)}B'
+                elif x >= 1_000_000:
+                    return f'{int(x*1e-6)}M'
+                elif x >= 1_000:
+                    return f'{int(x*1e-3)}K'
+                else:
+                    return f'{x:.0f}'
+
+            # Apply to volume axis
+            ax_v.yaxis.set_major_formatter(FuncFormatter(human_format))
+
+        #PLOTTING OPTIONAL SMA AND BOLLINGER BAND LINES------------------------------------
+        if isinstance(sma, list):
+            sma_colors = ["#1f77b4", "#ff7f0e", "#9467bd", "#8c564b", "#17becf"]
+            if bollinger == None:
+                for sma_number, sma_color in zip(sma, sma_colors):
+                    ax_p.plot(data['DateNum'], data[f'SMA {sma_number}'], color = sma_color, linewidth = 0.6, label = f'SMA {sma_number}')
+            elif isinstance(bollinger, list):
+                for sma_number, sma_color, bollinger_number in zip(sma, sma_colors, bollinger):
+                    if bollinger_number != None:
+                        ax_p.plot(data['DateNum'], data[f'SMA {sma_number}'], color = sma_color, linewidth = 0.6, linestyle = '--', label = f'SMA {sma_number}')
+                        ax_p.plot(data['DateNum'], data[f'bollinger_upper {sma_number}'], color = sma_color, linewidth = 0.4, linestyle = '-', label = f'BB ({sma_number}, {bollinger_number})')
+                        ax_p.plot(data['DateNum'], data[f'bollinger_lower {sma_number}'], color = sma_color, linewidth = 0.4, linestyle = '-')
+                        ax_p.fill_between(data['DateNum'], data[f'bollinger_lower {sma_number}'], data[f'bollinger_upper {sma_number}'], color = sma_color, alpha = 0.1)
+                    elif bollinger_number == None:
+                        ax_p.plot(data['DateNum'], data[f'SMA {sma_number}'], color = sma_color, linewidth = 0.6, label = f'SMA {sma_number}')
+
+        #PLOTTING OPTIONAL OHLC LABELS-----------------------------------------------------
+        label_bools = [o_label, h_label, l_label, c_label]
+
+        ax_p_length = ax_p.get_xlim()[1] - ax_p.get_xlim()[0]
+
+        label_vd_list = []
+
+        if o_label:
+            o_value, o_datenum = float(data[f'{self.ticker} Open'].iloc[0]), (0-ax_p.get_xlim()[0])/ax_p_length
+        else:
+            o_value, o_datenum = None, None
+
+        if h_label:
+            h_value, h_datenum = data[f'{self.ticker} High'].max(), (int(data.loc[data[f'{self.ticker} High'].idxmax(), "DateNum"])-ax_p.get_xlim()[0])/ax_p_length
+        else:
+            h_value, h_datenum = None, None
+
+        if l_label:
+            l_value, l_datenum = data[f'{self.ticker} Low'].min(), (int(data.loc[data[f'{self.ticker} Low'].idxmin(), "DateNum"])-ax_p.get_xlim()[0])/ax_p_length
+        else:
+            l_value, l_datenum = None, None
+
+        if c_label:
+            c_value, c_datenum = float(data[f'{self.ticker} Close'].iloc[-1]), (len(data)-1-ax_p.get_xlim()[0])/ax_p_length
+        else:
+            c_value, c_datenum = None, None
+
+        label_vd_list.append([o_value, o_datenum, 'O'])
+        label_vd_list.append([h_value, h_datenum, 'H'])
+        label_vd_list.append([l_value, l_datenum, 'L'])
+        label_vd_list.append([c_value, c_datenum, 'C'])
+
+        for label_bool, label_vd in zip(label_bools, label_vd_list):
+            if label_bool:
+                ax_p.axhline(label_vd[0], xmin=label_vd[1], color="orange", ls="--", lw=0.6, alpha=0.6)  # guide line
+                ax_p.text(
+                    x=1, y=label_vd[0], 
+                    s=f"{label_vd[2]}: {label_vd[0]}", 
+                    va="center", ha="left",
+                    backgroundcolor="white", 
+                    bbox=dict(facecolor="lightblue", edgecolor="none", boxstyle="round,pad=0.2"),
+                    fontsize=5.5,
+                    transform=ax_p.get_yaxis_transform()  #this make the x parameter a value between 0 and 1, 0 meaning very left side of the plot and 1 being the right
+                )
+
+        #REPLACING XLABEL INTEGERS WITH DATESTRINGS----------------------------------------
+        f_list = list(ax_p.get_xticks()[1:len(ax_p.get_xticks())-1])
+        int_list = [int(x) for x in f_list]
+        int_list
+
+        date_label_list = []
+        for i in int_list:
+            diff = i - data['DateNum'].iloc[-1]
+
+            interval_dict = { 
+            '1d': BDay(diff),
+            '1wk': pd.DateOffset(weeks=diff),
+            '1mo': pd.DateOffset(months=diff)
+        }
+            if diff <= 0:
+                date_label_list.append(data.index[i].strftime('%Y-%b-%d'))
+            elif diff > 0:
+                diff = i - data['DateNum'].iloc[-1]
+                date = data.index[-1] + interval_dict[interval]
+                
+                date_label_list.append(date.strftime('%Y-%b-%d'))
+
+        def date_tick_labels(ax):
+            ax.set_xticks(int_list)
+            ax.set_xticklabels(date_label_list)
+
+        if volume == True: 
+            date_tick_labels(ax_v)
+        elif volume == False:
+            date_tick_labels(ax_p)
+
+        #MAKING THE PLOT AESTHETIC---------------------------------------------------------
+        def style_ax(ax):
+            ax.set_facecolor('#fafafa') #BACKGROUND COLOR
+
+            for spine in ax.spines.values(): # SPINES AKA EDGES
+                spine.set_visible(True)            # ensure visibility
+                spine.set_edgecolor('#7A7A7A')    # gray color
+                spine.set_linewidth(0.5)          # adjust thickness
+
+            ax.minorticks_on()
+            ax.tick_params(which="minor", axis='both', direction='out', color='white') #minor ticks invisible
+
+            ax.grid(which='major', color='#bfbfbf', linestyle='-', linewidth=0.35) #major grid lines
+            ax.grid(which='minor', color='#bfbfbf', linestyle='--', linewidth=0.15) #minor grid lines
+
+            ax.yaxis.tick_right()            # ticks appear on the right
+            ax.yaxis.set_label_position("right")  # y-axis label moves to the right
+
+            for label in ax.get_xticklabels() + ax.get_yticklabels(): #sets all label fonts to 7 and Arial
+                label.set_fontsize(7)
+                label.set_fontname('Arial')
+
+            ax.set_axisbelow(True) #making the grid and everything below the actual data line
+
+        if volume == False:
+            style_ax(ax_p)
+            ax_p.tick_params(which="major", axis='both', direction='in', width=0.7) #major ohlc chart ticks
+        elif volume == True:
+            style_ax(ax_p)
+            ax_p.tick_params(bottom=False, labelbottom=False) # deleting the ohlc chart xticks and xlabels
+            style_ax(ax_v)
+            ax_v.tick_params(which="major", axis='both', direction='in', width=0.7) #major volume chart ticks
+
+        #OPTIONAL LEGEND-------------------------------------------------------------------
+        if legend: ax_p.legend(fontsize=6, frameon=False, facecolor=None, borderaxespad=1.2)
+
+        #OPTIONAL TITLE--------------------------------------------------------------------
+        if title:
+            interval_map = {
+                '1d': 'Daily',
+                '1wk': 'Weekly',
+                '1mo': 'Monthly',
+                '3mo': 'Quarterly'
+            }
+            first_date = data.index[0].strftime('%b %Y')
+            last_date = data.index[-1].strftime('%b %Y')
+            ax_p.set_title(f'{self.ticker} Stock Price — {interval_map[interval]} OHLC{' and Volume' if volume else ''} ({first_date} - {last_date})', fontsize=6.5, loc='left', pad=4, fontname='Arial', weight='bold')
+
+        #SAVE------------------------------------------------------------------------------
+        if save:
+            plt.savefig(f'{self.ticker}_CandleChart.png', dpi=300, bbox_inches='tight')
+
+        #SHOW------------------------------------------------------------------------------
+        if show:
+            plt.show()
+        elif show == False:
+            plt.close(fig)
 #------------------------------------------------------------------------------------------
     def realtime(self, display: str = 'json'): 
         valid_params = {'display': ['json', 'pretty']}
@@ -811,8 +1141,16 @@ PRICE ESTIMATE----------------------------------------------------------
 
         #PARAMETER - DISPLAY ==============================================================
         if display == 'json':
-            output = dividends_dict
-            return output
+            dividends_df.index = dividends_df.index.strftime('%Y-%m-%d')
+
+            dividends_json_list = []
+            for index, row in dividends_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{self.ticker} Dividends': float(row[f'{self.ticker} Dividends'])
+                }
+                dividends_json_list.append(a)
+            return dividends_json_list
         elif display == 'table':
             output = dividends_df
             return output
@@ -846,8 +1184,16 @@ PRICE ESTIMATE----------------------------------------------------------
 
         #PARAMETER - DISPLAY ==============================================================
         if display == 'json':
-            output = splits_dict
-            return output
+            splits_df.index = splits_df.index.strftime('%Y-%m-%d')
+
+            splits_json_list = []
+            for index, row in splits_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{self.ticker} Splits': float(row[f'{self.ticker} Splits'])
+                }
+                splits_json_list.append(a)
+            return splits_json_list
         elif display == 'table':
             output = splits_df
             return output
@@ -1288,4 +1634,45 @@ CASH FLOW-----------------------------------------------------------------------
 '''
         
             print(output)
+#------------------------------------------------------------------------------------------
+    def eps(self, display: str = 'json'): 
+        valid_params = {'valid_display': ['json', 'table'],}
+        
+        params = {'display': display}
+
+        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
+            if param_value not in valid_param:
+                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
+                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
+    
+        #RAW DATA/OBSERVATIONS-------------------------------------------------------------
+        yf_eps_df = yf.Ticker(self.ticker).get_earnings_dates()
+        #----------------------------------------------------------------------------------
+
+        yf_eps_df.index = yf_eps_df.index.normalize().tz_localize(None)
+        del yf_eps_df['Event Type']
+        del yf_eps_df['Surprise(%)']
+        yf_eps_df = yf_eps_df.rename(columns = {
+            'EPS Estimate': f'{self.ticker} EPS Estimate',
+            'Reported EPS': f'{self.ticker} EPS Actual'
+        })
+        yf_eps_df[f'{self.ticker} EPS Surprise(%)'] = round(((yf_eps_df[f'{self.ticker} EPS Actual']/yf_eps_df[f'{self.ticker} EPS Estimate']) - 1) * 100, 2)
+        yf_eps_df.index.name = 'Date'
+
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'json':
+            yf_eps_df.index = yf_eps_df.index.strftime('%Y-%m-%d')
+
+            yf_eps_dictlist = []
+            for index, row in yf_eps_df.iterrows():
+                a = {'Date': index,
+                    f'{self.ticker} EPS Estimate': float(row[f'{self.ticker} EPS Estimate']) if isinstance(row[f'{self.ticker} EPS Estimate'], np.float64) else row[f'{self.ticker} EPS Estimate'],
+                    f'{self.ticker} EPS Actual': float(row[f'{self.ticker} EPS Actual']) if isinstance(row[f'{self.ticker} EPS Actual'], np.float64) else row[f'{self.ticker} EPS Estimate'],
+                    f'{self.ticker} EPS Surprise(%)': float(row[f'{self.ticker} EPS Surprise(%)']) if isinstance(row[f'{self.ticker} EPS Surprise(%)'], np.float64) else row[f'{self.ticker} EPS Estimate']}
+                yf_eps_dictlist.append(a)
+            output = yf_eps_dictlist
+            return output
+        elif display == 'table':
+            output = yf_eps_df
+            return output
 #------------------------------------------------------------------------------------------

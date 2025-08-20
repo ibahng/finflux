@@ -14,6 +14,9 @@ Functions
 
 .. py:function:: timeseries(period = '5y', start = None, end = None, interval = '1d', data = 'all', calculation = 'price', round = True)
 
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :type display: str
+
    :param period: The duration of the timeseries (used if **start** and **end** parameters are not provided); VALID VALUES: ``'1mo'`` , ``'6mo'`` , ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'ytd'`` , ``'max'`` 
    :type period: str
 
@@ -35,7 +38,59 @@ Functions
    :param round: Whether to round numerical values to 2 decimal places; VALID VALUES: ``True`` , ``False``
    :type round: bool
 
-   :return: A pandas DataFrame of a timeseries price and volume data for the specified equity.
+   :return: A pandas DataFrame or row oriented JSON formatted output of a timeseries OHLC price and volume data for the specified equity.
+   :source: Yahoo Finance (yfinance)
+
+
+
+.. py:function:: candle_chart(period = '6mo', start = None, end = None, interval = '1d', sma = None, volume = True, bollinger = None, o_label = True, h_label = True, l_label = True, c_label = True, legend = False, title = True, show = True, save = False)
+
+   :param period: The duration of the chart (used if **start** and **end** parameters are not provided); VALID VALUES: ``'1mo'`` , ``'6mo'`` , ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'ytd'`` , ``'max'`` 
+   :type period: str
+
+   :param start: Optional start date in ``'YYYY-MM-DD'`` format. Overrides **period** parameter if both **start** and **end** parameters are set.
+   :type start: None or str
+
+   :param end: Optional end date in ``'YYYY-MM-DD'`` format. Overrides **period** parameter if both **start** and **end** parameters are set.
+   :type end: None or str
+
+   :param interval: Candlestick frequency; VALID VALUES: ``'1d'`` , ``'1wk'`` , ``'1mo'``
+   :type interval: str
+
+   :param sma: Optional standard moving average line(s) generation (``len(sma)`` capped at 5); VALID VALUES: ``None`` , ``list of int >=10 and <=300``
+   :type sma: None or list
+
+   :param volume: Optional volume chart; VALID VALUES: ``True`` , ``False``
+   :type volume: bool
+
+   :param bollinger: Optional bollinger band standard deviation range(s) generation (``len(bollinger)`` must equal ``len(sma)``); VALID VALUES: ``None`` or ``list of int/float >=0.1 and <=3.0``
+   :type bollinger: None or list
+
+   :param o_label: Optional plot open price label; VALID VALUES: ``True`` , ``False``
+   :type o_label: bool
+
+   :param h_label: Optional plot high price label; VALID VALUES: ``True`` , ``False``
+   :type h_label: bool
+
+   :param l_label: Optional plot low price label; VALID VALUES: ``True`` , ``False``
+   :type l_label: bool
+
+   :param c_label: Optional plot close price label; VALID VALUES: ``True`` , ``False``
+   :type c_label: bool
+
+   :param legend: Optional legend; VALID VALUES: ``True`` , ``False``
+   :type legend: bool
+
+   :param title: Optional title; VALID VALUES: ``True`` , ``False``
+   :type title: bool
+
+   :param show: Display the chart as an output; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A matplotlib OHLC candlestick chart figure for the specified equity
    :source: Yahoo Finance (yfinance)
 
 
@@ -141,4 +196,14 @@ Functions
    :type display: str
 
    :return: A comprehensive overview of the specified equity’s valuation, profitability, growth, liquidity, leverage, efficiency, and cash flow metrics across the past four fiscal years and the most recent period.
+   :source: Yahoo Finance (yfinance)
+
+
+
+.. py:function:: eps(display = 'json')
+
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :type display: str
+
+   :return: A pandas DataFrame or row oriented JSON formatted output of the timeseries eps data for the past 10 or 11 quarters of the specified equity.
    :source: Yahoo Finance (yfinance)

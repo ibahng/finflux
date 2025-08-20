@@ -24,12 +24,14 @@ class MissingConfigObject(Exception):
 #------------------------------------------------------------------------------------------
 class indicator:
 #------------------------------------------------------------------------------------------
-    def gdp(self, type: str = 'n', period: str = '5y', figure: str = 'yoy'): 
-        valid_params = {'valid_type': ['n', 'r', 'n_pc', 'r_pc', 'd'],
+    def gdp(self, display: str = 'table', type: str = 'n', period: str = '5y', figure: str = 'yoy'): 
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_type': ['n', 'r', 'n_pc', 'r_pc', 'd'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd'],
                         'valid_figure': ['raw', 'yoy', 'pop']}
         
-        params = {'type': type,
+        params = {'display': display,
+                  'type': type,
                   'period': period,
                   'figure': figure}
 
@@ -77,15 +79,15 @@ class indicator:
         if figure == 'raw':
             pass
         elif figure == 'yoy':
-            data_df[f'{identifiers[type][2].split(' (')[0]} YoY % Change'] = (((data_df[f'{identifiers[type][2]}']/data_df[f'{identifiers[type][2]}'].shift(4)) - 1) * 100).round(2)
+            data_df[f'{identifiers[type][2].split(" (")[0]} YoY % Change'] = (((data_df[f'{identifiers[type][2]}']/data_df[f'{identifiers[type][2]}'].shift(4)) - 1) * 100).round(2)
             del data_df[f'{identifiers[type][2]}']
             data_df = data_df.drop(data_df.index[0:4])
         elif figure == 'pop':
-            data_df[f'{identifiers[type][2].split(' (')[0]} QoQ % Change'] = (((data_df[f'{identifiers[type][2]}']/data_df[f'{identifiers[type][2]}'].shift(1)) - 1) * 100).round(2)
+            data_df[f'{identifiers[type][2].split(" (")[0]} QoQ % Change'] = (((data_df[f'{identifiers[type][2]}']/data_df[f'{identifiers[type][2]}'].shift(1)) - 1) * 100).round(2)
             del data_df[f'{identifiers[type][2]}']
             data_df = data_df.drop(data_df.index[0:1])
 
-        #PARAMETER - PERIOD ================================================================
+        #PARAMETER - PERIOD ===============================================================
         period_to_df = {
             '1y': -5,
             '2y': -9,
@@ -94,26 +96,41 @@ class indicator:
         }    
 
         if period == 'max':
-            output = data_df
+            data_df = data_df
         elif period == 'ytd':
             current_year = str(datetime.now().year)
             data_df = data_df[data_df.index.str[0:4] == current_year]
-            output = data_df
         elif period != 'max' or period != 'ytd':
             data_df = data_df.iloc[period_to_df[period]:]
-            output = data_df
         
-        output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
-        output.index.name = 'Date'
+        data_df.index = pd.to_datetime(data_df.index) # converting all row indices to datetime objects
+        data_df.index.name = 'Date'
 
-        return output
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = data_df
+            return output
+        elif display == 'json':
+            data_df.index = data_df.index.strftime('%Y-%m-%d')
+            
+            data_json_list = []
+            for index, row in data_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{data_df.columns[0]}': float(row[f'{data_df.columns[0]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
 #------------------------------------------------------------------------------------------
-    def price_index(self, type: str = 'c', period: str = '5y', figure: str = 'yoy'): 
-        valid_params = {'valid_type': ['c', 'p', 'cc', 'cp'],
+    def price_index(self, display: str = 'table', type: str = 'c', period: str = '5y', figure: str = 'yoy'): 
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_type': ['c', 'p', 'cc', 'cp'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd'],
                         'valid_figure': ['raw', 'yoy', 'pop']}
         
-        params = {'type': type,
+        params = {'display': display,
+                  'type': type,
                   'period': period,
                   'figure': figure}
 
@@ -223,26 +240,41 @@ class indicator:
         }      
 
         if period == 'max':
-            output = data_df
+            data_df = data_df
         elif period == 'ytd':
             current_year = str(datetime.now().year)
             data_df = data_df[data_df.index.str[0:4] == current_year]
-            output = data_df
         elif period != 'max' or period != 'ytd':
             data_df = data_df.iloc[period_to_df[period]:]
-            output = data_df
         
-        output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
-        output.index.name = 'Date'
+        data_df.index = pd.to_datetime(data_df.index) # converting all row indices to datetime objects
+        data_df.index.name = 'Date'
 
-        return output
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = data_df
+            return output
+        elif display == 'json':
+            data_df.index = data_df.index.strftime('%Y-%m-%d')
+
+            data_json_list = []
+            for index, row in data_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{data_df.columns[0]}': float(row[f'{data_df.columns[0]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
 #------------------------------------------------------------------------------------------
-    def pce(self, type: str = 'raw', period: str = '5y', figure: str = 'yoy'): 
-        valid_params = {'valid_type': ['raw', 'core'],
+    def pce(self, display: str = 'table', type: str = 'raw', period: str = '5y', figure: str = 'yoy'): 
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_type': ['raw', 'core'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd'],
                         'valid_figure': ['raw', 'yoy', 'pop']}
         
-        params = {'type': type,
+        params = {'display': display,
+                  'type': type,
                   'period': period,
                   'figure': figure}
 
@@ -295,11 +327,11 @@ class indicator:
         if figure == 'raw':
             pass
         elif figure == 'yoy':
-            data_df[f'{identifiers[type][2].split(' (')[0]} YoY % Change'] = (((data_df[f'{identifiers[type][2]}']/data_df[f'{identifiers[type][2]}'].shift(12)) - 1) * 100).round(2)
+            data_df[f'{identifiers[type][2].split(" (")[0]} YoY % Change'] = (((data_df[f'{identifiers[type][2]}']/data_df[f'{identifiers[type][2]}'].shift(12)) - 1) * 100).round(2)
             del data_df[f'{identifiers[type][2]}']
             data_df = data_df.drop(data_df.index[0:12])
         elif figure == 'pop':
-            data_df[f'{identifiers[type][2].split(' (')[0]} MoM % Change'] = (((data_df[f'{identifiers[type][2]}']/data_df[f'{identifiers[type][2]}'].shift(1)) - 1) * 100).round(2)
+            data_df[f'{identifiers[type][2].split(" (")[0]} MoM % Change'] = (((data_df[f'{identifiers[type][2]}']/data_df[f'{identifiers[type][2]}'].shift(1)) - 1) * 100).round(2)
             del data_df[f'{identifiers[type][2]}']
             data_df = data_df.drop(data_df.index[0:1])
 
@@ -312,25 +344,40 @@ class indicator:
         }    
 
         if period == 'max':
-            output = data_df
+            data_df = data_df
         elif period == 'ytd':
             current_year = str(datetime.now().year)
             data_df = data_df[data_df.index.str[0:4] == current_year]
-            output = data_df
         elif period != 'max' or period != 'ytd':
             data_df = data_df.iloc[period_to_df[period]:]
+
+        data_df.index = pd.to_datetime(data_df.index) # converting all row indices to datetime objects
+        data_df.index.name = 'Date'
+
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
             output = data_df
+            return output
+        elif display == 'json':
+            data_df.index = data_df.index.strftime('%Y-%m-%d')
 
-        output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
-        output.index.name = 'Date'
-
-        return output
+            data_json_list = []
+            for index, row in data_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{data_df.columns[0]}': float(row[f'{data_df.columns[0]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
 #------------------------------------------------------------------------------------------
-    def unemployment(self, type: str = 'U-3', period: str = '5y'): 
-        valid_params = {'valid_type': ['U-3', 'U-6', 'g=male', 'g=female', 'r=white', 'r=black', 'r=asian', 'r=hispanic', 'e<hs', 'e=hs', 'e<bach', 'e>=bach'],
+    def unemployment(self, display: str = 'table', type: str = 'U-3', period: str = '5y'): 
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_type': ['U-3', 'U-6', 'g=male', 'g=female', 'r=white', 'r=black', 'r=asian', 'r=hispanic', 'e<hs', 'e=hs', 'e<bach', 'e>=bach'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'ytd', 'max']}
         
-        params = {'type': type,
+        params = {'display': display,
+                  'type': type,
                   'period': period}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
@@ -431,25 +478,40 @@ class indicator:
         }      
 
         if period == 'max':
-            output = data_df
+            data_df = data_df
         elif period == 'ytd':
             current_year = str(datetime.now().year)
             data_df = data_df[data_df.index.str[0:4] == current_year]
-            output = data_df
         elif period != 'max' or period != 'ytd':
             data_df = data_df.iloc[period_to_df[period]:]
-            output = data_df
         
-        output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
-        output.index.name = 'Date'
+        data_df.index = pd.to_datetime(data_df.index) # converting all row indices to datetime objects
+        data_df.index.name = 'Date'
 
-        return output
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = data_df
+            return output
+        elif display == 'json':
+            data_df.index = data_df.index.strftime('%Y-%m-%d')
+
+            data_json_list = []
+            for index, row in data_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{data_df.columns[0]}': float(row[f'{data_df.columns[0]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
 #------------------------------------------------------------------------------------------
-    def labor(self, type: str = 'participation', period: str = '5y'): 
-        valid_params = {'valid_type': ['participation', 'payroll', 'quits', 'openings', 'earnings', 'claims'],
+    def labor(self, display: str = 'table', type: str = 'participation', period: str = '5y'): 
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_type': ['participation', 'payroll', 'quits', 'openings', 'earnings', 'claims'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd']}
         
-        params = {'type': type,
+        params = {'display': display,
+                  'type': type,
                   'period': period}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
@@ -557,25 +619,40 @@ class indicator:
         }      
 
         if period == 'max':
-            output = data_df
+            data_df = data_df
         elif period == 'ytd':
             current_year = str(datetime.now().year)
             data_df = data_df[data_df.index.str[0:4] == current_year]
-            output = data_df
         elif period != 'max' or period != 'ytd':
             data_df = data_df.iloc[period_to_df[period][identifiers[type][2]]:]
-            output = data_df
         
-        output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
-        output.index.name = 'Date'
+        data_df.index = pd.to_datetime(data_df.index) # converting all row indices to datetime objects
+        data_df.index.name = 'Date'
 
-        return output
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = data_df
+            return output
+        elif display == 'json':
+            data_df.index = data_df.index.strftime('%Y-%m-%d')
+
+            data_json_list = []
+            for index, row in data_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{data_df.columns[0]}': float(row[f'{data_df.columns[0]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
 #------------------------------------------------------------------------------------------
-    def sentiment(self, type: str = 'c_mcsi', period: str = '5y'): 
-        valid_params = {'valid_type': ['c_mcsi', 'c_oecd', 'b_oecd'],
+    def sentiment(self, display: str = 'table', type: str = 'c_mcsi', period: str = '5y'): 
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_type': ['c_mcsi', 'c_mcie', 'c_oecd', 'b_oecd'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'max', 'ytd']}
         
-        params = {'type': type,
+        params = {'display': display,
+                  'type': type,
                   'period': period}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
@@ -585,8 +662,9 @@ class indicator:
             
         FRED_IDs = {
             'c_mcsi': ['UMCSENT', 'Michigan Consumer Sentiment Index'], #UMich consumer sentiment
-            'c_oecd': ['CSCICP03USM665S', 'Composite Consumer Confidence Amplitude Adjusted for United States'], #OECD consumer confidence
-            'b_oecd': ['BSCICP02USM460S', 'Business Tendency Surveys Indicator for US (Manufacturing)'] #OECD business confidence
+            'c_mcie': ['MICH', 'Michigan Consumer Inflation Expectations'], #UMich consumer inflation expectations
+            'c_oecd': ['USACSCICP02STSAM', 'Composite Consumer Confidence for US'], #OECD consumer confidence
+            'b_oecd': ['BSCICP02USM460S', 'Business Tendency Surveys Indicator for US Manufacturing'] #OECD business confidence
         }    
 
         period_points = {
@@ -631,17 +709,34 @@ class indicator:
             for data_point in FRED_yield['observations'][period_points[period]:]:
                 data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
 
-        output = pd.DataFrame.from_dict(data, orient='index', columns=[f'{FRED_IDs[type][1]}'])
-        output.index = pd.to_datetime(output.index)
-        output.index.name = 'Date'
+        data_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'{FRED_IDs[type][1]}'])
+        data_df.index = pd.to_datetime(data_df.index)
+        data_df.index.name = 'Date'
 
-        return output
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = data_df
+            return output
+        elif display == 'json':
+            data_df.index = data_df.index.strftime('%Y-%m-%d')
+
+            data_json_list = []
+            for index, row in data_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{data_df.columns[0]}': float(row[f'{data_df.columns[0]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
 #------------------------------------------------------------------------------------------
-    def fed_rate(self, interval: str = '1d', period: str = '5y'): 
-        valid_params = {'valid_interval': ['1d', '1wk', '2wk', '1mo'],
+    def fed_rate(self, display: str = 'table', interval: str = '1d', period: str = '5y'): 
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_interval': ['1d', '1wk', '2wk', '1mo'],
                         'valid_period': ['1y', '2y', '5y', '10y', 'ytd', 'max']}
         
-        params = {'interval': interval,
+        params = {'display': display,
+                  'interval': interval,
                   'period': period}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
@@ -694,9 +789,9 @@ class indicator:
         for data_point in FRED_rate['observations']:
             data[data_point['date']] = (float(data_point['value']) if is_numeric(data_point['value']) else np.nan)
         
-        rate_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'Federal Funds Rate ({FRED_IDs[interval][1]})'])
-        rate_df.index = pd.to_datetime(rate_df.index)
-        rate_df.index.name= 'Date'
+        data_df = pd.DataFrame.from_dict(data, orient='index', columns=[f'Federal Funds Rate ({FRED_IDs[interval][1]})'])
+        data_df.index = pd.to_datetime(data_df.index)
+        data_df.index.name= 'Date'
 
         current_year = pd.Timestamp.now().year
         #----------------------------------------------------------------------------------
@@ -714,7 +809,7 @@ class indicator:
         final_dates_list = []
 
         for d in initial_dates:
-            while d not in rate_df.index.tolist():
+            while d not in data_df.index.tolist():
                 d = d + relativedelta(days=1)
             final_dates_list.append(d)
 
@@ -727,26 +822,42 @@ class indicator:
     
         #PARAMETER - PERIOD ================================================================  
         if period == 'max':
-            output = rate_df
+            output = data_df
 
         elif period == 'ytd':
-            output = rate_df[rate_df.index.year == current_year]
+            output = data_df[data_df.index.year == current_year]
 
         else:
             if interval == '1d':
-                output = rate_df.loc[final_dates[period]:]
+                output = data_df.loc[final_dates[period]:]
             elif interval != '1d':
-                output = rate_df.iloc[period_points[interval][period]:]
+                output = data_df.iloc[period_points[interval][period]:]
 
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = data_df
+            return output
+        elif display == 'json':
+            data_df.index = data_df.index.strftime('%Y-%m-%d')
 
-        return output
+            data_json_list = []
+            for index, row in data_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{data_df.columns[0]}': float(row[f'{data_df.columns[0]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
 #------------------------------------------------------------------------------------------
-    def housing(self, type: str = 'starts', period: str = '5y', figure: str = 'raw'): 
-        valid_params = {'valid_type' : ['starts', 'nsales', 'esales', '30y_rate', '15y_rate'],
+    def housing(self, display: str = 'table', type: str = 'starts', period: str = '5y', figure: str = 'raw'): 
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_type' : ['starts', 'nsales', 'esales', '30y_rate', '15y_rate'],
                         'valid_period' : ['1y', '2y', '5y', '10y', 'max', 'ytd'],
                         'valid_figure' : ['raw', 'yoy', 'pop']}
         
-        params = {'type': type,
+        params = {'display': display,
+                  'type': type,
                   'period': period,
                   'figure': figure}
 
@@ -799,15 +910,18 @@ class indicator:
         if figure == 'raw':
             pass
         elif figure == 'yoy':
-            data_df[f'{identifiers[type][1].split(' (')[0]} YoY % Change'] = (
-                (
+            if type != 'esales':
+                data_df[f'{identifiers[type][1].split(' (')[0]} YoY % Change'] = (
                     (
-                        data_df[f'{identifiers[type][1]}'] / data_df[f'{identifiers[type][1]}'].shift(identifiers[type][4])
-                    ) - 1
-                ) * 100
-            ).round(2)
-            del data_df[f'{identifiers[type][1]}']
-            data_df = data_df.drop(data_df.index[0:12])
+                        (
+                            data_df[f'{identifiers[type][1]}'] / data_df[f'{identifiers[type][1]}'].shift(identifiers[type][4])
+                        ) - 1
+                    ) * 100
+                ).round(2)
+                del data_df[f'{identifiers[type][1]}']
+                data_df = data_df.drop(data_df.index[0:12])
+            elif type == 'esales':
+                raise InvalidParameterError(f"Data avaliablity limited at 1y for esales. YoY figure calculation invalid. ")
         elif figure == 'pop':
             data_df[f'{identifiers[type][1].split(' (')[0]} {identifiers[type][2]} % Change'] = (
                 (
@@ -821,20 +935,142 @@ class indicator:
 
         #PARAMETER - PERIOD ================================================================
         if period == 'max':
-            output = data_df
+            data_df = data_df
         elif period == 'ytd':
             current_year = str(datetime.now().year)
             data_df = data_df[data_df.index.str[0:4] == current_year]
-            output = data_df
         elif period != 'max' or period != 'ytd':
             data_df = data_df[period_to_df[period][identifiers[type][3]]:]
-            output = data_df
         
-        output.index = pd.to_datetime(output.index) # converting all row indices to datetime objects
-        output.index.name = 'Date'
+        data_df.index = pd.to_datetime(data_df.index) # converting all row indices to datetime objects
+        data_df.index.name = 'Date'
 
-        if type != 'esales':
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = data_df
             return output
-        elif type == 'esales':
-            print('*NOTE: Data avaliablity limited at 1y. YoY figure calculation invalid.')
+        elif display == 'json':
+            data_df.index = data_df.index.strftime('%Y-%m-%d')
+
+            data_json_list = []
+            for index, row in data_df.iterrows():
+                a = {
+                    'Date': index,
+                    f'{data_df.columns[0]}': float(row[f'{data_df.columns[0]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
+#------------------------------------------------------------------------------------------
+    def vix(self, display: str = 'table', period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all'):
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
+                        'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
+                        'valid_data' : ['open', 'high', 'low', 'close', 'all']}
+        
+        params = {'display': display,
+                  'period': period,
+                  'interval': interval,
+                  'data': data}
+        
+        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
+            if param_value not in valid_param:
+                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
+                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
+        #RAW DATA/OBSERVATIONS-------------------------------------------------------------
+        #Note: start and end parameters will override any period parameter presence
+        if start == None and end == None:
+            yf_download = yf.download('^VIX', period=period, interval=interval, ignore_tz=True, rounding=True, group_by='column', progress=False, auto_adjust=True)
+        elif start != None and end != None:
+            yf_download = yf.download('^VIX', start=start, end=end, interval=interval, ignore_tz=True, rounding=True, group_by='column', progress=False, auto_adjust=True)
+        #----------------------------------------------------------------------------------
+
+        #STANDARDIZING TABLE---------------------------------------------------------------
+        yf_download = yf_download.drop(columns=['Volume'])
+        yf_download.columns = yf_download.columns.droplevel([1])
+        yf_download.columns.name = None
+        yf_download.columns = ['VIX Close', 'VIX High', 'VIX Low', 'VIX Open']
+
+        #PARAMETER - DATA =================================================================
+        if data == 'all':
+            yf_download = yf_download
+        else:
+            yf_download = yf_download[f'VIX {data.capitalize()}']
+
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = yf_download
+            return output
+        elif display == 'json':
+            yf_download.index = yf_download.index.strftime('%Y-%m-%d')
+
+            data_json_list = []
+            for index, row in yf_download.iterrows():
+                a = {
+                    'Date': index,
+                    f'{yf_download.columns[0]}': float(row[f'{yf_download.columns[0]}']),
+                    f'{yf_download.columns[1]}': float(row[f'{yf_download.columns[1]}']),
+                    f'{yf_download.columns[2]}': float(row[f'{yf_download.columns[2]}']),
+                    f'{yf_download.columns[3]}': float(row[f'{yf_download.columns[3]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
+#------------------------------------------------------------------------------------------
+    def dollar_index(self, display: str = 'table', period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all'):
+        valid_params = {'valid_display': ['table', 'json'],
+                        'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
+                        'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
+                        'valid_data' : ['open', 'high', 'low', 'close', 'all']}
+        
+        params = {'display': display,
+                  'period': period,
+                  'interval': interval,
+                  'data': data}
+        
+        for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
+            if param_value not in valid_param:
+                raise InvalidParameterError(f"Invalid {param_key} parameter '{param_value}'. "
+                                            f"Please choose a valid parameter: {', '.join(valid_param)}")
+        #RAW DATA/OBSERVATIONS-------------------------------------------------------------
+        #Note: start and end parameters will override any period parameter presence
+        if start == None and end == None:
+            yf_download = yf.download('DX-Y.NYB', period=period, interval=interval, ignore_tz=True, rounding=True, group_by='column', progress=False, auto_adjust=True)
+        elif start != None and end != None:
+            yf_download = yf.download('DX-Y.NYB', start=start, end=end, interval=interval, ignore_tz=True, rounding=True, group_by='column', progress=False, auto_adjust=True)
+        #----------------------------------------------------------------------------------
+
+        #STANDARDIZING TABLE---------------------------------------------------------------
+        yf_download = yf_download.drop(columns=['Volume'])
+        yf_download.columns = yf_download.columns.droplevel([1])
+        yf_download.columns.name = None
+        yf_download.columns = ['$_INDEX Close', '$_INDEX High', '$_INDEX Low', '$_INDEX Open']
+
+        #PARAMETER - DATA =================================================================
+        if data == 'all':
+            yf_download = yf_download
+        else:
+            yf_download = yf_download[f'$_INDEX {data.capitalize()}']
+
+        output = yf_download
+
+        #PARAMETER - DISPLAY ==============================================================
+        if display == 'table':
+            output = yf_download
+            return output
+        elif display == 'json':
+            yf_download.index = yf_download.index.strftime('%Y-%m-%d')
+
+            data_json_list = []
+            for index, row in yf_download.iterrows():
+                a = {
+                    'Date': index,
+                    f'{yf_download.columns[0]}': float(row[f'{yf_download.columns[0]}']),
+                    f'{yf_download.columns[1]}': float(row[f'{yf_download.columns[1]}']),
+                    f'{yf_download.columns[2]}': float(row[f'{yf_download.columns[2]}']),
+                    f'{yf_download.columns[3]}': float(row[f'{yf_download.columns[3]}'])
+                }
+                data_json_list.append(a)
+            output = data_json_list
+            return output
 #------------------------------------------------------------------------------------------

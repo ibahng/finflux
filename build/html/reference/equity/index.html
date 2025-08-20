@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Equity - finflux.equity() &#8212; finflux 0.3.0 documentation</title>
+    <title>Equity - finflux.equity() &#8212; finflux 0.4.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../../_static/documentation_options.js?v=6c02275b"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/equity/index';</script>
@@ -110,7 +110,7 @@
   
   
   
-    <p class="title logo__title">finflux 0.3.0 documentation</p>
+    <p class="title logo__title">finflux 0.4.0 documentation</p>
   
 </a></div>
     
@@ -331,6 +331,7 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
 <li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries (used if <strong>start</strong> and <strong>end</strong> parameters are not provided); VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code></p></li>
 <li><p><strong>start</strong> (<em>None</em><em> or </em><em>str</em>) – Optional start date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
 <li><p><strong>end</strong> (<em>None</em><em> or </em><em>str</em>) – Optional end date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
@@ -341,7 +342,39 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas DataFrame of a timeseries price and volume data for the specified equity.</p>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of a timeseries OHLC price and volume data for the specified equity.</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="candle_chart">
+<span class="sig-name descname"><span class="pre">candle_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'6mo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bollinger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">o_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#candle_chart" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the chart (used if <strong>start</strong> and <strong>end</strong> parameters are not provided); VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code></p></li>
+<li><p><strong>start</strong> (<em>None</em><em> or </em><em>str</em>) – Optional start date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
+<li><p><strong>end</strong> (<em>None</em><em> or </em><em>str</em>) – Optional end date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
+<li><p><strong>interval</strong> (<em>str</em>) – Candlestick frequency; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1d'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1wk'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code></p></li>
+<li><p><strong>sma</strong> (<em>None</em><em> or </em><em>list</em>) – Optional standard moving average line(s) generation (<code class="docutils literal notranslate"><span class="pre">len(sma)</span></code> capped at 5); VALID VALUES: <code class="docutils literal notranslate"><span class="pre">None</span></code> , <code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">of</span> <span class="pre">int</span> <span class="pre">&gt;=10</span> <span class="pre">and</span> <span class="pre">&lt;=300</span></code></p></li>
+<li><p><strong>volume</strong> (<em>bool</em>) – Optional volume chart; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">True</span></code> , <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>bollinger</strong> (<em>None</em><em> or </em><em>list</em>) – Optional bollinger band standard deviation range(s) generation (<code class="docutils literal notranslate"><span class="pre">len(bollinger)</span></code> must equal <code class="docutils literal notranslate"><span class="pre">len(sma)</span></code>); VALID VALUES: <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">of</span> <span class="pre">int/float</span> <span class="pre">&gt;=0.1</span> <span class="pre">and</span> <span class="pre">&lt;=3.0</span></code></p></li>
+<li><p><strong>o_label</strong> (<em>bool</em>) – Optional plot open price label; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">True</span></code> , <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>h_label</strong> (<em>bool</em>) – Optional plot high price label; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">True</span></code> , <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>l_label</strong> (<em>bool</em>) – Optional plot low price label; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">True</span></code> , <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>c_label</strong> (<em>bool</em>) – Optional plot close price label; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">True</span></code> , <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>legend</strong> (<em>bool</em>) – Optional legend; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">True</span></code> , <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>title</strong> (<em>bool</em>) – Optional title; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">True</span></code> , <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>show</strong> (<em>bool</em>) – Display the chart as an output; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">True</span></code> , <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>save</strong> (<em>bool</em>) – Download the figure as a png; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">True</span></code> , <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A matplotlib OHLC candlestick chart figure for the specified equity</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
@@ -500,6 +533,22 @@
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="eps">
+<span class="sig-name descname"><span class="pre">eps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eps" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of the timeseries eps data for the past 10 or 11 quarters of the specified equity.</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -552,6 +601,7 @@
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#timeseries"><code class="docutils literal notranslate"><span class="pre">timeseries()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#candle_chart"><code class="docutils literal notranslate"><span class="pre">candle_chart()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#realtime"><code class="docutils literal notranslate"><span class="pre">realtime()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statement"><code class="docutils literal notranslate"><span class="pre">statement()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quote"><code class="docutils literal notranslate"><span class="pre">quote()</span></code></a></li>
@@ -561,6 +611,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dividend"><code class="docutils literal notranslate"><span class="pre">dividend()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#split"><code class="docutils literal notranslate"><span class="pre">split()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stats"><code class="docutils literal notranslate"><span class="pre">stats()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eps"><code class="docutils literal notranslate"><span class="pre">eps()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Indicator - finflux.indicator() &#8212; finflux 0.3.0 documentation</title>
+    <title>Indicator - finflux.indicator() &#8212; finflux 0.4.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../../_static/documentation_options.js?v=6c02275b"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/indicator/index';</script>
@@ -110,7 +110,7 @@
   
   
   
-    <p class="title logo__title">finflux 0.3.0 documentation</p>
+    <p class="title logo__title">finflux 0.4.0 documentation</p>
   
 </a></div>
     
@@ -317,7 +317,7 @@
                   
   <section id="indicator-finflux-indicator">
 <h1>Indicator - finflux.indicator()<a class="headerlink" href="#indicator-finflux-indicator" title="Link to this heading">#</a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">indicator()</span></code> class does not require any prior input.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">indicator()</span></code> class does not require any input.</p>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="py function">
@@ -326,13 +326,14 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
 <li><p><strong>type</strong> (<em>str</em>) – Type of gross domestic product; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'n'</span></code> (nominal) , <code class="docutils literal notranslate"><span class="pre">'r'</span></code> (real) , <code class="docutils literal notranslate"><span class="pre">'n_pc'</span></code> (nominal per capita) , <code class="docutils literal notranslate"><span class="pre">'r_pc'</span></code> (real per capita) , <code class="docutils literal notranslate"><span class="pre">'d'</span></code> (deflator)</p></li>
 <li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> ,</p></li>
 <li><p><strong>figure</strong> (<em>str</em>) – Data interpretation; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'raw'</span></code> , <code class="docutils literal notranslate"><span class="pre">'yoy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pop'</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas DataFrame of a quarterly timeseries for specified US gross domestic product data</p>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of a quarterly timeseries for specified US gross domestic product data</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Bureau of Economic Analysis</p>
@@ -346,13 +347,14 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> (<em>str</em>) – Type of price index; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'c'</span></code> (core) , <code class="docutils literal notranslate"><span class="pre">'p'</span></code> (producer) , <code class="docutils literal notranslate"><span class="pre">'cc'</span></code> (core consumer) , <code class="docutils literal notranslate"><span class="pre">'cp'</span></code> (core producer)</p></li>
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
+<li><p><strong>type</strong> (<em>str</em>) – Type of price index; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'c'</span></code> (consumer) , <code class="docutils literal notranslate"><span class="pre">'p'</span></code> (producer) , <code class="docutils literal notranslate"><span class="pre">'cc'</span></code> (core consumer) , <code class="docutils literal notranslate"><span class="pre">'cp'</span></code> (core producer)</p></li>
 <li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
 <li><p><strong>figure</strong> (<em>str</em>) – Data interpretation; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'raw'</span></code> , <code class="docutils literal notranslate"><span class="pre">'yoy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pop'</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas dataframe of a monthly timeseries for specified US price index data</p>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of a monthly timeseries for specified US price index data</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Bureau of Labor Statistics</p>
@@ -366,13 +368,14 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
 <li><p><strong>type</strong> (<em>str</em>) – Type of personal consumption expenditure; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'raw'</span></code> , <code class="docutils literal notranslate"><span class="pre">'core'</span></code></p></li>
 <li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
 <li><p><strong>figure</strong> (<em>str</em>) – Data interpretation; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'raw'</span></code> , <code class="docutils literal notranslate"><span class="pre">'yoy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pop'</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas dataframe of a monthly timeseries for specified US personal consumption expenditure data</p>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of a monthly timeseries for specified US personal consumption expenditure data</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Bureau of Economic Analysis</p>
@@ -386,12 +389,14 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
+<li><p><strong>display</strong> – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
 <li><p><strong>type</strong> (<em>str</em>) – Type of unemployment; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'U-3'</span></code> (unemployment) , <code class="docutils literal notranslate"><span class="pre">'U-6'</span></code> (underemployment) , <code class="docutils literal notranslate"><span class="pre">'g=male'</span></code> , <code class="docutils literal notranslate"><span class="pre">'g=female'</span></code> , <code class="docutils literal notranslate"><span class="pre">'r=white'</span></code> , <code class="docutils literal notranslate"><span class="pre">'r=black'</span></code> , <code class="docutils literal notranslate"><span class="pre">'r=asian'</span></code> , <code class="docutils literal notranslate"><span class="pre">'r=hispanic'</span></code> , <code class="docutils literal notranslate"><span class="pre">'e&lt;hs'</span></code> (less than HS education) , <code class="docutils literal notranslate"><span class="pre">'e=hs'</span></code> , <code class="docutils literal notranslate"><span class="pre">'e&lt;bach'</span></code> (less than bachelor’s degree) , <code class="docutils literal notranslate"><span class="pre">'e&gt;=bach'</span></code></p></li>
 <li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas dataframe of a monthly timeseries for specified US unemployment data</p>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of a monthly timeseries for specified US unemployment data</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Bureau of Labor Statistics</p>
@@ -405,12 +410,13 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
 <li><p><strong>type</strong> (<em>str</em>) – Type of labor metric; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'participation'</span></code> (Labor Force Participation Rate) , <code class="docutils literal notranslate"><span class="pre">'payroll'</span></code> (Nonfarm Payrolls) , <code class="docutils literal notranslate"><span class="pre">'quits'</span></code> (Quits Rate) , <code class="docutils literal notranslate"><span class="pre">'openings'</span></code> (Job Openings Rate) , <code class="docutils literal notranslate"><span class="pre">'earnings'</span></code> (Average Hourly Earnings) , <code class="docutils literal notranslate"><span class="pre">'claims'</span></code> (Initial Claims)</p></li>
 <li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas dataframe of a monthly or weekly timeseries for specified US labor metric data</p>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of a monthly or weekly timeseries for specified US labor metric data</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Bureau of Labor Statistics</p>
@@ -424,12 +430,13 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> (<em>str</em>) – Type of sentiment indicator; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'c_mcsi'</span></code> (University of Michigan Consumer Sentiment) , <code class="docutils literal notranslate"><span class="pre">'c_oecd'</span></code> (OECD Consumer Confidence) , <code class="docutils literal notranslate"><span class="pre">'b_oecd'</span></code> (OECD Business Confidence)</p></li>
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
+<li><p><strong>type</strong> (<em>str</em>) – Type of sentiment indicator; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'c_mcsi'</span></code> (University of Michigan Consumer Sentiment) , <code class="docutils literal notranslate"><span class="pre">'c_mcie'</span></code> (University of Michigan Consumer Inflation Expecations) , <code class="docutils literal notranslate"><span class="pre">'c_oecd'</span></code> (OECD Composite Consumer Confidence for US) , <code class="docutils literal notranslate"><span class="pre">'b_oecd'</span></code> (OECD Business Tendency Surveys Indicator for US Manufacturing)</p></li>
 <li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas dataframe of a monthly timeseries for specified US sentiment data</p>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of a monthly timeseries for specified US sentiment data</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>FRED (University of Michigan, Organization for Economic Co-operation and Development)</p>
@@ -443,12 +450,13 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
 <li><p><strong>interval</strong> (<em>str</em>) – Data frequency; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1d'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1wk'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2wk'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code></p></li>
 <li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas dataframe of a timeseries for the US federal funds rate</p>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of a timeseries for the US federal funds rate</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>FRED (Board of Governors of the Federal Reserve System)</p>
@@ -462,16 +470,63 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
 <li><p><strong>type</strong> (<em>str</em>) – Type of housing metric; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'starts'</span></code> (Housing Starts) , <code class="docutils literal notranslate"><span class="pre">'nsales'</span></code> (New Housing Sales) , <code class="docutils literal notranslate"><span class="pre">'esales'</span></code> (Existing Housing Sales) , <code class="docutils literal notranslate"><span class="pre">'30y_rate'</span></code> (30 Year Mortgage Rate) , <code class="docutils literal notranslate"><span class="pre">'15y_rate'</span></code> (15 Year Mortgage Rate)</p></li>
 <li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code></p></li>
 <li><p><strong>figure</strong> (<em>str</em>) – Data interpretation; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'raw'</span></code> , <code class="docutils literal notranslate"><span class="pre">'yoy'</span></code> , <code class="docutils literal notranslate"><span class="pre">'pop'</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas dataframe of a monthly or weekly timeseries for specified US housing metric data</p>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of a monthly or weekly timeseries for specified US housing metric data</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>FRED (US Census Bureau, National Association of Realtors, Freddie Mac)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vix">
+<span class="sig-name descname"><span class="pre">vix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vix" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries (used if <strong>start</strong> and <strong>end</strong> parameters are not provided); VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code></p></li>
+<li><p><strong>start</strong> (<em>None</em><em> or </em><em>str</em>) – Optional start date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
+<li><p><strong>end</strong> (<em>None</em><em> or </em><em>str</em>) – Optional end date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
+<li><p><strong>interval</strong> (<em>str</em>) – Data frequency; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1d'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1wk'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'3mo'</span></code></p></li>
+<li><p><strong>data</strong> (<em>str</em>) – Type of OHLC data to retrieve; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'open'</span></code> , <code class="docutils literal notranslate"><span class="pre">'high'</span></code> , <code class="docutils literal notranslate"><span class="pre">'low'</span></code> , <code class="docutils literal notranslate"><span class="pre">'close'</span></code> , <code class="docutils literal notranslate"><span class="pre">'all'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of timeseries data for the CBOE Volatility Index (VIX).</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dollar_index">
+<span class="sig-name descname"><span class="pre">dollar_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'5y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dollar_index" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
+<li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries (used if <strong>start</strong> and <strong>end</strong> parameters are not provided); VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code></p></li>
+<li><p><strong>start</strong> (<em>None</em><em> or </em><em>str</em>) – Optional start date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
+<li><p><strong>end</strong> (<em>None</em><em> or </em><em>str</em>) – Optional end date in <code class="docutils literal notranslate"><span class="pre">'YYYY-MM-DD'</span></code> format. Overrides <strong>period</strong> parameter if both <strong>start</strong> and <strong>end</strong> parameters are set.</p></li>
+<li><p><strong>interval</strong> (<em>str</em>) – Data frequency; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1d'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1wk'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'3mo'</span></code></p></li>
+<li><p><strong>data</strong> (<em>str</em>) – Type of OHLC data to retrieve; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'open'</span></code> , <code class="docutils literal notranslate"><span class="pre">'high'</span></code> , <code class="docutils literal notranslate"><span class="pre">'low'</span></code> , <code class="docutils literal notranslate"><span class="pre">'close'</span></code> , <code class="docutils literal notranslate"><span class="pre">'all'</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of timeseries data for the Dollar Index.</p>
+</dd>
+<dt class="field-odd">Source<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Yahoo Finance (yfinance)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -535,6 +590,8 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sentiment"><code class="docutils literal notranslate"><span class="pre">sentiment()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fed_rate"><code class="docutils literal notranslate"><span class="pre">fed_rate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#housing"><code class="docutils literal notranslate"><span class="pre">housing()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vix"><code class="docutils literal notranslate"><span class="pre">vix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dollar_index"><code class="docutils literal notranslate"><span class="pre">dollar_index()</span></code></a></li>
 </ul>
 </li>
 </ul>

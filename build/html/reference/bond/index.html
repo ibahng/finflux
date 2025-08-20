@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Fixed Income - finflux.bond() &#8212; finflux 0.3.0 documentation</title>
+    <title>Fixed Income - finflux.bond() &#8212; finflux 0.4.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../../_static/documentation_options.js?v=6c02275b"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/bond/index';</script>
@@ -110,7 +110,7 @@
   
   
   
-    <p class="title logo__title">finflux 0.3.0 documentation</p>
+    <p class="title logo__title">finflux 0.4.0 documentation</p>
   
 </a></div>
     
@@ -317,7 +317,7 @@
                   
   <section id="fixed-income-finflux-bond">
 <h1>Fixed Income - finflux.bond()<a class="headerlink" href="#fixed-income-finflux-bond" title="Link to this heading">#</a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">bond()</span></code> class does not require any prior input.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">bond()</span></code> class does not require any input.</p>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="py function">
@@ -326,12 +326,13 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
 <li><p><strong>country</strong> (<em>str</em>) – The country for which data is requested; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'KR'</span></code> , <code class="docutils literal notranslate"><span class="pre">'AT'</span></code> , <code class="docutils literal notranslate"><span class="pre">'CL'</span></code> , <code class="docutils literal notranslate"><span class="pre">'CZ'</span></code> , <code class="docutils literal notranslate"><span class="pre">'GR'</span></code> , <code class="docutils literal notranslate"><span class="pre">'FI'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ZA'</span></code> , <code class="docutils literal notranslate"><span class="pre">'NL'</span></code> , <code class="docutils literal notranslate"><span class="pre">'SK'</span></code> , <code class="docutils literal notranslate"><span class="pre">'NZ'</span></code> , <code class="docutils literal notranslate"><span class="pre">'LU'</span></code> , <code class="docutils literal notranslate"><span class="pre">'PL'</span></code> , <code class="docutils literal notranslate"><span class="pre">'SI'</span></code> , <code class="docutils literal notranslate"><span class="pre">'CH'</span></code> , <code class="docutils literal notranslate"><span class="pre">'DE'</span></code> , <code class="docutils literal notranslate"><span class="pre">'CA'</span></code> , <code class="docutils literal notranslate"><span class="pre">'JP'</span></code> , <code class="docutils literal notranslate"><span class="pre">'DK'</span></code> , <code class="docutils literal notranslate"><span class="pre">'BE'</span></code> , <code class="docutils literal notranslate"><span class="pre">'FR'</span></code> , <code class="docutils literal notranslate"><span class="pre">'NO'</span></code> , <code class="docutils literal notranslate"><span class="pre">'PT'</span></code> , <code class="docutils literal notranslate"><span class="pre">'IT'</span></code> , <code class="docutils literal notranslate"><span class="pre">'GB'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ES'</span></code> , <code class="docutils literal notranslate"><span class="pre">'IE'</span></code> , <code class="docutils literal notranslate"><span class="pre">'AU'</span></code> , <code class="docutils literal notranslate"><span class="pre">'SE'</span></code> , <code class="docutils literal notranslate"><span class="pre">'MX'</span></code> , <code class="docutils literal notranslate"><span class="pre">'HU'</span></code> , <code class="docutils literal notranslate"><span class="pre">'IS'</span></code></p></li>
 <li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas DataFrame of the monthly timeseries of a country’s 10 year soverign bond yield.</p>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of the monthly timeseries of a country’s 10 year soverign bond yield.</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Federal Reserve Economic Data (Organization for Economic Co-operation and Development)</p>
@@ -418,12 +419,13 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>display</strong> (<em>str</em>) – Specifies the output format; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'json'</span></code> , <code class="docutils literal notranslate"><span class="pre">'table'</span></code></p></li>
 <li><p><strong>maturity</strong> (<em>str</em>) – The maturity of the Treasury bond; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'3y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'7y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'20y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'30y'</span></code></p></li>
 <li><p><strong>period</strong> (<em>str</em>) – The duration of the timeseries; VALID VALUES: <code class="docutils literal notranslate"><span class="pre">'6mo'</span></code> , <code class="docutils literal notranslate"><span class="pre">'1y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'2y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'5y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'10y'</span></code> , <code class="docutils literal notranslate"><span class="pre">'ytd'</span></code> , <code class="docutils literal notranslate"><span class="pre">'max'</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pandas DataFrame of the monthly timeseries of the high quality market (A, AA, AAA credit ratings) corporate bond yield</p>
+<dd class="field-even"><p>A pandas DataFrame or row oriented JSON formatted output of the monthly timeseries of the high quality market (A, AA, AAA credit ratings) corporate bond yield</p>
 </dd>
 <dt class="field-odd">Source<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Federal Reserve Economic Data (US Department of Treasury)</p>
