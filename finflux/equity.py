@@ -7,7 +7,6 @@ import pandas as pd # type: ignore
 from datetime import timedelta
 from datetime import date
 from dateutil.relativedelta import relativedelta
-import datetime
 import matplotlib.pyplot as plt
 from pandas.tseries.offsets import BDay
 from matplotlib.ticker import FuncFormatter
