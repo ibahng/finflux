@@ -4,8 +4,7 @@ import yfinance as yf # type: ignore
 import numpy as np # type: ignore
 import requests # type: ignore
 import pandas as pd # type: ignore
-from datetime import timedelta
-from datetime import date
+from datetime import timedelta, datetime, date
 from dateutil.relativedelta import relativedelta
 import matplotlib.pyplot as plt
 from pandas.tseries.offsets import BDay
@@ -41,20 +40,24 @@ class equity:
             raise InvalidSecurityError(f"Invalid security type. "
                                     f"Please select a valid '{equity.security_type}' symbol")
 #------------------------------------------------------------------------------------------
-    def timeseries(self, display: str = 'table', period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True):
-        valid_params = {'valid_display' : ['table', 'json'],
+    def timeseries(self, display: str = 'table', period: str = '5y', start: str = None, end: str = None, interval: str = '1d', data: str = 'all', calculation: str = 'price', round: bool = True, show: str = True, save: str = False):
+        valid_params = {'valid_display' : ['table', 'json', 'line'],
                         'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo', '3mo'],
                         'valid_data' : ['open', 'high', 'low', 'close', 'volume', 'all'],
                         'valid_calculation' : ['price', 'simple return', 'log return'],
-                        'valid_round' : [True, False]}
+                        'valid_round' : [True, False],
+                        'valid_show' : [True, False],
+                        'valid_save' : [True, False]}
         
         params = {'display': display,
                   'period': period,
                   'interval': interval,
                   'data': data,
                   'calculation': calculation,
-                  'round': round}
+                  'round': round,
+                  'show': show,
+                  'save': save}
         
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
             if param_value not in valid_param:
@@ -96,6 +99,8 @@ class equity:
         #PARAMETER - DISPLAY ==============================================================
         if display == 'table':
             output = yf_download
+            return output
+        
         elif display == 'json':
             yf_download.index = yf_download.index.strftime('%Y-%m-%d')
             
@@ -105,10 +110,10 @@ class equity:
                     a = {
                         'Date': index,
                         f'{self.ticker} Open': float(row[f'{self.ticker} Open']),
-                        f'{self.ticker} High': float(row[f'{self.ticker} Open']),
-                        f'{self.ticker} Low': float(row[f'{self.ticker} Open']),
-                        f'{self.ticker} Close': float(row[f'{self.ticker} Open']),
-                        f'{self.ticker} Volume': float(row[f'{self.ticker} Open'])
+                        f'{self.ticker} High': float(row[f'{self.ticker} High']),
+                        f'{self.ticker} Low': float(row[f'{self.ticker} Low']),
+                        f'{self.ticker} Close': float(row[f'{self.ticker} Close']),
+                        f'{self.ticker} Volume': float(row[f'{self.ticker} Volume'])
                     }
                     yf_download_list.append(a)
             elif data != 'all':
@@ -120,10 +125,63 @@ class equity:
                     yf_download_list.append(a)
             
             output = yf_download_list
+            return output
+        
+        elif display == 'line':
+            if data == 'all':
+                raise ChartReadabilityError('For optimal plot readability, only one type of OHLC price or volume data can be selected at a time. Currently, multiple options are selected. Please choose a single data parameter.')
+            
+            elif data != 'all':
+                fig, ax = plt.subplots(figsize=(10, 4.5), dpi=300)
 
-        return output
+                ax.plot(yf_download.index, yf_download)
+                
+                first_date = yf_download.index[0].strftime('%b %Y')
+                last_date = yf_download.index[-1].strftime('%b %Y')
+
+                interval_map = {
+                    '1d': 'Daily',
+                    '1wk': 'Weekly',
+                    '1mo': 'Monthly',
+                    '3mo': 'Quarterly',
+                }
+
+                ax.set_title(f'{self.ticker} Stock Price {interval_map[interval]} {data.capitalize()} — ({first_date} - {last_date})', fontsize=6.5, loc='left', pad=4, fontname='Arial', weight='bold')
+
+                #PLOT AESTHETICS---------------------------------------------------------------
+                ax.set_facecolor('#E6F2FA') #BACKGROUND COLOR
+
+                for spine in ax.spines.values(): # SPINES AKA EDGES
+                    spine.set_visible(True)            # ensure visibility
+                    spine.set_edgecolor('#7A7A7A')    # gray color
+                    spine.set_linewidth(0.15)          # adjust thickness
+
+                ax.minorticks_on() #need to turn on minor ticks to plot minor grid lines
+                ax.tick_params(which="minor", axis='both', direction='out', color='white', width=0) #minor ticks invisible
+                ax.tick_params(which="major", axis='both', direction='out', width=1, zorder=3) #major ticks
+
+                ax.grid(which='major', color='#FFFFFF', linestyle='-', linewidth=0.8, zorder=0) #major grid lines
+                ax.grid(which='minor', color='#FFFFFF', linestyle='--', linewidth=0.4, zorder=0) #minor grid lines
+
+                ax.yaxis.tick_right()            # ticks appear on the right
+                ax.yaxis.set_label_position("right")  # y-axis label moves to the right
+
+                for label in ax.get_xticklabels() + ax.get_yticklabels(): #sets all label fonts to 7 and Arial
+                    label.set_fontsize(7)
+                    label.set_fontname('Arial')
+
+                ax.set_axisbelow(True) #making the grid and everything below the actual data line
+                #SAVE----------------------------------------------------------------------
+                if save:
+                    plt.savefig(f'{self.ticker}_Simple{interval_map[interval]}{data.capitalize()}{calculation.title()}_{yf_download.index[0].strftime('%b%Y')}_{yf_download.index[-1].strftime('%b%Y')}.png', dpi=300, bbox_inches='tight')
+
+                #SHOW----------------------------------------------------------------------
+                if show:
+                    plt.show()
+                elif show == False:
+                    plt.close(fig)
 #------------------------------------------------------------------------------------------
-    def candle_chart(self, period: str = '6mo', start: str = None, end: str = None, interval: str = '1d', sma: list = None, volume: bool = True, bollinger: list = None, o_label: bool = True, h_label: bool = True, l_label: bool = True, c_label: bool = True, legend: bool = False, title: bool = True, show: str = True, save: str = False):
+    def equity_candle(self, period: str = '6mo', start: str = None, end: str = None, interval: str = '1d', sma: list = None, volume: bool = True, bollinger: list = None, o_label: bool = True, h_label: bool = True, l_label: bool = True, c_label: bool = True, legend: bool = False, title: bool = True, show: str = True, save: str = False):
         valid_params = {'valid_period' : ['1mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'],
                         'valid_interval' : ['1d', '1wk', '1mo'],
                         'valid_volume' : [True, False],
@@ -385,6 +443,7 @@ class equity:
         elif volume == True:
             style_ax(ax_p)
             ax_p.tick_params(bottom=False, labelbottom=False) # deleting the ohlc chart xticks and xlabels
+            ax_p.tick_params(which="major", axis='y', direction='in', width=0.7) #major ohlc chart ticks
             style_ax(ax_v)
             ax_v.tick_params(which="major", axis='both', direction='in', width=0.7) #major volume chart ticks
 
@@ -396,8 +455,7 @@ class equity:
             interval_map = {
                 '1d': 'Daily',
                 '1wk': 'Weekly',
-                '1mo': 'Monthly',
-                '3mo': 'Quarterly'
+                '1mo': 'Monthly'
             }
             first_date = data.index[0].strftime('%b %Y')
             last_date = data.index[-1].strftime('%b %Y')
@@ -405,7 +463,7 @@ class equity:
 
         #SAVE------------------------------------------------------------------------------
         if save:
-            plt.savefig(f'{self.ticker}_CandleChart.png', dpi=300, bbox_inches='tight')
+            plt.savefig(f'{self.ticker}_{interval_map[interval]}CandleChart_{data.index[0].strftime('%b%Y')}_{data.index[-1].strftime('%b%Y')}.png', dpi=300, bbox_inches='tight')
 
         #SHOW------------------------------------------------------------------------------
         if show:
@@ -738,7 +796,7 @@ Currency: {td_quote['currency']}'''
             output = data.map(lambda x: f'{x:,}' if isinstance(x, (int, float)) and pd.notna(x) else x)
             return output
 #------------------------------------------------------------------------------------------
-    def quote(self, display: str = 'json'):
+    def equity_quote(self, display: str = 'json'):
         valid_params = {'valid_display': ['json', 'pretty'],}
         
         params = {'display': display}
@@ -1107,10 +1165,16 @@ PRICE ESTIMATE----------------------------------------------------------
             
             print(output)
 #------------------------------------------------------------------------------------------
-    def dividend(self, display: str = 'json'): 
-        valid_params = {'valid_display': ['json', 'table'],}
+    def dividend(self, display: str = 'json', period: str = '5y', show: str = True, save: str = False): 
+        valid_params = {'valid_display': ['json', 'table', 'line', 'bar'],
+                        'valid_period': ['1y', '2y', '5y', '10y', 'ytd', 'max'],
+                        'valid_show' : [True, False],
+                        'valid_save' : [True, False]}
         
-        params = {'display': display}
+        params = {'display': display,
+                  'period': period,
+                  'show': show,
+                  'save': save}
 
         for param_key, param_value, valid_param in zip(params.keys(), params.values(), valid_params.values()):
             if param_value not in valid_param:
@@ -1138,6 +1202,22 @@ PRICE ESTIMATE----------------------------------------------------------
         dividends_df.index = pd.to_datetime(dividends_df.index)
         dividends_df.index.name = 'Date'
 
+        #PARAMETER - PERIOD ===============================================================
+        period_to_df = {
+            '1y': -5,
+            '2y': -9,
+            '5y': -21,
+            '10y': -41,
+        }    
+
+        if period == 'max':
+            dividends_df = dividends_df
+        elif period == 'ytd':
+            current_year = date.today().year
+            dividends_df = dividends_df[dividends_df.index.year == current_year]
+        elif period not in ('max', 'ytd'):
+            dividends_df = dividends_df.iloc[period_to_df[period]:]
+
         #PARAMETER - DISPLAY ==============================================================
         if display == 'json':
             dividends_df.index = dividends_df.index.strftime('%Y-%m-%d')
@@ -1153,6 +1233,55 @@ PRICE ESTIMATE----------------------------------------------------------
         elif display == 'table':
             output = dividends_df
             return output
+        else:
+            dividends_df.index = dividends_df.index.to_period('M').to_timestamp()
+
+            fig, ax = plt.subplots(figsize=(10, 4.5), dpi=300)
+
+            if display == 'bar': ax.bar(dividends_df.index, dividends_df[dividends_df.columns[0]], width=40)
+            elif display == 'line':
+                if period != 'max':
+                    ax.plot(dividends_df.index, dividends_df, marker = 'o', markersize=3, markerfacecolor='white')
+                elif period == 'max':
+                    ax.plot(dividends_df.index, dividends_df)
+            
+            first_date = dividends_df.index[0].strftime('%b %Y')
+            last_date = dividends_df.index[-1].strftime('%b %Y')
+
+            ax.set_title(f'{self.ticker} Dividends — ({first_date} - {last_date})', fontsize=6.5, loc='left', pad=4, fontname='Arial', weight='bold')
+
+            #PLOT AESTHETICS---------------------------------------------------------------
+            ax.set_facecolor('#E6F2FA') #BACKGROUND COLOR
+
+            for spine in ax.spines.values(): # SPINES AKA EDGES
+                spine.set_visible(True)            # ensure visibility
+                spine.set_edgecolor('#7A7A7A')    # gray color
+                spine.set_linewidth(0.15)          # adjust thickness
+
+            ax.minorticks_on() #need to turn on minor ticks to plot minor grid lines
+            ax.tick_params(which="minor", axis='both', direction='out', color='white', width=0) #minor ticks invisible
+            ax.tick_params(which="major", axis='both', direction='out', width=1, zorder=3) #major ticks
+
+            ax.grid(which='major', color='#FFFFFF', linestyle='-', linewidth=0.8, zorder=0) #major grid lines
+            ax.grid(which='minor', color='#FFFFFF', linestyle='--', linewidth=0.4, zorder=0) #minor grid lines
+
+            ax.yaxis.tick_right()            # ticks appear on the right
+            ax.yaxis.set_label_position("right")  # y-axis label moves to the right
+
+            for label in ax.get_xticklabels() + ax.get_yticklabels(): #sets all label fonts to 7 and Arial
+                label.set_fontsize(7)
+                label.set_fontname('Arial')
+
+            ax.set_axisbelow(True) #making the grid and everything below the actual data line
+            #SAVE--------------------------------------------------------------------------
+            if save:
+                plt.savefig(f'{self.ticker}_Dividends_{dividends_df.index[0].strftime('%b%Y')}_{dividends_df.index[-1].strftime('%b%Y')}.png', dpi=300, bbox_inches='tight')
+
+            #SHOW--------------------------------------------------------------------------
+            if show:
+                plt.show()
+            elif show == False:
+                plt.close(fig)
 #------------------------------------------------------------------------------------------
     def split(self, display: str = 'json'): 
         valid_params = {'valid_display': ['json', 'table'],}

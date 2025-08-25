@@ -12,9 +12,9 @@ Before accessing the ``equity()`` class functions, you must first assign a strin
 Functions
 -----------
 
-.. py:function:: timeseries(period = '5y', start = None, end = None, interval = '1d', data = 'all', calculation = 'price', round = True)
+.. py:function:: timeseries(display = 'table', period = '5y', start = None, end = None, interval = '1d', data = 'all', calculation = 'price', round = True, show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'``
    :type display: str
 
    :param period: The duration of the timeseries (used if **start** and **end** parameters are not provided); VALID VALUES: ``'1mo'`` , ``'6mo'`` , ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'ytd'`` , ``'max'`` 
@@ -38,12 +38,18 @@ Functions
    :param round: Whether to round numerical values to 2 decimal places; VALID VALUES: ``True`` , ``False``
    :type round: bool
 
-   :return: A pandas DataFrame or row oriented JSON formatted output of a timeseries OHLC price and volume data for the specified equity.
+   :param show: Display the chart as an output if ``display == 'line'``; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png if ``display == 'line'``; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A pandas DataFrame, row oriented JSON formatted output, or simple matplotlib graph of a timeseries OHLC price and volume data for the specified equity.
    :source: Yahoo Finance (yfinance)
 
 
 
-.. py:function:: candle_chart(period = '6mo', start = None, end = None, interval = '1d', sma = None, volume = True, bollinger = None, o_label = True, h_label = True, l_label = True, c_label = True, legend = False, title = True, show = True, save = False)
+.. py:function:: equity_candle(period = '6mo', start = None, end = None, interval = '1d', sma = None, volume = True, bollinger = None, o_label = True, h_label = True, l_label = True, c_label = True, legend = False, title = True, show = True, save = False)
 
    :param period: The duration of the chart (used if **start** and **end** parameters are not provided); VALID VALUES: ``'1mo'`` , ``'6mo'`` , ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'ytd'`` , ``'max'`` 
    :type period: str
@@ -130,7 +136,7 @@ Functions
 
 
 
-.. py:function:: quote(display = 'json')
+.. py:function:: equity_quote(display = 'json')
 
    :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'pretty'``
    :type display: str
@@ -170,12 +176,21 @@ Functions
 
 
 
-.. py:function:: dividend(display = 'json')
+.. py:function:: dividend(display = 'json', period = '5y', show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'`` , ``'bar'``
    :type display: str
 
-   :return: A pandas DataFrame or JSON-formatted output of the timeseries dividend data for the specified equity.
+   :param period: The duration of the timeseries; VALID VALUES: ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'ytd'`` , ``'max'`` 
+   :type period: str
+
+   :param show: Display the chart as an output if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A pandas DataFrame, JSON-formatted output, or simple matplotlib graph of the timeseries dividend data for the specified equity.
    :source: Yahoo Finance (yfinance)
 
 

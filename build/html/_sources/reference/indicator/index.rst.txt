@@ -6,9 +6,9 @@ The ``indicator()`` class does not require any input.
 Functions
 -----------
 
-.. py:function:: gdp(type = 'n', period = '5y', figure = 'yoy')
+.. py:function:: gdp(display = 'table', type = 'n', period = '5y', figure = 'yoy', show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'`` , ``'bar'``
    :type display: str
 
    :param type: Type of gross domestic product; VALID VALUES: ``'n'`` (nominal) , ``'r'`` (real) , ``'n_pc'`` (nominal per capita) , ``'r_pc'`` (real per capita) , ``'d'`` (deflator)
@@ -20,14 +20,20 @@ Functions
    :param figure: Data interpretation; VALID VALUES: ``'raw'`` , ``'yoy'`` , ``'pop'``
    :type figure: str
 
-   :return: A pandas DataFrame or row oriented JSON formatted output of a quarterly timeseries for specified US gross domestic product data
+   :param show: Display the chart as an output if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A pandas DataFrame, row oriented JSON formatted output, or simple matplotlib graph of a quarterly timeseries for specified US gross domestic product data
    :source: Bureau of Economic Analysis
 
 
 
-.. py:function:: price_index(type = 'c', period = '5y', figure = 'yoy')
+.. py:function:: price_index(display = 'table', type = 'c', period = '5y', figure = 'yoy', show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'`` , ``'bar'``
    :type display: str
 
    :param type: Type of price index; VALID VALUES: ``'c'`` (consumer) , ``'p'`` (producer) , ``'cc'`` (core consumer) , ``'cp'`` (core producer)
@@ -39,14 +45,20 @@ Functions
    :param figure: Data interpretation; VALID VALUES: ``'raw'`` , ``'yoy'`` , ``'pop'``
    :type figure: str
 
-   :return: A pandas DataFrame or row oriented JSON formatted output of a monthly timeseries for specified US price index data
+   :param show: Display the chart as an output if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A pandas DataFrame, row oriented JSON formatted output, or simple matplotlib graph of a monthly timeseries for specified US price index data
    :source: Bureau of Labor Statistics
 
 
 
-.. py:function:: pce(type = 'raw', period = '5y', figure = 'yoy')
+.. py:function:: pce(display = 'table', type = 'raw', period = '5y', figure = 'yoy', show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'`` , ``'bar'``
    :type display: str
 
    :param type: Type of personal consumption expenditure; VALID VALUES: ``'raw'`` , ``'core'``
@@ -58,17 +70,20 @@ Functions
    :param figure: Data interpretation; VALID VALUES: ``'raw'`` , ``'yoy'`` , ``'pop'``
    :type figure: str
 
-   :return: A pandas DataFrame or row oriented JSON formatted output of a monthly timeseries for specified US personal consumption expenditure data
+   :param show: Display the chart as an output if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A pandas DataFrame, row oriented JSON formatted output, or simple matplotlib graph of a monthly timeseries for specified US personal consumption expenditure data
    :source: Bureau of Economic Analysis
 
 
 
-.. py:function:: unemployment(type = 'U-3', period = '5y')
+.. py:function:: unemployment(display = 'table', type = 'U-3', period = '5y', show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
-   :type display: str
-
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'`` , ``'bar'``
    :type display: str
 
    :param type: Type of unemployment; VALID VALUES: ``'U-3'`` (unemployment) , ``'U-6'`` (underemployment) , ``'g=male'`` , ``'g=female'`` , ``'r=white'`` , ``'r=black'`` , ``'r=asian'`` , ``'r=hispanic'`` , ``'e<hs'`` (less than HS education) , ``'e=hs'`` , ``'e<bach'`` (less than bachelor's degree) , ``'e>=bach'`` 
@@ -77,14 +92,20 @@ Functions
    :param period: The duration of the timeseries; VALID VALUES: ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'max'`` , ``'ytd'``
    :type period: str
 
-   :return: A pandas DataFrame or row oriented JSON formatted output of a monthly timeseries for specified US unemployment data
+   :param show: Display the chart as an output if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A pandas DataFrame, row oriented JSON formatted output, or simple matplotlib graph of a monthly timeseries for specified US unemployment data
    :source: Bureau of Labor Statistics
 
 
 
-.. py:function:: labor(type = 'participation', period = '5y')
+.. py:function:: labor(display = 'table', type = 'participation', period = '5y', show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'`` , ``'bar'``
    :type display: str
 
    :param type: Type of labor metric; VALID VALUES: ``'participation'`` (Labor Force Participation Rate) , ``'payroll'`` (Nonfarm Payrolls) , ``'quits'`` (Quits Rate) , ``'openings'`` (Job Openings Rate) , ``'earnings'`` (Average Hourly Earnings) , ``'claims'`` (Initial Claims)
@@ -93,14 +114,20 @@ Functions
    :param period: The duration of the timeseries; VALID VALUES: ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'max'`` , ``'ytd'``
    :type period: str
 
-   :return: A pandas DataFrame or row oriented JSON formatted output of a monthly or weekly timeseries for specified US labor metric data
-   :source: Bureau of Labor Statistics
+   :param show: Display the chart as an output if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A pandas DataFrame, row oriented JSON formatted output, or simple matplotlib graph of a monthly or weekly timeseries for specified US labor metric data
+   :source: Bureau of Labor Statistics, FRED (U.S. Employment and Training Administration)
 
 
 
-.. py:function:: sentiment(type = 'c_msci', period = '5y')
+.. py:function:: sentiment(display = 'table', type = 'c_msci', period = '5y', show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'`` , ``'bar'``
    :type display: str
 
    :param type: Type of sentiment indicator; VALID VALUES: ``'c_mcsi'`` (University of Michigan Consumer Sentiment) , ``'c_mcie'`` (University of Michigan Consumer Inflation Expecations) , ``'c_oecd'`` (OECD Composite Consumer Confidence for US) , ``'b_oecd'`` (OECD Business Tendency Surveys Indicator for US Manufacturing)
@@ -109,14 +136,20 @@ Functions
    :param period: The duration of the timeseries; VALID VALUES: ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'max'`` , ``'ytd'``
    :type period: str
 
-   :return: A pandas DataFrame or row oriented JSON formatted output of a monthly timeseries for specified US sentiment data
+   :param show: Display the chart as an output if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A pandas DataFrame, row oriented JSON formatted output, or simple matplotlib graph of a monthly timeseries for specified US sentiment data
    :source: FRED (University of Michigan, Organization for Economic Co-operation and Development)
 
 
 
-.. py:function:: fed_rate(interval = '1d', period = '5y')
+.. py:function:: fed_rate(display = 'table', interval = '1d', period = '5y', show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'`` , ``'bar'``
    :type display: str
 
    :param interval: Data frequency; VALID VALUES: ``'1d'`` , ``'1wk'`` , ``'2wk'`` , ``'1mo'``
@@ -125,14 +158,14 @@ Functions
    :param period: The duration of the timeseries; VALID VALUES: ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'max'`` , ``'ytd'``
    :type period: str
 
-   :return: A pandas DataFrame or row oriented JSON formatted output of a timeseries for the US federal funds rate
+   :return: A pandas DataFrame, row oriented JSON formatted output, or simple matplotlib graph of a timeseries for the US federal funds rate
    :source: FRED (Board of Governors of the Federal Reserve System)
 
 
 
-.. py:function:: housing(type = 'starts', period = '5y', figure = 'raw')
+.. py:function:: housing(display = 'table', type = 'starts', period = '5y', figure = 'raw', show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'`` , ``'bar'``
    :type display: str
 
    :param type: Type of housing metric; VALID VALUES: ``'starts'`` (Housing Starts) , ``'nsales'`` (New Housing Sales) , ``'esales'`` (Existing Housing Sales) , ``'30y_rate'`` (30 Year Mortgage Rate) , ``'15y_rate'`` (15 Year Mortgage Rate)
@@ -144,14 +177,20 @@ Functions
    :param figure: Data interpretation; VALID VALUES: ``'raw'`` , ``'yoy'`` , ``'pop'``
    :type figure: str
 
-   :return: A pandas DataFrame or row oriented JSON formatted output of a monthly or weekly timeseries for specified US housing metric data
+   :param show: Display the chart as an output if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A pandas DataFrame, row oriented JSON formatted output, or simple matplotlib graph of a monthly or weekly timeseries for specified US housing metric data
    :source: FRED (US Census Bureau, National Association of Realtors, Freddie Mac)
 
 
 
-.. py:function:: vix(period = '5y', start = None, end = None, interval = '1d', data = 'all')
+.. py:function:: vix(display = 'table', period = '5y', start = None, end = None, interval = '1d', data = 'all', show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'``
    :type display: str
 
    :param period: The duration of the timeseries (used if **start** and **end** parameters are not provided); VALID VALUES: ``'1mo'`` , ``'6mo'`` , ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'ytd'`` , ``'max'`` 
@@ -169,14 +208,20 @@ Functions
    :param data: Type of OHLC data to retrieve; VALID VALUES: ``'open'`` , ``'high'`` , ``'low'`` , ``'close'`` , ``'all'``
    :type data: str
 
-   :return: A pandas DataFrame or row oriented JSON formatted output of timeseries data for the CBOE Volatility Index (VIX).
+   :param show: Display the chart as an output if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A pandas DataFrame, row oriented JSON formatted output, or simple matplotlib graph of timeseries data for the CBOE Volatility Index (VIX).
    :source: Yahoo Finance (yfinance)
 
 
 
-.. py:function:: dollar_index(period = '5y', start = None, end = None, interval = '1d', data = 'all')
+.. py:function:: dollar_index(display = 'table', period = '5y', start = None, end = None, interval = '1d', data = 'all', show = True, save = False)
 
-   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'``
+   :param display: Specifies the output format; VALID VALUES: ``'json'`` , ``'table'`` , ``'line'``
    :type display: str
 
    :param period: The duration of the timeseries (used if **start** and **end** parameters are not provided); VALID VALUES: ``'1mo'`` , ``'6mo'`` , ``'1y'`` , ``'2y'`` , ``'5y'`` , ``'10y'`` , ``'ytd'`` , ``'max'`` 
@@ -194,5 +239,11 @@ Functions
    :param data: Type of OHLC data to retrieve; VALID VALUES: ``'open'`` , ``'high'`` , ``'low'`` , ``'close'`` , ``'all'``
    :type data: str
 
-   :return: A pandas DataFrame or row oriented JSON formatted output of timeseries data for the Dollar Index.
+   :param show: Display the chart as an output if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type show: bool
+
+   :param save: Download the figure as a png if ``display in ('line', 'bar')``; VALID VALUES: ``True`` , ``False``
+   :type save: bool
+
+   :return: A pandas DataFrame, row oriented JSON formatted output, or simple matplotlib graph of timeseries data for the Dollar Index.
    :source: Yahoo Finance (yfinance)

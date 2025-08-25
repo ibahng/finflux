@@ -8,6 +8,7 @@
 `finflux` utilizes both first-party and third-party APIs connected to the sources listed below.
 - Yahoo Finance
 - Twelve Data
+- Investing.com
 - Securities and Exchange Commission (SEC)
 - Organization for Economic Co-operation and Development (OECD)
 - Board of Governors of the Federal Reserve System
@@ -18,5 +19,6 @@
 - National Association of REALTORS® (NAR)
 - Freddie Mac
 - University of Michigan
+- U.S. Employment and Training Administration
 
 Check out our [readthedocs](https://finflux.readthedocs.io/en/latest/index.html) for information on installation, set up, and detailed API documentation.

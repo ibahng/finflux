@@ -23,6 +23,7 @@ Introduction
 
 - `Yahoo Finance <https://finance.yahoo.com/>`__
 - `Twelve Data <https://twelvedata.com/>`__
+- `Investing.com <https://www.investing.com/>`__
 - `Securities and Exchange Commission (SEC) <https://www.sec.gov/>`__
 - `Organization for Economic Co-operation and Development (OECD) <https://www.oecd.org/en.html>`__
 - `Board of Governors of the Federal Reserve System <https://www.federalreserve.gov/>`__
@@ -33,6 +34,7 @@ Introduction
 - `National Association of REALTORS® (NAR) <https://www.nar.realtor/>`__
 - `Freddie Mac <https://www.freddiemac.com/>`__
 - `University of Michigan <https://umich.edu/>`__
+- `U.S. Employment and Training Administration <https://www.dol.gov/agencies/eta>`__
 
 Install
 -------
