@@ -26,6 +26,7 @@ keywords = ["finance", "api", "stocks", "indicators", "bonds"]
 
 [tool.setuptools]
 packages = ["finflux"]
+exclude = ["finflux_archive*"]
 
 [project.urls]
 Documentation = "https://finflux.readthedocs.io/en/latest/index.html"

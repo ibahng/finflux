@@ -476,7 +476,7 @@ class indicator:
 
         data_df = pd.DataFrame.from_dict(data_dict, orient='index', columns=[f'{identifiers[type][2]}'])
 
-        #PARAMETER - PERIOD ================================================================
+        #PARAMETER - FIGURE ================================================================
         if figure == 'raw':
             pass
         elif figure == 'yoy':
